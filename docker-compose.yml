@@ -1,0 +1,43 @@
+version: '3.9'
+services:
+  mediapack-next:
+    container_name: MediaPack-Web
+    build: ./client
+    ports:
+      - "4000:3000"
+    restart: unless-stopped
+    environment:
+      API_URL: http://mediapack-express:3001/api
+      IMG_PATH: http://localhost:4001
+    depends_on:
+      - db
+      - mediapack-express
+  mediapack-express:
+    container_name: MediaPack-Server
+    build: ./server
+    ports:
+      - "4001:3001"
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: 5432
+    depends_on:
+      - db
+    volumes:
+      - ./volumes/uploads:/app/public
+  db:
+    container_name: MediaPack-Database
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 4002:5432
+    volumes:
+      - ./volumes/database:/var/lib/postgresql/data
