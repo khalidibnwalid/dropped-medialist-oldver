@@ -66,7 +66,7 @@ function EditCollProgressState() {
                             name={`templates.fieldTemplates.states[${index}].name`}
                             rules={{ required: true }}
                             render={({ field }) =>
-                                <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                             } />
 
                         <Divider orientation="vertical" className="h-5" />

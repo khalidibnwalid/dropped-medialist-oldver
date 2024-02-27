@@ -1,14 +1,16 @@
-"use client" //for usePathname()
+"use client"
 
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { BsSun } from "react-icons/bs";
+import { RiMoonClearLine } from "react-icons/ri";
 
 
 type navParms = {
-    arrayTitle: string[];
-    arrayLink: string[];
-    arrayIcon: React.ReactNode[];
     onRight: boolean;
+    navButtons: navParmsBut[]
 }
 
 type navParmsBut = {
@@ -17,60 +19,56 @@ type navParmsBut = {
     icon: React.ReactNode;
 }
 
-let bOnRight: boolean = false;
+type navParmsClickBut = {
+    title: string
+    onClick: Function;
+    icon: React.ReactNode;
+    activeIcon?: React.ReactNode
+}
 
+let bOnRight: boolean | undefined = undefined
 
-function NavSideBar({ arrayLink, arrayTitle, arrayIcon, onRight }: navParms) {
+function NavSideBar({ onRight = false, navButtons }: navParms) {
     bOnRight = onRight;
-
-    //turning the arrayLink,arrayTitle & arrayIcon into a single array containing them as objects
-    // so putting the values in the same order will turn them into menues
-    // maybe so I could a custom menu in the database?
-    const arrayObject =
-        arrayLink.map((value: string, index: number) => ({
-            link: value,
-            icon: arrayIcon[index],
-            title: arrayTitle[index],
-        }
-        ))
-
     // since homepage have margin left, there is a major bug on onRight, try it and you will see.
 
-    return ( //try no background/bg //old is #292929 current is #242424 // style={{ backgroundImage: `url(svg/bg.svg)`,    backgroundSize: 'cover'}}
+    const { theme, setTheme } = useTheme()
+
+    return ( 
 
         <nav className={` fixed
                         ${bOnRight ? 'right-2 top-2 h-[98vh]' : 'left-2 top-2 h-[98vh]'}
                          p-3
                          rounded-2xl drop-shadow-lg
-                         z-[100]`}>
+                         z-[100]`}
+        >
 
-            {arrayObject.map((data) => (
-                <NavBut key={`nav-${data.title}`} link={data.link} icon={data.icon} title={data.title} />
+            {navButtons.map((button) => (
+                <NavBut key={'nav-' + button.title} link={button.link} icon={button.icon} title={button.title} />
             ))}
+
+            <ClickBut
+                title="Theme"
+                icon={theme === 'dark' ? <RiMoonClearLine /> : <BsSun />}
+                onClick={() => theme === 'dark' ? setTheme('light') : setTheme('dark')}
+            />
 
         </nav>
     )
 }
-//
+
+const buttonClassNames = " flex justify-center group p-2 my-3 rounded-lg text-3xl duration-200  hover:bg-foreground hover:text-background hover:py-3"
+const spanClassNames = (bOnRight ? 'right-12 pr-6 rounded-l-lg origin-right' : 'left-12 pl-6 rounded-r-lg origin-left') + " absolute justify-center  p-3 mt-[-11px]  bg-accented shadow-lg font-[400] text-lg text-foreground duration-200 scale-0 group-hover:scale-100 float-left z-[-1]"
+
 const NavBut = ({ link, title, icon }: navParmsBut) => {
     const pathname = usePathname()
     return (
-        <Link className={`flex justify-center group
-                          p-2 my-3
-                          rounded-lg
-                          text-3xl
-                          duration-200 
-                          hover:bg-white hover:text-[#181818] hover:py-3
-                           ${pathname === link ? 'bg-white text-[#181818]' : ''} `} // active the button when we are inside its page: usePathname()
-            href={link}>
+        <Link
+            className={(pathname === link && 'bg-foreground text-background') + buttonClassNames} // active the button when we are inside its page: usePathname()
+            href={link}
+        >
             {icon}
-            <span className={` absolute justify-center 
-                            ${bOnRight ? 'right-12 pr-6 rounded-l-lg origin-right' : 'left-12 pl-6 rounded-r-lg origin-left'}
-                              p-3 mt-[-11px] 
-                              bg-[#393939] shadow-perfect-md
-                              font-[400] text-lg text-white
-                              duration-200 scale-0 
-                              group-hover:scale-100 float-left z-[-1]`}>
+            <span className={spanClassNames}>
                 {title}
             </span>
         </Link>
@@ -78,7 +76,21 @@ const NavBut = ({ link, title, icon }: navParmsBut) => {
     )
 }
 
+const ClickBut = ({ title, icon, onClick, activeIcon }: navParmsClickBut) => {
+    const [isActive, setIsActive] = useState(false)
+    return (
+        <button
+            className={buttonClassNames} // active the button when we are inside its page: usePathname()
+            onClick={() => { onClick(); setIsActive(!isActive) }}
+        >
+            {isActive ? (activeIcon || icon) : icon}
+            <span className={spanClassNames}>
+                {title}
+            </span>
+        </button>
 
+    )
+}
 
 export default NavSideBar;
 

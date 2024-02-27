@@ -20,12 +20,12 @@ export default function Error({ error, reset }: params) {
     return (
         <div className=' w-full h-[90vh] flex items-center justify-center flex-col gap-y-10 pr-[70px] animate-fade-in'>
 
-            <p className=' text-7xl font-black'>Something went wrong!</p>
+            <p className=' text-7xl'>Something went wrong!</p>
             {error.message && <p className=' text-xl font-semibold text-neutral-400'>Error: {error.message}</p>}
             <div className='flex gap-x-4'>
                 <Button
                     variant='bordered'
-                    className=' shadow-perfect-md'
+                    className=' shadow-lg'
                     size='lg'
                     onClick={
                         () => router.back()
@@ -36,7 +36,7 @@ export default function Error({ error, reset }: params) {
                 </Button>
                 <Button
                     variant='ghost'
-                    className=' shadow-perfect-md'
+                    className=' shadow-lg'
                     color='primary'
                     size='lg'
                     onClick={

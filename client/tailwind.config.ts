@@ -66,10 +66,17 @@ const config: Config = {
       dark: {
         colors: {
           background: "#151515", //18 
-          //          foreground: "#292929",
+          accented: "#2f2f2f", // Custom-named color for dark theme
+          pure: {opposite: "#fff", theme: '#000'}, //opposite of theme, i.e for dark is pure white and vicevirsa
         }
       },
-
+      light: {
+        colors: {
+          foreground: '#151515',
+          accented: "#e0e0e0", // Custom-named color for dark theme
+          pure: {opposite: "#000", theme: '#fff'}, //opposite of theme, i.e for light is pure black and vicevirsa
+        }
+      },
     }
   })],
 }

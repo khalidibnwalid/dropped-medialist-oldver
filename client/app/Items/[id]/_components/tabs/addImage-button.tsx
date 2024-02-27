@@ -40,7 +40,7 @@ export const AddImageGalleryButton = ({ itemID }: { itemID: string }) => {
     return (
         <>
             {editMode ?
-                <Card className=" bg-[#282828] p-3 duration-200 animate-fade-in">
+                <Card className=" bg-accented p-3 duration-200 animate-fade-in">
                     <form
                         className="flex-grow grid grid-cols-1 gap-y-2 animate-fade-in duration-200"
                     >
@@ -94,7 +94,7 @@ export const AddImageGalleryButton = ({ itemID }: { itemID: string }) => {
                 <Button
                     radius="lg"
                     onPress={() => setEditMode(true)}
-                    className="border-none m-2 shadow-perfect-md duration-200 rounded-2xl overflow-hidden animate-fade-in"
+                    className="border-none m-2 shadow-lg duration-200 rounded-2xl overflow-hidden animate-fade-in"
                 >
                     <LuImagePlus className=" text-xl" /> Add Image
                 </Button>

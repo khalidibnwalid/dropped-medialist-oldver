@@ -14,7 +14,7 @@ function ItemLinks() {
             {itemData.links.map((data, index) => (
                 <a href={data.url} target="_blank" key={`link-${index}`}>
                     <Button className=" capitalize font-bold text-opacity-80 
-                                                w-full mb-3 shadow-perfect-md  
+                                                w-full mb-3 shadow-lg  
                                                 hover:scale-[1.03] "
                         startContent={data.logo_path ?
                             <Image

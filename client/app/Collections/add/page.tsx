@@ -99,7 +99,7 @@ export default function AddCollectionPage() {
                     withButtons>
                     <Button
                         onClick={() => { router.refresh() }}
-                        className="focus:outline-none bg-[#282828]"
+                        className="focus:outline-none bg-accented"
                         variant="solid"
                         type="submit"
                     >
@@ -116,7 +116,7 @@ export default function AddCollectionPage() {
 
                     <TitleBar
                         title="Fields Templates"
-                        className="bg-[#282828]"
+                        className="bg-accented"
                         icon={
                             <IoGridOutline className="text-[30px] mr-3 flex-none" />
                         }

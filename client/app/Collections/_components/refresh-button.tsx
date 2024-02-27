@@ -7,11 +7,19 @@ import { BiRevision } from "react-icons/bi";
 
 
 
-function RefreshButton({size}: {size?: "sm" | "md" | "lg" | undefined;}) {
+function RefreshButton({ size }: { size?: "sm" | "md" | "lg" | undefined; }) {
     const router = useRouter();
     const refreshPage = () => router.refresh()
     return (
-        <Button size={size} className="bg-[#282828]" variant="solid" type="button" onPress={refreshPage}> <BiRevision className="text-base" /> Refresh</Button>
+        <Button
+            size={size}
+            className="bg-accented"
+            variant="solid"
+            type="button"
+            onPress={refreshPage}
+        >
+            <BiRevision className="text-base" /> Refresh
+        </Button>
     )
 }
 

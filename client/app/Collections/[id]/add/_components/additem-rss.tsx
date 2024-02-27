@@ -43,7 +43,7 @@ function AddRSS() {
                         isSelected ? (
                             <BiRss />
                         ) : (
-                            <BiBlock className="text-black" />
+                            <BiBlock className="text-pure-theme" />
                         )
                     }
                 >

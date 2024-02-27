@@ -26,7 +26,7 @@ function AddCollMainInfo() {
                     rules={{ required: true }}
                     render={({ field }) =>
                         <Input
-                            className="mb-3 shadow-perfect-md" type="text"
+                            className="mb-3 shadow-sm rounded-xl" type="text"
                             label="Title" size="lg" isRequired {...field} />
                     } />
 

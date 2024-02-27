@@ -81,6 +81,9 @@ function AddTagsFields({ tagsData }: { tagsData: itemTag[] }) {
         return found?.name
     }
 
+    const tagButtonClassNames = "group pl-11 rounded-md duration-200 bg-accented hover:bg-default animate-fade-in"
+    const tagXClassNames = "text-xl scale-x-0 group-hover:scale-x-100 group-hover:block duration-200 origin-left"
+
     return (
         <>
             <p className="text-zinc-500">Tags</p>
@@ -125,7 +128,7 @@ function AddTagsFields({ tagsData }: { tagsData: itemTag[] }) {
                                     {tagGroup.groupName &&
                                         <p
                                             className="flex w-full sticky top-1 z-20 py-1.5 px-2 
-                                                       bg-default-100 shadow-small rounded-small animate-fade-in"
+                                                       bg-default-100 shadow-sm rounded-sm animate-fade-in"
                                             key={index + "-" + tagGroup.groupName}
                                         >
                                             {tagGroup.groupName}
@@ -160,10 +163,10 @@ function AddTagsFields({ tagsData }: { tagsData: itemTag[] }) {
                 </Popover>
 
                 {(usedTags.length > 0 || newTags.length > 0) &&
-                    <div className="grid grid-cols-1 gap-y-1 p-2 max-h-96 overflow-y-auto overflow-x-hidden bg-[#202020] rounded-xl space-y-1 shadow-perfect-md animate-fade-in">
+                    <div className="grid grid-cols-1 gap-y-1 p-2 max-h-96 overflow-y-auto overflow-x-hidden bg-default-100 rounded-xl space-y-1 shadow-sm animate-fade-in">
                         {newTags?.map((tagName, index) =>
                             <Button
-                                className="group pl-11 rounded-md duration-200 bg-[#282828] hover:bg-[#383838] animate-fade-in"
+                                className={tagButtonClassNames}
                                 key={index + "-" + tagName}
                                 onClick={() => {
                                     const newArray = newTags.filter(name => name !== tagName)
@@ -171,12 +174,12 @@ function AddTagsFields({ tagsData }: { tagsData: itemTag[] }) {
                                 }}
                             >
                                 {tagName}
-                                <BiX className="text-xl scale-x-0 group-hover:scale-x-100 group-hover:block duration-200 origin-left" />
+                                <BiX className={tagXClassNames} />
                             </Button>
                         )}
                         {usedTags?.map((tagID, index) =>
                             <Button
-                                className="group pl-11 rounded-md duration-200 bg-[#282828] hover:bg-[#383838] animate-fade-in"
+                                className={tagButtonClassNames}
                                 key={index + "-" + tagID}
                                 onClick={() => {
                                     const newArray = usedTags.filter(id => id !== tagID)
@@ -184,7 +187,7 @@ function AddTagsFields({ tagsData }: { tagsData: itemTag[] }) {
                                 }}
                             >
                                 {id_to_name(tagID)}
-                                <BiX className="text-xl scale-x-0 group-hover:scale-x-100 group-hover:block duration-200 origin-left" />
+                                <BiX className={tagXClassNames} />
                             </Button>
                         )}
                     </div>}

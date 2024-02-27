@@ -59,7 +59,7 @@ function EditCollFields() {
                                 name={`templates.fieldTemplates.mainFields[${index}].name`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                                 } />
 
                             <Divider orientation="vertical" className="h-5" />
@@ -136,7 +136,7 @@ function EditCollFields() {
                                 name={`templates.fieldTemplates.extraFields[${index}].name`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                                 } />
                         </div>
                     )}

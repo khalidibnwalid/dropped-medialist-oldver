@@ -16,8 +16,10 @@ function AddMainInfo() {
                 rules={{ required: true }}
                 render={({ field }) =>
                     <Input
-                        isRequired className="shadow-perfect-md"
-                        type="text" label="Title"
+                        isRequired 
+                        className="shadow-sm rounded-xl"
+                        type="text"
+                        label="Title"
                         {...field} />
                 } />
 

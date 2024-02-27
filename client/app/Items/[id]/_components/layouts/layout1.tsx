@@ -31,20 +31,20 @@ export default function ItemLayout1() {
 
             <div className="col-span-4 lg:col-span-3">
                 <header
-                    className="justify-center rounded-2xl shadow-perfect-md  bg-cover bg-center "
+                    className="justify-center rounded-2xl shadow-lg  bg-cover bg-center "
                     style={{ backgroundImage: `url(${coverPath})` }}
                 >
 
                     {/* Top blur cover */}
-                    <div className={`${coverPath ? `pt-40 rounded-t-inherit` : `rounded-inherit`} backdrop-blur-sm  bg-black bg-opacity-20 `}>
+                    <div className={`${coverPath ? `pt-40 rounded-t-inherit` : `rounded-inherit`} backdrop-blur-sm  bg-pure-theme bg-opacity-20 `}>
 
                     </div>
 
                     {/* Over Cover */}
                     <div className={` ${coverPath ? `rounded-b-inherit ` : `rounded-inherit`}
                             h-full px-10 pb-10 pt-5 scale-[1.005]
-                           bg-black bg-opacity-[0.85]
-                            backdrop-blur-xl shadow-perfect-md`}>
+                           bg-pure-theme bg-opacity-[0.85]
+                            backdrop-blur-xl shadow-lg`}>
                         <div className="flex">
                             <h1 className="flex-grow text-5xl font-extrabold capitalize px-3 drop-shadow-lg">{itemData.title}</h1>
                             <EditDropDown data={itemData} item>

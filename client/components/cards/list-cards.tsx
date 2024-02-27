@@ -20,8 +20,8 @@ function ListCard({ title, discrip, image, underTitle, link, as = undefined, wid
     const router = useRouter();
 
     return (
-        <div className="flex h-52 shadow-perfect-md bg-[#202020] rounded-xl">
-            <Card className="h-52 w-[8.66rem] flex-none z-10 shadow-perfect-md hover:scale-105 duration-200" isPressable onPress={() => router.push(link)}>
+        <div className="flex h-52 shadow-lg bg-[#202020] rounded-xl">
+            <Card className="h-52 w-[8.66rem] flex-none z-10 shadow-lg hover:scale-105 duration-200" isPressable onPress={() => router.push(link)}>
                 {image ? <Image
                     width={width}
                     height={height}

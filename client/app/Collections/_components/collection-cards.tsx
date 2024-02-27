@@ -26,21 +26,21 @@ function CollectionCards({ dataArray }: cardParam) {
           isPressable
         >
 
-          <CardBody className="overflow-visible p-0 shadow-perfect-md">
+          <CardBody className="overflow-visible p-0">
             {data.cover_path ?
               <Image
                 shadow="md"
                 radius="lg"
                 alt={data.title}
-                className=" object-cover aspect-1 bg-[#2f2f2f]"
+                className=" object-cover aspect-1 bg-accented shadow-lg"
                 src={`${IMG_PATH}/images/collections/${data.cover_path}`}
               />
               :
               <Card
-                className="uppercase font-light text-7xl 
+                className="uppercase font-light text-7xl text-foreground shadow-lg
                            aspect-1
                            items-center justify-center 
-                          bg-[#2f2f2f]"
+                          bg-accented"
 
                 radius="lg"
               >

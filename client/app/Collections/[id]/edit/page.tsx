@@ -128,7 +128,7 @@ export default function CollectionEdit_Page({ params }: { params: { id: string }
 
                         <Button
                             onClick={handleSubmit(onSubmit)}
-                            className="focus:outline-none bg-[#282828]"
+                            className="focus:outline-none bg-accented"
                             variant="solid"
                             type="button"
                         >
@@ -137,7 +137,7 @@ export default function CollectionEdit_Page({ params }: { params: { id: string }
 
                         <Button
                             onClick={() => { router.push(`/Collections/${collectionData.id}`) }}
-                            className="focus:outline-none bg-[#282828]"
+                            className="focus:outline-none bg-accented"
                             variant="solid"
                             type="button"
                         >
@@ -153,7 +153,7 @@ export default function CollectionEdit_Page({ params }: { params: { id: string }
 
                         <TitleBar
                             title="Fields Templates"
-                            className="bg-[#282828]"
+                            className="bg-accented"
                             icon={
                                 <IoGridOutline className="text-[30px] mr-3 flex-none" />
                             }

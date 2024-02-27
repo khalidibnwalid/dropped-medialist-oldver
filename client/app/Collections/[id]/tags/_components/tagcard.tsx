@@ -35,10 +35,10 @@ export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: Grouped
                 className=" w-full
                         p-2 pl-6 ml-10 
                         flex flex-row items-center
-                        shadow-perfect-md 
-                        rounded-2xl bg-[#282828] 
+                        shadow-lg 
+                        rounded-2xl bg-accented 
                         duration-150 
-                        hover:bg-[#333333] animate-fade-in"
+                        hover:bg-default animate-fade-in"
             >
 
                 {editState ?

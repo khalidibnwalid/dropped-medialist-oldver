@@ -22,21 +22,27 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
+  const navButtons = [
+    { title: "Homepage", link: "/", icon: <BiHomeAlt2 key="nav-BiHomeAlt2" /> },
+    { title: "Collections", link: "/Collections", icon: <BiCollection key="nav-BiHomeAlt2" /> },
+    { title: "Search", link: "/Search", icon: <BiSearch key="nav-BiHomeAlt2" /> },
+    { title: "Settings", link: "/Settings", icon: <BiSliderAlt key="nav-BiHomeAlt2" /> },
+    { title: "Trash", link: "/Trash", icon: <BiTrashAlt key="nav-BiHomeAlt2" /> },
+    { title: "RSS", link: "/RSS", icon: <BiRss key="nav-BiHomeAlt2" /> },
+  ]
+
+  const onRight = false
+
   return (
     <html lang="en" className="dark">
       <body className={poppins.className} >
 
         <Providers>
 
-          <NavSideBar
-            arrayTitle={["Homepage", "Collections", "Search", "Settings", "Trash", "RSS"]}
-            arrayLink={["/", "/Collections", "/Search", "/Settings", "/Trash", "/rss"]}
-            arrayIcon={[<BiHomeAlt2 key="nav-BiHomeAlt2" />, <BiCollection key="nav-BiCollection" />,
-                        <BiSearch key="nav-BiSearch" />, <BiSliderAlt key="nav-BiSliderAlt" />,
-                        <BiTrashAlt key="nav-BiTrashAlt" />, <BiRss key="nav-BiRss" />]}
-            onRight={false} />
+          <NavSideBar navButtons={navButtons} onRight={onRight} />
 
-          <div className=" ml-[90px] mr-[20px] pb-20">
+          <div className={(onRight ? " mr-[90px] ml-[20px]" : " ml-[90px] mr-[20px]" ) + " pb-20"}>
             {children}
           </div>
 

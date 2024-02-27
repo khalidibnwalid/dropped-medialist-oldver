@@ -28,7 +28,7 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                         key={`card of the image ${data.image_path}`}
                         isFooterBlurred
                         radius="lg"
-                        className="group border-none m-2 shadow-perfect-md duration-200 rounded-2xl overflow-hidden hover:scale-105"
+                        className="group border-none m-2 shadow-lg duration-200 rounded-2xl overflow-hidden hover:scale-105"
                     >
                         <CardHeader
                             className="absolute w-fit z-30 top-1 right-1 overflow-hidden  

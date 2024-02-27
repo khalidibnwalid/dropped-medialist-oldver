@@ -43,8 +43,8 @@ function SingleImageUploader({ control, fieldName, className, content, required 
                                     <Card
                                         isPressable
                                         className="flex items-center justify-center mb-5 h-full w-full 
-                                       shadow-perfect-md bg-[#282828] object-cover
-                                       duration-100 hover:bg-[#303030]"
+                                       shadow-lg bg-accented object-cover
+                                       duration-100 hover:bg-default"
                                         style={isDragging ? { backgroundColor: "#005BC4" } : undefined}
                                         onPress={onImageUpload}
                                         {...dragProps}>
@@ -53,8 +53,8 @@ function SingleImageUploader({ control, fieldName, className, content, required 
 
                                 {imageList.length !== 0 && (
                                     <Card className="flex items-center justify-center mb-5 h-full w-full 
-                                             shadow-perfect-md object-cover overflow-hidden 
-                                             border-5 border-[#282828]">
+                                             shadow-lg object-cover overflow-hidden 
+                                             border-5 border-accented">
                                         {imageList.map((image, index) => (
                                             <div key={index} className="image-item w-full h-full">
                                                 <img src={image.dataURL} className="-z-10 w-full object-cover filter object-center" alt="poster-uploadimage" />

@@ -72,7 +72,7 @@ function CollectionButtons({ data }: params) {
             {(data.fav || data.pincode) && <Divider orientation="vertical" className="h-5" />}
             <Button
                 size="sm"
-                className="bg-[#282828]"
+                className="bg-accented"
                 variant="solid"
                 type="button"
                 onClick={() => router.push(`/Collections/${data.id}/add`)}
@@ -82,7 +82,7 @@ function CollectionButtons({ data }: params) {
 
             <Button
                 size="sm"
-                className="bg-[#282828]"
+                className="bg-accented"
                 variant="solid"
                 type="button"
                 onClick={() => router.push(`/Collections/${data.id}/tags`)} >
@@ -122,7 +122,7 @@ function CollectionButtons({ data }: params) {
             <Button
                 size="sm" variant="solid" type="button" isIconOnly
                 color={viewMode === "list" ? "primary" : undefined}
-                className={viewMode !== "list" ? "bg-[#282828] " : undefined}
+                className={viewMode !== "list" ? "bg-accented " : undefined}
                 onClick={() => setViewMode("list")}
             >
                 <TfiViewListAlt className="text-sm" />
@@ -131,7 +131,7 @@ function CollectionButtons({ data }: params) {
             <Button
                 size="sm" variant="solid" type="button" isIconOnly
                 color={viewMode === "cardslist" ? "primary" : undefined}
-                className={viewMode !== "cardslist" ? "bg-[#282828]" : undefined}
+                className={viewMode !== "cardslist" ? "bg-accented" : undefined}
                 onClick={() => setViewMode("cardslist")}
             >
                 <CiGrid2H className="text-lg" />
@@ -140,7 +140,7 @@ function CollectionButtons({ data }: params) {
             <Button
                 size="sm" variant="solid" type="button" isIconOnly
                 color={viewMode === "cards" ? "primary" : undefined}
-                className={viewMode !== "cards" ? "bg-[#282828]" : undefined}
+                className={viewMode !== "cards" ? "bg-accented" : undefined}
                 onClick={() => setViewMode("cards")}
             >
                 <IoGridOutline className="text-lg" />
@@ -150,12 +150,12 @@ function CollectionButtons({ data }: params) {
 
             {/* Droplist - should be chaneged to a radio */}
             <EditDropDown data={data} collection>
-                <Button size="sm" className="bg-[#282828] " variant="solid" type="button" isIconOnly >
+                <Button size="sm" className="bg-accented " variant="solid" type="button" isIconOnly >
                     <BiDotsVerticalRounded className="text-lg" />
                 </Button>
             </EditDropDown>
             <Button
-                size="sm" className="bg-[#282828]" variant="solid" type="button" isIconOnly
+                size="sm" className="bg-accented" variant="solid" type="button" isIconOnly
                 onPress={() => router.refresh()}
             >
                 <BiRevision className="text-lg" />

@@ -24,7 +24,7 @@ function ItemTags() {
                             {group.groupTags.map((tag) => (
                                 <Chip
                                     size="sm" variant="flat"
-                                    className="m-1 duration-250 hover:bg-white hover:text-black hover:scale-105"
+                                    className="m-1 duration-250 hover:bg-pure-opposite hover:text-pure-theme hover:scale-105"
                                     key={tag.name}
                                 >
                                     {tag.name}
@@ -38,7 +38,7 @@ function ItemTags() {
                             {group.groupTags.map((tag) => (
                                 <Chip
                                     size="sm" variant="flat"
-                                    className="m-1 duration-250 hover:bg-white hover:text-black hover:scale-105"
+                                    className="m-1 duration-250 hover:bg-pure-opposite hover:text-pure-theme hover:scale-105"
                                     key={tag.name}
                                 >
                                     {tag.name}

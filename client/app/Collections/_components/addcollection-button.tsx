@@ -9,10 +9,14 @@ function ButAddCollection() {
 
     // todo inputs: default_fields, cover_path
     return (
-            <Button onPress={() => router.push('/Collections/add')} className="focus:outline-none bg-[#282828]" variant="solid"
-                type="button">
-                <BiPlus className="text-xl"/> Add
-            </Button>
+        <Button
+            onPress={() => router.push('/Collections/add')}
+            className="focus:outline-none bg-accented"
+            variant="solid"
+            type="button"
+        >
+            <BiPlus className="text-xl" /> Add
+        </Button>
     )
 }
 

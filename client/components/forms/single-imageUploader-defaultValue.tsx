@@ -56,8 +56,8 @@ function SingleImageUploaderDefault({
                     </div>
                     :
                     <Card className={`${className} flex items-center justify-center mb-5
-                                             shadow-perfect-md object-cover overflow-hidden 
-                                             border-5 border-[#282828] animate-fade-in `}
+                                             shadow-lg object-cover overflow-hidden 
+                                             border-5 border-accented animate-fade-in `}
                     >
                         <div className="w-full h-full">
                             <img

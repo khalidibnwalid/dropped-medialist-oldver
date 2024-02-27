@@ -73,7 +73,7 @@ function AddMainFields() {
                             name={`main_fields[${index}].name`}
                             rules={{ required: true }}
                             render={({ field }) =>
-                                <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                             } />
 
                         <span className="md:scale-0">:</span>
@@ -82,7 +82,7 @@ function AddMainFields() {
                             control={fieldControl}
                             name={`main_fields[${index}].value`}
                             render={({ field }) =>
-                                <Input className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Value" size="sm" {...field} />
+                                <Input className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Value" size="sm" {...field} />
                             } />
 
 

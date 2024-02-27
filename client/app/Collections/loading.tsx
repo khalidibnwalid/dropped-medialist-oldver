@@ -12,11 +12,11 @@ export default function LoadingCollections() {
             <TitleBar
                 icon={<>
                     <BiSearch className="text-3xl mr-3 flex-none" />
-                    <Skeleton className=" w-96 h-10 backdrop-blur-3xl opacity-50 rounded-xl shadow-perfect-md" />
+                    <Skeleton className=" w-96 h-10 backdrop-blur-3xl opacity-50 rounded-xl shadow-lg" />
                 </>}
                 starShowerBlack>
 
-                <Skeleton className="w-[250px] h-10 rounded-xl shadow-perfect-md" />
+                <Skeleton className="w-[250px] h-10 rounded-xl shadow-lg" />
             </TitleBar>
         </>
     )

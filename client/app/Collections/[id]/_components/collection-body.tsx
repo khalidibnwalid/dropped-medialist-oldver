@@ -45,7 +45,7 @@ function CollectionBody({ data, items }: { data: CollectionData, items: itemData
                             <Card
                                 isFooterBlurred
                                 radius="lg"
-                                className="group border-none duration-200 hover:scale-110 shadow-perfect-md group aspect-[2/3]"
+                                className="group border-none duration-200 hover:scale-110 shadow-lg group aspect-[2/3]"
                                 key={item.title}
                                 isPressable onPress={() => router.push(`../Items/${item.id}`)}
                             >
@@ -54,7 +54,7 @@ function CollectionBody({ data, items }: { data: CollectionData, items: itemData
                                     className="object-cover aspect-[2/3]"
                                     src={`${IMG_PATH}/images/items/${item.poster_path}`}
                                 /> :
-                                    <Card className=" aspect-[2/3] h-full w-full p-2 bg-[#2f2f2f] flex items-center justify-center capitalize text-xl" >
+                                    <Card className=" aspect-[2/3] h-full w-full p-2 bg-accented flex items-center justify-center capitalize text-xl" >
                                         {item.title}
                                     </Card>
                                 }
@@ -68,7 +68,7 @@ function CollectionBody({ data, items }: { data: CollectionData, items: itemData
                                                w-[calc(100%_-_8px)] 
                                                shadow-small "
                                 >
-                                    <p className="capitalize text-small TEXT text-white/80 line-clamp-1 group-hover:line-clamp-3 ">{item.title}</p>
+                                    <p className="capitalize text-small TEXT text-foreground/80 line-clamp-1 group-hover:line-clamp-3 drop-shadow-lg">{item.title}</p>
                                 </CardFooter>
                             </Card>
                         ))}

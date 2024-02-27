@@ -69,7 +69,7 @@ function EditCollBadgetsLinks() {
                                 render={({ field }) =>
                                     <Input
                                         isRequired
-                                        className=" flex-grow shadow-perfect-md"
+                                        className=" flex-grow shadow-sm rounded-xl"
                                         variant="bordered"
                                         type="text"
                                         label="Name"
@@ -88,7 +88,7 @@ function EditCollBadgetsLinks() {
                                             isDisabled
                                             className="
                                                           flex items-center justify-center h-10 w-10 aspect-1
-                                                           shadow-perfect-md bg-[#282828]"
+                                                           shadow-sm rounded-xl bg-accented"
                                             isIconOnly
                                         >
                                             <LuImagePlus className="text-2xl" />
@@ -141,7 +141,7 @@ function EditCollBadgetsLinks() {
                                 name={`templates.fieldTemplates.links[${index}].name`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Label" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Label" size="sm" {...field} />
                                 } />
 
                             {getValues<any>(`templates.fieldTemplates.links[${index}]`)?.logo_path && typeof (getValues<any>(`templates.fieldTemplates.links[${index}]`)?.logo_path) === 'string' ?
@@ -153,7 +153,7 @@ function EditCollBadgetsLinks() {
                                         <Button
                                             isDisabled
                                             className=" flex items-center justify-center h-10 w-10 aspect-1
-                                                         shadow-perfect-md bg-[#282828]"
+                                            shadow-sm rounded-xl bg-accented"
                                             isIconOnly
                                         >
                                             <LuImagePlus className="text-2xl" />

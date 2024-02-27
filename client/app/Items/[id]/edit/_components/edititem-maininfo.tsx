@@ -18,7 +18,7 @@ function EditMainInfo() {
                 render={({ field }) =>
                     <Input
                         isRequired
-                        className="shadow-perfect-md"
+                        className="shadow-sm rounded-xl"
                         type="text"
                         label="Title"
                         {...field}

@@ -19,7 +19,7 @@ export default function ItemLayout2() {
     return (
         <>
             <header
-                className="justify-center rounded-2xl shadow-perfect-md  bg-cover bg-center "
+                className="justify-center rounded-2xl shadow-lg  bg-cover bg-center "
                 style={{ backgroundImage: `url(${coverPath})` }}
             >
 
@@ -58,8 +58,8 @@ export default function ItemLayout2() {
                                  grid-cols-4 grid grid-flow-row-dense
                                  h-full px-10 pb-10 pt-5 
                                  rounded-b-inherit
-                                 bg-black bg-opacity-[0.85]
-                                 backdrop-blur-xl shadow-perfect-md`}
+                                 bg-pure-theme bg-opacity-[0.85]
+                                 backdrop-blur-xl shadow-lg`}
                 >
                     <div id="empty div">
                         {/*  grid-flow-row-dense*/}

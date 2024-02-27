@@ -66,7 +66,7 @@ function AddRelatedItems({ dataSet }: { dataSet: itemData[] }) {
 
     //tags grouping for autocomplete
 
-    const headingClasses = "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small";
+    const headingClasses = "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-sm rounded-sm";
 
     //mainTags and groupTags should be handled from the add page
     return (

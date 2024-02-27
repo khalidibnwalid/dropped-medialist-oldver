@@ -91,7 +91,7 @@ function EditLinksFields() {
                             render={({ field }) =>
                                 <Input
                                     isRequired
-                                    className=" flex-grow shadow-perfect-md"
+                                    className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
                                     type="text"
                                     label="Name"
@@ -116,7 +116,7 @@ function EditLinksFields() {
                                     color={errors.links?.[index]?.url ? "danger" : "default"}
                                     isRequired
                                     errorMessage={errors.links?.[index]?.url && "Please enter a valid link"}
-                                    className=" flex-grow shadow-perfect-md"
+                                    className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
                                     type="text"
                                     label="URL Link"
@@ -135,7 +135,7 @@ function EditLinksFields() {
                                         isDisabled
                                         className="
                                                    flex items-center justify-center h-10 w-10 aspect-1
-                                                   shadow-perfect-md bg-[#282828]"
+                                                   shadow-sm rounded-xl bg-accented"
                                         isIconOnly
                                     >
                                         <LuImagePlus className="text-2xl" />

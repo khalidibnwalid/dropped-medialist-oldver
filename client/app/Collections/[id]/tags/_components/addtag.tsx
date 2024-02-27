@@ -31,14 +31,14 @@ export const AddTag = ({ collectionID, sortedTags }: { collectionID: string, sor
         <Card
             className=" w-full
                         flex justify-center
-                        shadow-perfect-md 
+                        shadow-sm 
                         rounded-2xl
                         duration-150 
                         animate-fade-in"
         >
             {showAdd ?
                 <form
-                    className="flex-grow grid grid-cols-1 gap-y-2 p-4 animate-fade-in duration-200 bg-[#282828]"
+                    className="flex-grow grid grid-cols-1 gap-y-2 p-4 animate-fade-in duration-200 bg-accented"
                 >
 
                     <div className="flex items-center">
@@ -102,7 +102,7 @@ export const AddTag = ({ collectionID, sortedTags }: { collectionID: string, sor
                     className="
                     flex items-center justify-center gap-x-3 text-lg
                      w-full p-6
-                    shadow-perfect-md 
+                    shadow-lg 
                     rounded-2xl
                     duration-150 
                     animate-fade-in"

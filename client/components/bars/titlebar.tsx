@@ -1,7 +1,6 @@
 'use client'
 
-import { Button, ButtonGroup, Skeleton } from "@nextui-org/react";
-import { BiSolidPencil, BiSolidTrashAlt, BiSearch } from "react-icons/bi";
+import { ButtonGroup } from "@nextui-org/react";
 
 type parms = {
     title?: string;
@@ -39,7 +38,7 @@ function TitleBar({
                              rounded-2xl
                              text capitalize font-extrabold
                              bg-cover bg-bottom 
-                             ${noShadow ? '' : 'shadow-perfect-md'}
+                             ${noShadow ? '' : 'shadow-lg'}
                              ${starShowerBlack ? 'bg-svg-starshower-black' : ''}
                              ${edgeOrange ? 'bg-svg-edge-orange' : ''}
                              ${edgeBlue ? 'bg-svg-edge-blue' : ''}
@@ -48,9 +47,9 @@ function TitleBar({
             <h1 className={`text-lg ${titleFlexNone ? 'flex-none' : 'flex-grow'} `}>{title}</h1>
 
             {withButtons ?
-                <ButtonGroup className=" flex-none shadow-perfect-md rounded-2xl capitalize font-bold">
+                <ButtonGroup className=" flex-none shadow-lg rounded-2xl capitalize font-bold">
                     {children}
-                </ButtonGroup> : <div className=" flex-none shadow-perfect-md rounded-2xl">{children}</div>
+                </ButtonGroup> : <div className=" flex-none shadow-lg rounded-2xl">{children}</div>
             }
 
         </header>

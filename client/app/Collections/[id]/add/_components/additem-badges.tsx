@@ -94,7 +94,7 @@ function AddItemBadges() {
                             render={({ field }) =>
                                 <Input
                                     isRequired
-                                    className=" flex-grow shadow-perfect-md"
+                                    className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
                                     type="text"
                                     label="Label"
@@ -113,7 +113,7 @@ function AddItemBadges() {
                                         isDisabled
                                         className="
                                                    flex items-center justify-center h-10 w-10 aspect-1
-                                                   shadow-perfect-md bg-[#282828]"
+                                                   shadow-sm rounded-xl bg-accented"
                                         isIconOnly
                                     >
                                         <LuImagePlus className="text-2xl" />

@@ -48,14 +48,14 @@ function TrashItems({ dataArray }: { dataArray: itemData[] }) {
         <>
             <div className="flex flex-col gap-x-1 gap-y-7 ">
 
-                <div className="flex items-center flex-wrap gap-y-3 bg-[#282828] p-3 pl-5 rounded-2xl shadow-perfect-md">
+                <div className="flex items-center flex-wrap gap-y-3 bg-accented p-3 pl-5 rounded-2xl shadow-lg">
 
                     <div className="flex items-center flex-grow" >
                         <BiTrashAlt className="text-3xl flex-none" />
                         <p className="pl-2 text-2xl flex-grow font-semibold">Items</p>
                     </div>
 
-                    <ButtonGroup className="flex-none shadow-perfect-md bg:w-full">
+                    <ButtonGroup className="flex-none shadow-lg bg:w-full rounded-xl">
                         <Button className={` duration-200 ${selectAll ? 'bg-danger' : ''}`} onPress={funSelectAll} isDisabled={options.length === 0 ? true : false}> <BiCheck className="text-xl" /> Select All</Button>
                         <Button onPress={restoreTrash} isDisabled={groupSelected.length === 0 ? true : false} ><BiRevision className="text-lg" /> Restore</Button>
                         <Button onPress={onOpen} isDisabled={groupSelected.length === 0 ? true : false} > <BiTrashAlt className=" text-lg" /> Delete</Button>
@@ -113,7 +113,7 @@ function CardCheckBox({ data }: { data: itemData }) {
             classNames={{
                 base: cn(
                     " aspect-[5/1] h-20",
-                    "inline-flex w-full bg-content1 duration-200  shadow-perfect-md",
+                    "inline-flex w-full bg-content1 duration-200  shadow-lg",
                     "hover:bg-content2 items-center justify-start",
                     "cursor-pointer rounded-lg gap-2 p-3 border-5 border-transparent",
                     "data-[selected=true]:border-danger",

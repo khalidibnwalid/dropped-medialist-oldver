@@ -54,7 +54,7 @@ function AddCollTemplFields() {
                                 name={`templates.fieldTemplates.states[${index}].name`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                                 } />
 
                             <Divider orientation="vertical" className="h-5" />
@@ -118,7 +118,7 @@ function AddCollTemplFields() {
                                 name={`templates.fieldTemplates.mainFields[${index}].name`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                                 } />
 
                             <Divider orientation="vertical" className="h-5" />
@@ -192,7 +192,7 @@ function AddCollTemplFields() {
                                 name={`templates.fieldTemplates.extraFields[${index}].name`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                                 } />
                         </div>
                     )}
@@ -230,7 +230,7 @@ function AddCollTemplFields() {
                                 name={`templates.fieldTemplates.badges[${index}].value`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Name" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Name" size="sm" {...field} />
                                 } />
 
                             <SmallImageUploader
@@ -273,7 +273,7 @@ function AddCollTemplFields() {
                                 name={`templates.fieldTemplates.links[${index}].name`}
                                 rules={{ required: true }}
                                 render={({ field }) =>
-                                    <Input isRequired className=" flex-grow shadow-perfect-md" variant="bordered" type="text" label="Label" size="sm" {...field} />
+                                    <Input isRequired className=" flex-grow shadow-sm rounded-xl" variant="bordered" type="text" label="Label" size="sm" {...field} />
                                 } />
 
                             <SmallImageUploader

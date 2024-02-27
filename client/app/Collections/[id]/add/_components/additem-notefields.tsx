@@ -37,7 +37,7 @@ function AddNoteFields() {
                                     name={`content_fields[${index}].name`}
                                     rules={{ required: true }}
                                     render={({ field }) =>
-                                        <Input isRequired className=" flex-grow shadow-perfect-md"
+                                        <Input isRequired className=" flex-grow shadow-sm rounded-xl"
                                             variant="bordered" type="text" size="sm"
                                             label="Note's Title" {...field} />
                                     } />
@@ -48,7 +48,7 @@ function AddNoteFields() {
                                 name={`content_fields[${index}].body`}
                                 render={({ field }) =>
                                     <Textarea
-                                        className=" flex-grow shadow-perfect-md"
+                                        className=" flex-grow shadow-sm rounded-xl"
                                         variant="bordered" type="text" size="sm"
                                         label="Note's Body"
                                         labelPlacement="outside"

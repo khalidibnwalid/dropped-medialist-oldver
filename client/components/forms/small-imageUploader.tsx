@@ -44,8 +44,8 @@ function SmallImageUploader({ control, fieldName, className, disabled, key }: pa
                                         isDisabled={disabled}
                                         isPressable
                                         className="flex items-center justify-center mb-5 h-full w-full 
-                                       shadow-perfect-md bg-[#282828] object-cover
-                                       duration-100 hover:bg-[#303030]"
+                                       shadow-lg bg-accented object-cover
+                                       duration-100 hover:bg-default"
                                         style={isDragging ? { backgroundColor: "#005BC4" } : undefined}
                                         onPress={onImageUpload}
                                         {...dragProps}>
@@ -59,7 +59,7 @@ function SmallImageUploader({ control, fieldName, className, disabled, key }: pa
                                                 <Button
                                                     type="button"
                                                     onClick={() => onImageRemove(index)}
-                                                    className="bg-[#282828] h-full w-full hover:bg-[#303030] duration-100"
+                                                    className="bg-accented h-full w-full hover:bg-default duration-100"
                                                     isIconOnly
                                                 >
                                                     <BiX className="text-2xl" />
