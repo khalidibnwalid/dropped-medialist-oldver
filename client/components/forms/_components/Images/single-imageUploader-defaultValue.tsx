@@ -1,5 +1,5 @@
 'use client'
-import SingleImageUploader from "@/components/forms/single-imageUploader";
+import SingleImageUploader from "@/components/forms/_components/Images/single-imageUploader";
 import { Button, Card } from "@nextui-org/react";
 import { useState } from "react";
 import type { Control, UseFormSetValue } from "react-hook-form";

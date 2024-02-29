@@ -1,13 +1,14 @@
 'use client'
+
 import type { itemProgressState } from "@/types/item";
 import { Autocomplete, AutocompleteItem, Chip } from "@nextui-org/react";
 import type { Key } from "react";
 import { useContext, useEffect, useState } from "react";
-import { EditItemPageContext } from "../page";
+import { ItemFormContext } from "../provider";
 
-function EditItemProgressState() {
-    const { control, fieldTemplates, setValue, itemData } = useContext(EditItemPageContext)
-    const [autoCompleteValue, setAutoCompleteValue] = useState<any>(itemData.progress_state?.name); //autocomplete's current value
+function ItemProgressStateForm() {
+    const { fieldTemplates, setValue, itemData } = useContext(ItemFormContext)
+    const [autoCompleteValue, setAutoCompleteValue] = useState<any>(itemData?.progress_state?.name); //autocomplete's current value
     const [templates, setTemplates] = useState<itemProgressState[]>([])
 
     useEffect(() => {
@@ -15,8 +16,6 @@ function EditItemProgressState() {
             setTemplates(fieldTemplates.states);
         }
     }, [fieldTemplates]); //to get templates safely
-
-
 
     const key_to_field = (key: Key) => templates?.find((state) => state.name === key)
 
@@ -56,5 +55,5 @@ function EditItemProgressState() {
 }
 
 
-export default EditItemProgressState;
+export default ItemProgressStateForm;
 

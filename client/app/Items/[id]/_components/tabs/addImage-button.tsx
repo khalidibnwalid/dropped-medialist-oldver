@@ -1,6 +1,6 @@
 'use client'
 
-import SingleImageUploader from "@/components/forms/single-imageUploader";
+import SingleImageUploader from "@/components/forms/_components/Images/single-imageUploader";
 import type { itemImageType } from "@/types/item";
 import handleImageUpload from "@/utils/api/handlers/handleImageUpload";
 import postAPI from "@/utils/api/postAPI";

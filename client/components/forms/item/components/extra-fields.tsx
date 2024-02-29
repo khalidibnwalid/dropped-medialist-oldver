@@ -1,26 +1,21 @@
 'use client'
-import SortableFields from "@/components/forms/sortableFields";
+
+import SortableFields from "@/components/forms/_components/sortableFields";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Input } from "@nextui-org/react";
-import { useContext, useState } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
 import { IoGridOutline } from "react-icons/io5";
-import { EditItemPageContext } from "../page";
+import { itemFormContextType } from "../provider";
+import { ItemFormContext } from "../provider";
+import { useContext } from "react";
 
-
-function EditExtraFields() {
-
-    const { control, fieldTemplates, setValue, itemData } = useContext(EditItemPageContext)
+function ItemExtraFieldsForm() {
+    const { control, setValue, fieldTemplates, itemData} = useContext(ItemFormContext)
     const templates = fieldTemplates?.extraFields
-
-    let fieldsNumber = 0
-    itemData?.extra_fields?.forEach(() => {
-        fieldsNumber++
-    })
 
     return (
         <SortableFields
-            fieldsNumber={fieldsNumber}
+            fieldsNumber={itemData?.extra_fields?.length}
             fieldControl={control}
             fieldName='extra_fields'
             startContent={({ addField, fieldsState }) => (
@@ -34,11 +29,11 @@ function EditExtraFields() {
                                     {/* dropmenu that deiplays configrations */}
                                 </Button>
                             </DropdownTrigger>
-                            <DropdownMenu aria-label="Load Links templates" className="max-w-52 overflow-hidden">
+                            <DropdownMenu aria-label="Load Lower Fields templates" className="max-w-52 overflow-hidden">
                                 <DropdownSection title="Templates">
                                     {templates ? templates.map((data, index) =>
                                         <DropdownItem
-                                            key={`linktempl-${data.name}`}
+                                            key={'extrafieldtempl-' + data.name}
                                             onPress={() => {
                                                 setValue<any>(`extra_fields[${fieldsState.length === 0 ? 0 : fieldsState.length}].name`, data.name);
                                                 addField()
@@ -63,11 +58,11 @@ function EditExtraFields() {
 
             {({ data, index, removeField, fieldControl }) => (
                 <div className="flex items-center gap-x-2
-                    my-1 p-1 
-                    rounded-md
-                    duration-200 
-                    md:flex-wrap hover:bg-white/5"
-                    key={`extrafield-${index}`}
+                my-1 p-1 
+                rounded-md
+                duration-200 
+                md:flex-wrap hover:bg-white/5"
+                    key={'extrafield-' + index}
                 >
                     <Button onClick={() => removeField(index)} variant="light" isIconOnly><BiX className=" text-3xl" /></Button>
 
@@ -94,5 +89,5 @@ function EditExtraFields() {
 }
 
 
-export default EditExtraFields;
+export default ItemExtraFieldsForm;
 

@@ -3,27 +3,30 @@
 import { Input, Textarea } from "@nextui-org/react";
 import { useContext } from "react";
 import { Controller } from 'react-hook-form';
-import { AddItemPageContext } from "../page";
+import { ItemFormContext } from "../provider";
 
-function AddMainInfo() {
-    const { control } = useContext(AddItemPageContext)
+function ItemMainInfoForm() {
+    const { control, itemData } = useContext(ItemFormContext)
 
     return (
         <>
             <Controller
+                defaultValue={itemData?.title}
                 control={control}
                 name="title"
                 rules={{ required: true }}
                 render={({ field }) =>
                     <Input
-                        isRequired 
+                        isRequired
                         className="shadow-sm rounded-xl"
                         type="text"
                         label="Title"
-                        {...field} />
+                        {...field}
+                    />
                 } />
 
             <Controller
+                defaultValue={itemData?.description}
                 control={control}
                 name="description"
                 render={({ field }) =>
@@ -41,4 +44,6 @@ function AddMainInfo() {
     )
 }
 
-export default AddMainInfo
+
+export default ItemMainInfoForm;
+

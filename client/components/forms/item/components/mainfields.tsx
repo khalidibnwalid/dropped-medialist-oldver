@@ -1,32 +1,24 @@
 'use client'
-import SortableFields from "@/components/forms/sortableFields";
+import SortableFields from "@/components/forms/_components/sortableFields";
 import { Button, Checkbox, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Input, Tooltip } from "@nextui-org/react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
 import { IoGridOutline } from "react-icons/io5";
-import { EditItemPageContext } from "../page";
+import { ItemFormContext } from "../provider";
 
-interface fieldsParams {
-    id: number;
-}
-function EditMainFields() {
 
-    const { control, fieldTemplates, getValues, setValue, itemData } = useContext(EditItemPageContext)
+function ItemMainFieldsForm() {
+
+    const { control, fieldTemplates, getValues, setValue, itemData } = useContext(ItemFormContext)
     const templates = fieldTemplates?.mainFields
-    let fieldsNumber = 0
-
-    itemData?.main_fields?.forEach(() => {
-        fieldsNumber++
-        // setValue("badges", itemData.badges)
-    })
 
     return (
         <div className="grid grid-cols-1">
-            <SortableFields 
-            fieldsNumber={fieldsNumber}
-            fieldControl={control} 
-            fieldName='main_fields'
+            <SortableFields
+                fieldsNumber={itemData?.main_fields?.length}
+                fieldControl={control}
+                fieldName='main_fields'
                 startContent={({ addField, fieldsState }) => (
                     <div className="flex items-center justify-between">
                         <p className="text-zinc-500">Upper Fields (drag and drop)</p>
@@ -42,7 +34,7 @@ function EditMainFields() {
                                     <DropdownSection title="Templates">
                                         {templates ? templates.map((data, index) =>
                                             <DropdownItem
-                                                key={`linktempl-${data.name}`}
+                                                key={'maintempltempl-' + data.name}
                                                 onPress={() => {
                                                     setValue<any>(`main_fields[${fieldsState.length === 0 ? 0 : fieldsState.length}].name`, data.name)
                                                     setValue<any>(`main_fields[${fieldsState.length === 0 ? 0 : fieldsState.length}].bIsNumber`, data.bIsNumber)
@@ -72,7 +64,7 @@ function EditMainFields() {
                     rounded-md
                     duration-200 
                     md:flex-wrap hover:bg-white/5"
-                        key={`mainfield-${index}`}
+                        key={'mainfield-' + index}
                     >
                         <Button onClick={() => removeField(index)} variant="light" isIconOnly><BiX className=" text-3xl" /></Button>
 
@@ -124,8 +116,8 @@ function EditMainFields() {
                                         control={fieldControl}
                                         name={`main_fields[${index}].bIsNumber`}
                                         render={({ field }) =>
-                                        <Checkbox size="lg" defaultSelected={getValues<any>(`main_fields[${index}]`)?.bIsNumber} className="flex-none" {...field} />
-                                    } />
+                                            <Checkbox size="lg" defaultSelected={getValues<any>(`main_fields[${index}]`)?.bIsNumber} className="flex-none" {...field} />
+                                        } />
                                 </div>
                             </Tooltip>
                         }
@@ -139,5 +131,5 @@ function EditMainFields() {
 }
 
 
-export default EditMainFields;
+export default ItemMainFieldsForm;
 

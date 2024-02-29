@@ -10,7 +10,7 @@ import { CollectionData } from "@/types/collection";
 export const handleEditingLogosFields = async (
     dataArray: (itemBadgesType | itemlink)[],
     comparedToData: (itemBadgesType | itemlink)[] = [], //for comparing
-    timeCounter: number = 0,
+    orderCounter: number = 0,
     collectionID: string,
     itemFieldsTemplates?: (itemBadgesType | itemlink)[], //only provide it if it was called from inside an ite
     devmode?: boolean
@@ -52,8 +52,8 @@ export const handleEditingLogosFields = async (
     return dataArray?.map(e => {
         //otherwise upload a new logo
         if (typeof (e.logo_path) === 'object') {
-            timeCounter++
-            const logoName = dateStamped(`${timeCounter.toString()}.${getFileExtension(e.logo_path[0].file.name)}`)
+            orderCounter++
+            const logoName = dateStamped(`${orderCounter.toString()}.${getFileExtension(e.logo_path[0].file.name)}`)
             handleImageUpload(e.logo_path, "logos", logoName, devmode);
             e.logo_path = logoName
             return e

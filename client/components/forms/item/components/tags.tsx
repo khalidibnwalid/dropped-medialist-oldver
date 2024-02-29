@@ -7,28 +7,27 @@ import { Button, Checkbox, CheckboxGroup, Divider, Input, Popover, PopoverConten
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import { useFieldArray } from 'react-hook-form';
 import { BiPurchaseTag, BiX } from "react-icons/bi";
-import { EditItemPageContext } from "../page";
+import { ItemFormContext } from "../provider";
 
-
-function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
-    const { control, itemData } = useContext(EditItemPageContext)
+function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
+    const { control, itemData } = useContext(ItemFormContext)
     const searchRef = useRef<HTMLInputElement>(null)
 
-    const [usedTags, setUsedTags] = useState<string[]>(itemData.tags || []); //current added tags' array
+    const [usedTags, setUsedTags] = useState<string[]>(itemData?.tags || []); //current added tags' array
     const [newTags, setNewTags] = useState<string[]>([])
 
-    const [displayedTags, setDisplayedTags] = useState<itemTag[]>(tagsData || []) //displayed tags for search functionality
+    const [displayedTags, setDisplayedTags] = useState<itemTag[]>(tagsData) //displayed tags for search functionality
     const groupedTags = tagsGroupsSorter(displayedTags) //grouping tags
 
 
-    const { append, remove, replace } = useFieldArray({ //field
+    const { append, replace } = useFieldArray({ //field
         control,
         name: "tags"
     });
 
     function addTag() {
         const input = searchRef.current?.value.trim() || null
-        // space can cause problems such as adding a " " blank tag by wrong so trim input
+        // space can cause problems such as adding a " " tag (a blank tag) by wrong so trim input
         if (!input) return
         sanitizeString(input)
 
@@ -38,12 +37,13 @@ function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
         if (tagIsUsed) return //to ignore if you want to re-add the same tag
 
         if (tagExists) {
-            // if the tag exists check-it
+            // if the tag exists add it to the list
             append(tagExists.id)
             const newArray = [...usedTags, tagExists.id]
             setUsedTags(newArray)
         } else {
             // new tag that doesn't exist is stored in a special way so it can be handled alone
+            // they are stored as a normal name, and since it is not a uuid, it doesn't pass the UUID validator sin 
             append(input)
             const newArray = [...newTags, input]
             setNewTags(newArray)
@@ -54,7 +54,7 @@ function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
     function handleSearch() {
         const input = searchRef.current?.value.trim().toLowerCase() || null
         if (!input) {
-            setDisplayedTags(tagsData || []) //return all results
+            setDisplayedTags(tagsData) //return all results
             return
         }
         const filtred = tagsData.filter(tag =>
@@ -90,7 +90,7 @@ function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
 
             <div className="grid grid-cols-1 gap-y-2">
                 <Popover
-                    onClose={() => setDisplayedTags(tagsData || [])}
+                    onClose={() => setDisplayedTags(tagsData)}
                 >
                     <PopoverTrigger>
                         <Button className="flex-none">Choose Tags <BiPurchaseTag /></Button>
@@ -108,7 +108,7 @@ function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
 
                                     <Checkbox
                                         className="animate-fade-in"
-                                        key={`${index}-${tagName}`}
+                                        key={index + '-' + tagName}
                                         value={tagName}
                                     >
                                         {tagName}
@@ -129,7 +129,7 @@ function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
                                         <p
                                             className="flex w-full sticky top-1 z-20 py-1.5 px-2 
                                                        bg-default-100 shadow-sm rounded-sm animate-fade-in"
-                                            key={`${index}-${tagGroup}`}
+                                            key={index + '-' + tagGroup}
                                         >
                                             {tagGroup.groupName}
                                         </p>
@@ -137,7 +137,7 @@ function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
                                     {tagGroup.groupTags.map(tag =>
                                         <Checkbox
                                             className="animate-fade-in"
-                                            key={`${index}-${tag.name}`}
+                                            key={index + '-' + tag.name}
                                             value={tag.id}
                                         >
                                             {tag.name}
@@ -197,4 +197,6 @@ function EditTagsFields({ tagsData }: { tagsData: itemTag[] }) {
     )
 }
 
-export default EditTagsFields;
+
+export default ItemTagsForm;
+

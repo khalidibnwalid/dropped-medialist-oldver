@@ -1,12 +1,15 @@
 'use client'
 
-import SingleImageUploaderDefault from '@/components/forms/single-imageUploader-defaultValue';
-import type { CollectionData, fieldTemplates } from '@/types/collection';
+import { IMG_PATH } from "@/app/page";
+import SingleImageUploaderDefault from '@/components/forms/_components/Images/single-imageUploader-defaultValue';
+import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/item/layouts";
+import { ItemFormContext } from "@/components/forms/item/provider";
+import type { CollectionData } from '@/types/collection';
 import type { itemData, itemImageType, itemTag } from '@/types/item';
 import deleteAPI from '@/utils/api/deleteAPI';
 import fetchAPI from '@/utils/api/fetchAPI';
-import handleImageUpload from '@/utils/api/handlers/handleImageUpload';
 import { handleEditingLogosFields } from '@/utils/api/handlers/handleEditingLogosFields';
+import handleImageUpload from '@/utils/api/handlers/handleImageUpload';
 import patchAPI from '@/utils/api/patchAPI';
 import postAPI from '@/utils/api/postAPI';
 import { dateStamped } from '@/utils/helper-functions/dateStamped';
@@ -14,41 +17,16 @@ import getFileExtension from '@/utils/helper-functions/getFileExtinsion';
 import sanitizeObject from '@/utils/helper-functions/sanitizeObject';
 import sanitizeString from '@/utils/helper-functions/sanitizeString';
 import { Button, Divider } from "@nextui-org/react";
-import { IMG_PATH } from "@/app/page";
 import { useRouter } from 'next/navigation';
-import { createContext, useEffect, useState } from 'react';
-import type { FieldErrors, UseFormGetValues, UseFormResetField } from 'react-hook-form';
-import { Control, UseFormSetValue, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { BiX } from 'react-icons/bi';
 import { FaSave } from 'react-icons/fa';
-import ItemPageGallery from '../_components/tabs/itempage-gallery';
-import EditItemBadges from './_components/edititem-badges';
-import EditExtraFields from './_components/edititem-extra-fields';
-import EditExtraInfo from './_components/edititem-extra-info';
-import EditLinksFields from './_components/edititem-links-fields';
-import EditMainFields from './_components/edititem-main-fields';
-import EditMainInfo from './_components/edititem-maininfo';
-import EditNoteFields from './_components/edititem-notefields';
-import EditItemProgressState from './_components/edititem-progressstate';
-import EditRelatedItems from './_components/edititem-related';
-import EditTagsFields from './_components/edititem-tagsfields';
 import { validate as uuidValidate } from 'uuid';
-
-
-interface context {
-    control: Control<itemData>
-    fieldTemplates?: fieldTemplates
-    setValue: UseFormSetValue<itemData>
-    getValues: UseFormGetValues<itemData>
-    errors: FieldErrors<itemData>
-    itemData: itemData
-    resetField: UseFormResetField<itemData>
-}
-
-export const EditItemPageContext = createContext({} as context)
+import ItemPageGallery from '../_components/tabs/itempage-gallery';
 
 // should setup patter for every input and an array (including tags)
-export default function ItemEdit_Page({ params }: { params: { id: string } }) {
+export default function EditItemPage({ params }: { params: { id: string } }) {
     // check the types (typescript) in" react hook form" docs
     const { handleSubmit, control, setValue, getValues, resetField, formState: { errors } } = useForm<itemData>();
     const router = useRouter();
@@ -60,7 +38,7 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
     const [collectionData, setcollectionData] = useState<CollectionData>({} as CollectionData);
     const [imageArray, setImageArray] = useState<itemImageType[]>([]);
 
-    let timeCounter = 0 //to give every image a unique value
+    let orderCounter = 0 //to give every image a unique value
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,6 +51,7 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
                 setValue("main_fields", data.main_fields)
                 setValue("extra_fields", data.extra_fields)
                 setValue("tags", data.tags)
+                setValue("content_fields", itemData.content_fields)
 
                 const tags: itemTag[] = await fetchAPI(`tags/${data.collection_id}`)
                 setTagsData(tags);
@@ -119,8 +98,8 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
 
     const handleImage = async (image: File | undefined, path: string | null | undefined) => {
         if (image && image[0]) {
-            timeCounter++
-            const imageName = dateStamped(`${timeCounter.toString()}.${getFileExtension(image[0].file.name)}`)
+            orderCounter++
+            const imageName = dateStamped(`${orderCounter.toString()}.${getFileExtension(image[0].file.name)}`)
             handleImageUpload(image, "items", imageName)
             //remove the image after uploading the new one
             if (path) deleteAPI('files', { fileNames: [`images/items/${path}`] })
@@ -147,8 +126,8 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
             data['cover_path'] = await handleImage(rawCover, itemData.cover_path)
 
             //handle links and badges cause they have logos that should be uploaded
-            data['links'] = await handleEditingLogosFields(links, itemData.links, timeCounter, itemData.collection_id, fieldTemplates?.links)
-            data['badges'] = await handleEditingLogosFields(badges, itemData.badges, timeCounter, itemData.collection_id, fieldTemplates?.badges)
+            data['links'] = await handleEditingLogosFields(links, itemData.links, orderCounter, itemData.collection_id, fieldTemplates?.links)
+            data['badges'] = await handleEditingLogosFields(badges, itemData.badges, orderCounter, itemData.collection_id, fieldTemplates?.badges)
 
             //filter unchanged value to avoid unneeded changes
             for (let key in data) {
@@ -161,7 +140,7 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
 
             sanitizeObject(finalData)
             // console.log("Final Data", finalData) 
-            await patchAPI(`items/${itemData.id}`, finalData) 
+            await patchAPI(`items/${itemData.id}`, finalData)
             router.push(`/Items/${params.id}`)
             //send a toast of the item being saved
         } catch (e) {
@@ -172,7 +151,7 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
 
     return ((Object.keys(itemData).length > 0) && (Object.keys(collectionData).length > 0)) ? (
         <>
-            <EditItemPageContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors, itemData, resetField }}>
+            <ItemFormContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors, itemData, resetField }}>
                 <form className="grid grid-cols-3 py-5 gap-x-7 items-start">
 
                     <div className="col-span-1 grid gap-y-2">
@@ -209,20 +188,7 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
                         </div>
 
                         <Divider className="my-2" />
-                        <EditItemProgressState />
-                        <Divider className="my-2" />
-                        <EditItemBadges />
-                        <Divider className="my-2" />
-                        <EditMainFields />
-                        <Divider className="my-2" />
-                        <EditLinksFields />
-                        <Divider className="my-2" />
-                        <EditTagsFields tagsData={tagsData} />
-                        <Divider className="my-2" />
-                        <EditExtraFields />
-                        <Divider className="my-2" />
-                        <EditRelatedItems dataSet={collectionItemsData} />
-
+                        <ItemFormPosterColumn collectionItemsData={collectionItemsData} tagsData={tagsData} />
                     </div>
 
                     <div className="col-span-2 grid gap-y-2">
@@ -236,19 +202,13 @@ export default function ItemEdit_Page({ params }: { params: { id: string } }) {
                             imgSrc={itemData.cover_path ? `${IMG_PATH}/images/items/${itemData.cover_path}` : undefined}
                         />
                         <Divider className="my-2" />
-                        <EditMainInfo />
-                        <Divider className="my-2" />
-                        <EditExtraInfo />
-                        <Divider className="my-2" />
-                        <EditNoteFields />
+                        <ItemFormCoverColumn />
                         <Divider className="my-2" />
                         <ItemPageGallery imageArray={imageArray} item={itemData} />
-
-
                     </div>
 
                 </form>
-            </EditItemPageContext.Provider>
+            </ItemFormContext.Provider>
         </>
     ) : <h1>Loading</h1>
 }

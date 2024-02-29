@@ -4,11 +4,9 @@ import { Input, Switch } from "@nextui-org/react";
 import { useContext, useState } from "react";
 import { Controller } from 'react-hook-form';
 import { BiBlock, BiRss } from "react-icons/bi";
-import { AddItemPageContext } from "../page";
 
 
 function AddRSS() {
-    const { control } = useContext(AddItemPageContext)
 
     const [isRssAllowed, setIsRssAllowed] = useState(false)
 

@@ -1,20 +1,16 @@
 'use client'
-import SmallImageUploader from "@/components/forms/small-imageUploader";
-import SortableFields from "@/components/forms/sortableFields";
+
+import SortableFields from "@/components/forms/_components/sortableFields";
 import type { itemProgressState } from "@/types/item";
-import { Autocomplete, AutocompleteItem, Button, Checkbox, Chip, Divider, Input, Tooltip } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button, Chip, Divider, Input } from "@nextui-org/react";
 import type { Key } from "react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
-import { EditCollectionPageContext } from "../page";
-import type { CollectionData } from "@/types/collection";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { CollectionFormContext } from "../provider";
 
-function EditCollProgressState() {
-
-    const { control, setValue, getValues, errors, fieldTemplates } = useContext(EditCollectionPageContext)
+function CollectionProgressStateForm() {
+    const { control, setValue, getValues, fieldTemplates } = useContext(CollectionFormContext)
 
     const stateColors: itemProgressState[] = [
         { color: "primary", name: "Blue" },
@@ -24,21 +20,12 @@ function EditCollProgressState() {
         { color: "danger", name: "Red" }
     ]
 
-    //prepare fields for values
-    let fieldsNum = 0
-
-    fieldTemplates?.states && fieldTemplates.states.forEach(() => {
-        fieldsNum++
-    })
-
-    const x = "blue"
-
     return (
         <div id="progress states">
             <SortableFields
                 fieldControl={control}
                 fieldName="templates.fieldTemplates.states"
-                fieldsNumber={fieldsNum}
+                fieldsNumber={fieldTemplates?.states?.length}
                 startContent={({ addField }) => (
                     <div className="flex items-center justify-between">
                         <p className="text-zinc-500">States (drag and drop)</p>
@@ -101,8 +88,9 @@ function EditCollProgressState() {
                 )}
             </SortableFields>
         </div>
-
     )
 }
 
-export default EditCollProgressState
+
+export default CollectionProgressStateForm;
+

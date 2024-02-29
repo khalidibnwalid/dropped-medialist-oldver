@@ -1,7 +1,9 @@
 'use client'
 
-import SingleImageUploader from '@/components/forms/single-imageUploader';
-import type { CollectionData, fieldTemplates } from '@/types/collection';
+import SingleImageUploader from '@/components/forms/_components/Images/single-imageUploader';
+import { ItemFormCoverColumn, ItemFormPosterColumn } from '@/components/forms/item/layouts';
+import { ItemFormContext } from '@/components/forms/item/provider';
+import type { CollectionData } from '@/types/collection';
 import type { itemBadgesType, itemData, itemTag, itemlink } from '@/types/item';
 import deleteAPI from '@/utils/api/deleteAPI';
 import fetchAPI from '@/utils/api/fetchAPI';
@@ -13,36 +15,10 @@ import sanitizeObject from '@/utils/helper-functions/sanitizeObject';
 import sanitizeString from '@/utils/helper-functions/sanitizeString';
 import { Button, Divider } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
-import { createContext, useEffect, useState } from 'react';
-import type { FieldErrors, UseFormGetValues } from 'react-hook-form';
-import { Control, UseFormSetValue, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { BiInfoCircle } from 'react-icons/bi';
-import AddItemBadges from './_components/additem-badges';
-import AddExtraFields from "./_components/additem-extra-fields";
-import AddExtraInfo from './_components/additem-extra-info';
-import AddLinksFields from "./_components/additem-links-fields";
-import AddMainFields from "./_components/additem-main-fields";
-import AddMainInfo from './_components/additem-maininfo';
-import AddNoteFields from "./_components/additem-notefields";
-import SetItemProgressState from './_components/additem-progressstate';
-import AddRelatedItems from './_components/additem-related';
-import AddRSS from './_components/additem-rss';
-import AddTagsFields from "./_components/additem-tagsfields";
 import { validate as uuidValidate } from 'uuid';
-import type { Metadata } from 'next';
-
-interface context {
-    control: Control<itemData>
-    fieldTemplates?: fieldTemplates
-    setValue: UseFormSetValue<itemData>
-    getValues: UseFormGetValues<itemData>
-    errors: FieldErrors<itemData>
-}
-
-
-//create a type or interface for items form
-
-export const AddItemPageContext = createContext({} as context)
 
 // should setup patter for every input and an array (including tags)
 export default function AddItemPage({ params }: { params: { id: string } }) {
@@ -55,7 +31,7 @@ export default function AddItemPage({ params }: { params: { id: string } }) {
     const [collectionItemsData, setcollectionItemsData] = useState<itemData[]>([]);
     const [collectionData, setcollectionData] = useState<CollectionData>({} as CollectionData);
 
-    let timeCounter = 0 //to give every image a unique value
+    let orderCounter = 0 //to give every image a unique value
 
     useEffect(() => {
         const fetchData = async () => {
@@ -99,8 +75,8 @@ export default function AddItemPage({ params }: { params: { id: string } }) {
 
     const handleImage = async (image: File | undefined) => {
         if (image && image[0]) {
-            timeCounter++;
-            const imageName = dateStamped(`${timeCounter.toString()}.${getFileExtension(image[0].file.name)}`);
+            orderCounter++;
+            const imageName = dateStamped(`${orderCounter.toString()}.${getFileExtension(image[0].file.name)}`);
             await handleImageUpload(image, "items", imageName);
             return imageName;
         }
@@ -109,11 +85,11 @@ export default function AddItemPage({ params }: { params: { id: string } }) {
 
     const handleLogosFields = async (array: (itemBadgesType | itemlink)[]) => {
         return array.map((e) => {
-            timeCounter++
+            orderCounter++
             if (typeof (e.logo_path) === 'string' || e.logo_path === undefined) {
                 return e
             } else if (typeof (e.logo_path) === 'object') {
-                const logoName = dateStamped(`${timeCounter.toString()}.${getFileExtension(e.logo_path[0].file.name)}`)
+                const logoName = dateStamped(`${orderCounter.toString()}.${getFileExtension(e.logo_path[0].file.name)}`)
                 handleImageUpload(e.logo_path, "logos", logoName);
                 e.logo_path = logoName
                 return e
@@ -147,8 +123,8 @@ export default function AddItemPage({ params }: { params: { id: string } }) {
 
         try {
             // console.log("final data", data)//devmode
-            await postAPI(`items/${params.id}`, data) 
-            router.push(`../../Collections/${params.id}`) 
+            await postAPI(`items/${params.id}`, data)
+            router.push(`../../Collections/${params.id}`)
             //send a toast of the item being saved or make the items cover shine
         } catch (e) {
             console.log("(Item) Error:", "Failed to Add New Item", e)
@@ -165,40 +141,22 @@ export default function AddItemPage({ params }: { params: { id: string } }) {
 
     return collectionData.title ? (
         <>
-            <AddItemPageContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors }}>
+            <ItemFormContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors }}>
                 <form className="grid grid-cols-3 py-5 gap-x-7 items-start">
 
                     <div className="col-span-1 grid gap-y-2">
                         <SingleImageUploader control={control} fieldName='rawPoster' content="Item's Poster" className='h-44' />
                         <Divider className="my-2" />
-
                         <Button className='mb-3 h-14 text-lg' onClick={handleSubmit(onSubmit)}>Save Item</Button>
+                        <Divider className="my-2" />
 
-                        <SetItemProgressState />
-                        <Divider className="my-2" />
-                        <AddItemBadges />
-                        <Divider className="my-2" />
-                        <AddMainFields />
-                        <Divider className="my-2" />
-                        <AddLinksFields />
-                        <Divider className="my-2" />
-                        <AddTagsFields tagsData={tagsData} />
-                        <Divider className="my-2" />
-                        <AddExtraFields />
-                        <Divider className="mb-2" />
-                        <AddRelatedItems dataSet={collectionItemsData} />
-                        <Divider className="my-2" />
-                        <AddRSS />
+                        <ItemFormPosterColumn collectionItemsData={collectionItemsData} tagsData={tagsData} />
                     </div>
 
                     <div className="col-span-2 grid gap-y-2">
                         <SingleImageUploader control={control} fieldName='rawCover' content="Item's Cover" className='h-44' />
                         <Divider className="my-2" />
-                        <AddMainInfo />
-                        <Divider className="my-2" />
-                        <AddExtraInfo />
-                        <Divider className="my-2" />
-                        <AddNoteFields />
+                        <ItemFormCoverColumn />
                         <Divider className="my-2" />
                         <div className='text-zinc-500 flex items-center gap-x-1'>
                             <BiInfoCircle className="flex-none" />
@@ -207,7 +165,7 @@ export default function AddItemPage({ params }: { params: { id: string } }) {
                     </div>
 
                 </form>
-            </AddItemPageContext.Provider>
+            </ItemFormContext.Provider>
         </>
     ) : (<h1>loading...</h1>)
 }

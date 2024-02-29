@@ -13,7 +13,7 @@ export const metadata:Metadata = {
   title: 'Collections',
 }
 
-async function Collection_view() {
+async function AllCollections() {
   unstable_noStore
   // const data = collectionDataTest(); //testing data
   const data = await fetchAPI('collections') //real data
@@ -37,4 +37,4 @@ async function Collection_view() {
   )
 }
 
-export default Collection_view;
+export default AllCollections;

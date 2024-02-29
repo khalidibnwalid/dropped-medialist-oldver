@@ -1,18 +1,17 @@
 'use client'
 
-import type { itemData } from "@/types/item";
-import { Autocomplete, AutocompleteItem, Button, Chip, Image, Card } from "@nextui-org/react";
+import { IMG_PATH } from "@/app/page";
+import { itemData } from "@/types/item";
+import { Autocomplete, AutocompleteItem, Button, Card, Chip, Image } from "@nextui-org/react";
 import type { Key } from "react";
-import { KeyboardEvent, useContext, useRef, useState } from "react";
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import { useFieldArray } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
-import { AddItemPageContext } from "../page";
-import { IMG_PATH } from "@/app/page";
+import { ItemFormContext } from "../provider";
 
-function AddRelatedItems({ dataSet }: { dataSet: itemData[] }) {
-    const { control } = useContext(AddItemPageContext)
-
-    const { append, remove } = useFieldArray({ //field
+function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
+    const { control, itemData } = useContext(ItemFormContext)
+    const { append, remove } = useFieldArray({
         control,
         name: "related"
     });
@@ -20,12 +19,34 @@ function AddRelatedItems({ dataSet }: { dataSet: itemData[] }) {
     //use replace for default fields????
 
     const [autoCompleteValue, setAutoCompleteValue] = useState(""); //autocomplete's current value
-    const [currentItems, setCurrentItems] = useState<string[]>([] as string[]); //current added tags' array
+    const [currentItems, setCurrentItems] = useState<string[]>([] as string[]);
     const autocompleteRef = useRef<HTMLInputElement>(null)
 
+    function name_to_id(name: Key | string) {
+        const item = dataSet.find((data) => (data.title == name));
+        return item?.id || null;
+
+    }
+
+    function id_to_name(id: Key | string) {
+        const item = dataSet.find((data) => (data.id == id));
+        return item?.title || null;
+
+    }
+
+    useEffect(() => {
+        if (itemData?.related && itemData?.related?.length > 0) {
+            const originalRelatedItems = itemData.related.map((id) => {
+                append(id)
+                const name = id_to_name(id)
+                return name || undefined
+            }).filter(item => item != undefined)
+            setCurrentItems(originalRelatedItems)
+        }
+    }, []);
+
     function addItem(key?: Key) {
-        let currentValue: Key | string = ""
-        key ? currentValue = key : currentValue = autoCompleteValue
+        let currentValue = key || autoCompleteValue
         if (currentItems.some((value) => (value === currentValue))) {
             autocompleteRef.current?.blur()
             return //to ignore if you want to re-add the same item
@@ -57,18 +78,6 @@ function AddRelatedItems({ dataSet }: { dataSet: itemData[] }) {
         }
     }
 
-
-    function name_to_id(name: Key) {
-        const item = dataSet.find((data) => (data.title == name));
-        return item?.id || null;
-    }
-
-
-    //tags grouping for autocomplete
-
-    const headingClasses = "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-sm rounded-sm";
-
-    //mainTags and groupTags should be handled from the add page
     return (
         <>
             <p className="text-zinc-500">Related Items</p>
@@ -135,7 +144,9 @@ function AddRelatedItems({ dataSet }: { dataSet: itemData[] }) {
                 <div>
                     {currentItems && currentItems.map((item) => (
                         <>
-                            <Chip className="m-1 animate-fade-in" key={`tagchip-${item}`}
+                            <Chip
+                                className="m-1 animate-fade-in"
+                                key={'tagchip-' + item}
                                 onClose={() => removeItem(item)}
                             >
                                 {item}
@@ -151,4 +162,6 @@ function AddRelatedItems({ dataSet }: { dataSet: itemData[] }) {
     )
 }
 
-export default AddRelatedItems
+
+export default ItemRelatedItemsForm;
+
