@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import { BiCollection } from "react-icons/bi";
 import RefreshButton from './_components/refresh-button';
 
-export const metadata:Metadata = {
+export const metadata: Metadata = {
   title: 'Collections',
 }
 
@@ -20,10 +20,12 @@ async function AllCollections() {
   revalidatePath('/Collections');// to avoid old cashe // not working
   return (
     <>
-      <TitleBar starShowerBlack
+      <TitleBar
+        starShowerBlack
         title="Collections"
-        icon={<BiCollection className="text-[30px] mr-3 flex-none" />}
-        withButtons>
+        icon={<BiCollection className="text-[30px] mr-3 flex-none "/>}
+        withButtons
+      >
         <RefreshButton />
         <ButAddCollection />
       </TitleBar>

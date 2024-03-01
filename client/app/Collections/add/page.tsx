@@ -106,7 +106,7 @@ export default function AddCollectionPage() {
 
                     <TitleBar
                         title="Fields Templates"
-                        className="bg-accented"
+                        className="bg-accented p-5 my-5"
                         icon={
                             <IoGridOutline className="text-[30px] mr-3 flex-none" />
                         }

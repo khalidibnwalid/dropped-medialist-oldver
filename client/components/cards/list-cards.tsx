@@ -20,7 +20,7 @@ function ListCard({ title, discrip, image, underTitle, link, as = undefined, wid
     const router = useRouter();
 
     return (
-        <div className="flex h-52 shadow-lg bg-[#202020] rounded-xl">
+        <div className="flex h-52 shadow-lg bg-default/10 rounded-xl">
             <Card className="h-52 w-[8.66rem] flex-none z-10 shadow-lg hover:scale-105 duration-200" isPressable onPress={() => router.push(link)}>
                 {image ? <Image
                     width={width}
@@ -30,12 +30,12 @@ function ListCard({ title, discrip, image, underTitle, link, as = undefined, wid
                     alt={title}
                     src={image}
                 /> :
-                    <Card className="aspect-[2/3] h-full w-full p-2 bg-[#2f2f2f] flex items-center justify-center capitalize text-xl" >
+                    <Card className="aspect-[2/3] h-full w-full p-2 bg-accented flex items-center justify-center capitalize text-xl" >
                         {title}
                     </Card>
                 }
             </Card>
-            <Card className="flex-grow p-5 h-full" onPress={() => router.push(link)} isPressable>
+            <Card className="flex-grow p-5 h-full bg-default/20 hover:bg-default/40" onPress={() => router.push(link)} isPressable>
                 <p className="text-start text-2xl font-bold px-1 pb-1 duration-200 hover:text-gray-400">{title}</p>
                 <div>
                     {underTitle}
@@ -46,14 +46,5 @@ function ListCard({ title, discrip, image, underTitle, link, as = undefined, wid
         </div>
     )
 }
-
-
-{/* <Card className="flex">
-<Image src={image} className="h-60 flex-none"/>
-<CardBody className="flex-grow">
-    <p className="text-2xl font-bold">{title}</p>
-    <p>{discrip}</p>
-</CardBody>
-</Card> */}
 
 export default ListCard

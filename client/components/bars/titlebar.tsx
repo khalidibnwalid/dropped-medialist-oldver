@@ -11,12 +11,10 @@ type parms = {
     starShowerBlack?: boolean;
     edgeOrange?: boolean;
     edgeBlue?: boolean;
-    underBar?: boolean;
     withButtons?: boolean;
     titleFlexNone?: boolean;
     noShadow?: boolean;
 }
-
 
 function TitleBar({
     title,
@@ -28,13 +26,11 @@ function TitleBar({
     edgeBlue,
     titleFlexNone,
     withButtons,
-    underBar,
     noShadow
 }: parms) {
     return (
-        <header className={` ${className}
+        <header className={`${className || 'p-5 my-5'} 
                              flex items-center flex-wrap gap-y-3
-                             p-5 my-5 ${underBar ? "mb-0" : ""}
                              rounded-2xl
                              text capitalize font-extrabold
                              bg-cover bg-bottom 
@@ -46,10 +42,11 @@ function TitleBar({
             {icon}
             <h1 className={`text-lg ${titleFlexNone ? 'flex-none' : 'flex-grow'} `}>{title}</h1>
 
-            {withButtons ?
-                <ButtonGroup className=" flex-none shadow-lg rounded-2xl capitalize font-bold">
+            {withButtons
+                ? <ButtonGroup className=" flex-none shadow-lg rounded-2xl capitalize font-bold">
                     {children}
-                </ButtonGroup> : <div className=" flex-none shadow-lg rounded-2xl">{children}</div>
+                </ButtonGroup>
+                : <div className=" flex-none shadow-lg rounded-2xl">{children}</div>
             }
 
         </header>

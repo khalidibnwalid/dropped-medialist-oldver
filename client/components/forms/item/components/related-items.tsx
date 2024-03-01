@@ -104,13 +104,13 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                         {(data: itemData) =>
                             <AutocompleteItem
                                 key={data.title}
-                                startContent={data.poster_path ?
-                                    <Image
+                                startContent={data.poster_path
+                                    ? <Image
                                         className="flex-shrink-0 h-10 aspect-1 object-cover"
                                         alt={data.title}
                                         src={`${IMG_PATH}/images/items/${data.poster_path}`}
-                                    /> :
-                                    <Card
+                                    />
+                                    : <Card
                                         className="uppercase font-light text-xl 
                                                aspect-1 h-10
                                                items-center justify-center 

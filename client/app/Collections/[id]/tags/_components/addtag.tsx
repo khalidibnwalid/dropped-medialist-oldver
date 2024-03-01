@@ -1,14 +1,18 @@
+'use client'
+
 import type { itemTag } from "@/types/item";
 import postAPI from "@/utils/api/postAPI";
 import sanitizeObject from "@/utils/helper-functions/sanitizeObject";
 import { Autocomplete, AutocompleteItem, Button, Card, Input, Textarea } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiPlus } from "react-icons/bi";
-import { GroupedTagType } from "../_helper-functions/tagsGroupsSorter";
+import { TagsPageContext } from "../provider";
 
-export const AddTag = ({ collectionID, sortedTags }: { collectionID: string, sortedTags: GroupedTagType[]}) => {
+export const AddTag = () => {
+    const { collectionData, sortedTags } = useContext(TagsPageContext)
+
     const router = useRouter();
     const [showAdd, setShowAdd] = useState(false)
 
@@ -16,14 +20,14 @@ export const AddTag = ({ collectionID, sortedTags }: { collectionID: string, sor
 
     const onSubmit: SubmitHandler<itemTag> = (data) => {
         sanitizeObject(data)
-        postAPI(`tags/${collectionID}`, { body: [data] })
+        postAPI(`tags/${collectionData.id}`, { body: [data] })
         setShowAdd(false)
-        
+
         //reset fields
         setValue("name", "")
         setValue("description", undefined)
         setValue("group_name", undefined)
-        
+
         router.refresh()
     }
 
@@ -70,7 +74,7 @@ export const AddTag = ({ collectionID, sortedTags }: { collectionID: string, sor
                         >
                             {(data) => (
                                 <AutocompleteItem
-                                    key={`${data.groupName}`}
+                                    key={'Autocomplete-' + data.groupName}
                                 >
                                     {data.groupName}
                                 </AutocompleteItem>

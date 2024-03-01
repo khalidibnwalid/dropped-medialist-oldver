@@ -1,51 +1,41 @@
 'use client'
 
-import type { itemTag } from "@/types/item";
 import { Card } from "@nextui-org/react";
-import { GroupedTagType, tagsGroupsSorter } from "../_helper-functions/tagsGroupsSorter";
-import { AddTag } from "./addtag";
+import { useContext } from "react";
+import { TagsPageContext } from "../provider";
 import { TagCard } from "./tagcard";
 
-type params = {
-    tags: itemTag[]
-    id: string
-}
 
-let sortedTags: GroupedTagType[] = []
-
-function TagsPageBody({ tags, id }: params) {
-    sortedTags = tagsGroupsSorter(tags)
+function TagsPageBody() {
+    const { displayedSortedTags } = useContext(TagsPageContext)
 
     return (
         <>
-            <AddTag collectionID={id} sortedTags={sortedTags} />
-
-            {sortedTags?.map((group) => {
+            {displayedSortedTags?.map((group, index) => {
                 if (group.groupName !== "" && group.groupTags.length > 0) {
                     return (
-                        <>
-                            <TagGroup key={group.groupName} title={group.groupName} />
+                        <div key={index + '-' + group.groupName + "_"} className="grid grid-flow-row gap-y-3">
+                            <TagGroup key={index + '-' + group.groupName} title={group.groupName} />
 
                             {group.groupTags.map((tag) => (
-                                <TagCard key={`${group.groupName}-${tag.id}`} tag={tag} sortedTags={sortedTags} />
+                                <TagCard key={group.groupName + '-' + tag.id} tag={tag} sortedTags={displayedSortedTags} />
                             ))}
-                        </>
+                        </div>
                     )
                 } else if (group.groupTags.length > 0) {
                     return (
-                        <>
-                            <TagGroup title="Groupless Tags" />
+                        <div key={index + '-' + 'groupless_'} className="grid grid-flow-row gap-y-3" >
+                            <TagGroup title="Groupless Tags" key={index + '-' + 'groupless'} />
 
                             {group.groupTags.map((tag) => (
-                                <TagCard key={`groupless-${tag.id}`} tag={tag} sortedTags={sortedTags} />
+                                <TagCard key={'groupless-' + tag.id} tag={tag} sortedTags={displayedSortedTags} />
                             ))}
-                        </>
+                        </div>
                     )
                 }
 
             }
             )}
-
         </>
     )
 }

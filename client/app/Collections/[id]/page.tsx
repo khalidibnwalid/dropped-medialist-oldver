@@ -3,7 +3,11 @@ import type { CollectionData } from "@/types/collection";
 import fetchAPI from "@/utils/api/fetchAPI";
 import { unstable_noStore } from "next/cache";
 import { BiCollection } from "react-icons/bi";
-import CollectionBody from "./_components/collection-body";
+import CollectionDisplayedItems from "./_components/displayed-items";
+import { itemData } from "@/types/item";
+import CollectionBodyProvider from "./provider";
+import CollectionNavButtons from "./_components/navbuttons";
+import CollectionSearchBar from "./_components/search-bar";
 
 // import type { Metadata } from 'next'
 
@@ -27,28 +31,27 @@ async function Collection_page({ params }: { params: { id: string } }) {
   } finally {
     if (Object.keys(data).length == 0) throw new Error("Collection Doesn't Exist")
   }
-  const items = await fetchAPI(`items/${params.id}`)
+  const items: itemData[] = await fetchAPI(`items/${params.id}`)
 
-  const itemsNumber = items.reduce((a: number, _: any) => (a + 1), 0);
-
+  const NumberOfItems = items.length;
 
   return (
-    <>
+    <CollectionBodyProvider collectionData={data} allItems={items}>
       <TitleBar
-        title={`${data.title} (${itemsNumber})`}
+        title={`${data.title} (${NumberOfItems})`}
+        className="p-5 py-4 my-5 mb-0"
         icon={
-          <BiCollection className="text-3xl mr-3 flex-none" />
+          <BiCollection className="text-3xl mr-3 flex-none p-0" />
         }
-        underBar
         starShowerBlack
       >
-        {/* <SearchBar searchText="Search an Item" /> */}
+        <CollectionSearchBar />
       </TitleBar>
 
-      {/* CollectionBody = subNav + items listing */}
-      <CollectionBody data={data} items={items} />
+      <CollectionNavButtons />
+      <CollectionDisplayedItems/>
 
-    </>
+    </CollectionBodyProvider>
   )
 }
 
