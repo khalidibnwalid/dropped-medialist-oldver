@@ -1,8 +1,4 @@
-# local env files
-.env*.local
-.env
-
-volumes/**
+ volumes/**
 
 # for now
 plugins
