@@ -12,6 +12,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { BiSolidPencil, BiTrashAlt } from "react-icons/bi";
 import { FaEye } from "react-icons/fa";
 import { GroupedTagType } from "../_helper-functions/tagsGroupsSorter";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
+import { createSerializer } from "nuqs";
 
 export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: GroupedTagType[] }) => {
     const router = useRouter();
@@ -115,7 +117,13 @@ export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: Grouped
 
                 <div className="flex-none flex gap-x-2">
                     <Button
-                        // onPress={() => router.push(`/tags/${tag.id}/edit`)} //go to search page of items with this tag
+                        onPress={() => {
+                            const serialize = createSerializer({
+                                tags: parseAsArrayOf(parseAsString)
+                            })
+                            const query = serialize({ tags: [tag.name] })
+                            router.push(`/Collections/${tag.collection_id + query}`)
+                        }} //go to search query of items with this tag
                         className="text-xl shadow-sm"
                         isIconOnly
                     >
@@ -132,7 +140,7 @@ export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: Grouped
                     </Button>
 
                     <TrashPopover
-                    placement="bottom-end"
+                        placement="bottom-end"
                         onPress={() => {
                             deleteAPI('tags', { body: [tag.id] });
                             router.refresh()

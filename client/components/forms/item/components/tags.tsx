@@ -17,7 +17,7 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
     const [newTags, setNewTags] = useState<string[]>([])
 
     const [displayedTags, setDisplayedTags] = useState<itemTag[]>(tagsData) //displayed tags for search functionality
-    const groupedTags = tagsGroupsSorter(displayedTags) //grouping tags
+    const groupedDisplayedTags = tagsGroupsSorter(displayedTags) //grouping tags
 
 
     const { append, replace } = useFieldArray({ //field
@@ -57,10 +57,10 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
             setDisplayedTags(tagsData) //return all results
             return
         }
-        const filtred = tagsData.filter(tag =>
+        const filtered = tagsData.filter(tag =>
             tag.name.toLowerCase().split(" ").some(word => word.startsWith(input)) // so you can search by typing the n-th word
         )
-        setDisplayedTags(filtred)
+        setDisplayedTags(filtered)
     }
 
     function onKeyEvent(event: KeyboardEvent<HTMLInputElement>) {
@@ -123,7 +123,7 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
                             onValueChange={e => setUsedTags(e)}
                             className="grid grid-cols-1 min-w-60 max-w-96 gap-y-1 overflow-y-auto overflow-x-hidden max-h-96 pr-2 "
                         >
-                            {groupedTags?.map((tagGroup, index) => (
+                            {groupedDisplayedTags?.map((tagGroup, index) => (
                                 <>
                                     {tagGroup.groupName &&
                                         <p

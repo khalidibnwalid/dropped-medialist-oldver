@@ -4,27 +4,24 @@ import { Button, Input } from "@nextui-org/react"
 import { KeyboardEvent, useContext, useEffect, useRef } from "react"
 import { collectionBodyContext } from "../provider"
 import { BsThreeDotsVertical } from "react-icons/bs"
-import { BiSearch } from "react-icons/bi"
+import { BiDownArrow, BiSearch, BiUpArrow } from "react-icons/bi"
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+
 
 function CollectionSearchBar() {
-    const { allItems, toggledState, favState, setDisplayedItems } = useContext(collectionBodyContext)
+    const { allItems, setDisplayedItems, setAdvancedSearchVisability, advancedSearchVisability, isItemUnderFilter } = useContext(collectionBodyContext)
 
     const searchRef = useRef<HTMLInputElement>(null)
 
     function handleSearch(event: KeyboardEvent<HTMLInputElement>) {
         const input = searchRef.current?.value.trim().toLowerCase() || null
         if (!input) {
-            const filtered = allItems.filter(item =>
-                (favState ? item.fav === favState : true) //if fav is toggled go for fav items
-                && (toggledState ? item.progress_state?.name === toggledState : true)
-                //if as state is toggled go for items with this state
-            )
+            const filtered = allItems.filter(item => isItemUnderFilter(item))
             setDisplayedItems(filtered)
         } else {
             const filtered = allItems.filter(item =>
                 item.title.toLowerCase().split(" ").some(word => word.startsWith(input))
-                && (favState ? item.fav === favState : true)
-                && (toggledState ? item.progress_state?.name === toggledState : true)
+                && isItemUnderFilter(item)
             )
             setDisplayedItems(filtered)
         }
@@ -64,10 +61,12 @@ function CollectionSearchBar() {
             }
             endContent={
                 <Button
+                    size="sm"
                     className="rounded-xl bg-transparent hover:bg-default-100"
+                    onPress={() => setAdvancedSearchVisability(!advancedSearchVisability)}
                     isIconOnly
                 >
-                    <BsThreeDotsVertical />
+                    {advancedSearchVisability ? <IoIosArrowUp /> : <BsThreeDotsVertical />}
                 </Button>
             }
         />

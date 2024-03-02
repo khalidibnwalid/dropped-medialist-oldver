@@ -4,10 +4,11 @@ import fetchAPI from "@/utils/api/fetchAPI";
 import { unstable_noStore } from "next/cache";
 import { BiCollection } from "react-icons/bi";
 import CollectionDisplayedItems from "./_components/displayed-items";
-import { itemData } from "@/types/item";
+import { itemData, itemTag } from "@/types/item";
 import CollectionBodyProvider from "./provider";
 import CollectionNavButtons from "./_components/navbuttons";
 import CollectionSearchBar from "./_components/search-bar";
+import CollectionAdvancedSearch from "./_components/advanced-search";
 
 // import type { Metadata } from 'next'
 
@@ -32,11 +33,12 @@ async function Collection_page({ params }: { params: { id: string } }) {
     if (Object.keys(data).length == 0) throw new Error("Collection Doesn't Exist")
   }
   const items: itemData[] = await fetchAPI(`items/${params.id}`)
+  const tags: itemTag[] = await fetchAPI(`tags/${params.id}`)
 
   const NumberOfItems = items.length;
 
   return (
-    <CollectionBodyProvider collectionData={data} allItems={items}>
+    <CollectionBodyProvider collectionData={data} allItems={items} tags={tags}>
       <TitleBar
         title={`${data.title} (${NumberOfItems})`}
         className="p-5 py-4 my-5 mb-0"
@@ -48,8 +50,10 @@ async function Collection_page({ params }: { params: { id: string } }) {
         <CollectionSearchBar />
       </TitleBar>
 
+      <CollectionAdvancedSearch />
+
       <CollectionNavButtons />
-      <CollectionDisplayedItems/>
+      <CollectionDisplayedItems />
 
     </CollectionBodyProvider>
   )

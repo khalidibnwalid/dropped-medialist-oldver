@@ -8,10 +8,6 @@ import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { collectionBodyContext } from "../provider";
 
-
-//using useState inside the main page will cause unnecessary rerander of full page
-//which will cause items to be needlessly refetched and the page to be reloaded,
-//so i moved it to its own component
 function CollectionDisplayedItems() {
     const { viewMode, displayedItems } = useContext(collectionBodyContext)
     const router = useRouter();

@@ -47,6 +47,7 @@ function CollectionNavButtons() {
 
             {/* Sort by State Options */}
             <div className="flex items-center gap-2 flex-grow overflow-x-auto  ">
+                {/* Sort by Fav */}
                 <Button
                     size="sm"
                     onClick={favFilter}
@@ -54,6 +55,8 @@ function CollectionNavButtons() {
                 >
                     {favState ? <BiSolidStar className="text-lg" /> : <BiStar className="text-lg" />}
                 </Button>
+                {/* Sort by State */}
+
                 {collectionData.templates?.fieldTemplates?.states?.map(state =>
                     <Button
                         key={`${state.name}-button`}

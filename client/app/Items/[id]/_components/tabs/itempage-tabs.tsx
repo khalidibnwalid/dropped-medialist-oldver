@@ -1,16 +1,13 @@
 'use client'
 
-import ListCard from "@/components/cards/list-cards";
-import type { itemData } from "@/types/item";
-import { Accordion, AccordionItem, Tab, Tabs } from "@nextui-org/react";
 import { IMG_PATH } from "@/app/page";
-import { useState } from 'react';
+import ListCard from "@/components/cards/list-cards";
+import { Accordion, AccordionItem, Tab, Tabs } from "@nextui-org/react";
+import { useContext, useState } from 'react';
 import { BiImages, BiRss, BiSelectMultiple, BiSolidNote } from "react-icons/bi";
-import type { ImageType } from "react-images-uploading";
+import { itemViewContext } from "../item-layouts";
 import ItemBadges from "../itempage-badges";
 import ItemPageGallery from "./itempage-gallery";
-import { useContext } from "react"
-import { itemViewContext } from "../item-layouts";
 
 
 
