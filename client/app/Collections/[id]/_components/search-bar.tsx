@@ -1,31 +1,16 @@
 'use client'
 
 import { Button, Input } from "@nextui-org/react"
-import { KeyboardEvent, useContext, useEffect, useRef } from "react"
-import { collectionBodyContext } from "../provider"
+import { useContext } from "react"
+import { BiSearch } from "react-icons/bi"
 import { BsThreeDotsVertical } from "react-icons/bs"
-import { BiDownArrow, BiSearch, BiUpArrow } from "react-icons/bi"
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io"
+import { collectionBodyContext } from "../provider"
 
 
 function CollectionSearchBar() {
-    const { allItems, setDisplayedItems, setAdvancedSearchVisability, advancedSearchVisability, isItemUnderFilter } = useContext(collectionBodyContext)
+    const { setAdvancedSearchVisability, advancedSearchVisability, searchRef, handleSearch } = useContext(collectionBodyContext)
 
-    const searchRef = useRef<HTMLInputElement>(null)
-
-    function handleSearch(event: KeyboardEvent<HTMLInputElement>) {
-        const input = searchRef.current?.value.trim().toLowerCase() || null
-        if (!input) {
-            const filtered = allItems.filter(item => isItemUnderFilter(item))
-            setDisplayedItems(filtered)
-        } else {
-            const filtered = allItems.filter(item =>
-                item.title.toLowerCase().split(" ").some(word => word.startsWith(input))
-                && isItemUnderFilter(item)
-            )
-            setDisplayedItems(filtered)
-        }
-    }
 
     return (
         <Input

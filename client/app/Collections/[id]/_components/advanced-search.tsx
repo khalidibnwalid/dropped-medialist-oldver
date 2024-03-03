@@ -3,11 +3,9 @@
 import { itemTag } from "@/types/item";
 import { Button, Card, Checkbox, CheckboxGroup, Divider, Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { collectionBodyContext } from "../provider";
 import { tagsGroupsSorter } from "../tags/_helper-functions/tagsGroupsSorter";
-import CollectionSearchBar from "./search-bar";
 
 function CollectionAdvancedSearch() {
     const { tags, advancedSearchVisability, setAdvancedSearchVisability, usedTags, setUsedTags, setTagsQuery, tagsSearchOR, setTagsSearchOR } = useContext(collectionBodyContext)
@@ -49,7 +47,6 @@ function CollectionAdvancedSearch() {
     return advancedSearchVisability && (
         <Card className="grid gap-y-3 w-full py-3 mt-2 px-6 shadow-md bg-accented/40 animate-fade-in">
             <p>Advanced Search</p>
-            <CollectionSearchBar />
 
             <div className="flex items-center gap-x-4 px-3">
                 <Button
