@@ -92,7 +92,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
             }
         })
         // console.log("postAPI", toPostAPI) // devmode
-        if (toPostAPI.length > 0) postAPI(`tags/${params.id}?id=true`, { body: toPostAPI })
+        if (toPostAPI.length > 0) postAPI(`tags/${params.id}`, { body: toPostAPI })
         return newArray
     }
 

@@ -29,19 +29,17 @@ export default async function ItemsPage({ params }: { params: { id: string } }) 
         //the mapped ".find" method returns an undefined when it doesn't find a value,
         //so we filter it out using .filter(Boolean) that removes falsy values to avoid typescript errors
     }
-
-    let dataRelatedItems = null;
+    let dataOfRelatedItems = []
 
     //  build url query to fetch the info of related items
     if (data?.related && data.related.length > 0) {
-        const queryRelated = data.related.reduce((acc: string, current: string) => (acc + "&id=" + current), `id=${data.related.shift()}`)
-        dataRelatedItems = await fetchAPI(`items/rule/group/or?${queryRelated}`);
+        dataOfRelatedItems = await fetchAPI('items/rule/group', { IDs: data.related });
     }
 
     return (
         <>
             <div className="py-5 animate-fade-in">
-                <ItemLayouts imagesData={dataImages} itemData={data} tagsData={tagsData} relatedItems={dataRelatedItems} />
+                <ItemLayouts imagesData={dataImages} itemData={data} tagsData={tagsData} relatedItems={dataOfRelatedItems} />
             </div>
 
         </>

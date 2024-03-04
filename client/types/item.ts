@@ -28,9 +28,8 @@ export interface itemData {
 
 export interface main_fields {
     name: string;
-    value: string;
+    value: string | number;
     itemId?: string;
-    index?: number | undefined;
     bIsNumber?: boolean;
 
 }

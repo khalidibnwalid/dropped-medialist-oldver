@@ -1,5 +1,5 @@
 import express from 'express';
-import fs, { unlink, unlinkSync  } from 'fs';
+import fs, { unlink } from 'fs';
 
 import * as formidable from 'formidable';
 
@@ -11,6 +11,8 @@ router.post('/', async (req, res) => {
     try {
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
+            if (!files.file) return new Error('no file was provided')
+            if (!fields.filename) return new Error('no Filename was provided')
             //fields
             const filename = fields.filename[0];
 
@@ -18,7 +20,7 @@ router.post('/', async (req, res) => {
             const filepath = files.file[0].filepath;  // path to temp
             const newPath = `public/${filename}`;
 
-            // Copy the file to the new location
+            // Copy the file to newPath's location
             fs.copyFileSync(filepath, newPath);
 
             // Delete the original file
@@ -28,6 +30,7 @@ router.post('/', async (req, res) => {
             console.log("Passed:", filename);
         });
     } catch (e) {
+        console.log("[File Upload]", e)
         res.status(500).send('error');
     }
 });
@@ -42,7 +45,7 @@ router.delete('/', async (req, res) => {
         res.status(500).send('No File was Passed')
     }
     try {
-        fileNames.map((fileName) => {
+        fileNames.map((fileName: string) => {
             const filePath = `public/${fileName}`
             unlink(filePath, (err) => {
                 if (err) {
@@ -56,7 +59,7 @@ router.delete('/', async (req, res) => {
         })
         res.status(200).send("OK"); //only needs a signal
     } catch (e) {
-        console.log(e)
+        console.log("[File Delete]", e)
         res.status(500).send('error')
     }
 })
