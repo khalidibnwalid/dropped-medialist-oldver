@@ -11,7 +11,7 @@ import ItemTagsForm from '@/components/forms/item/components/tags';
 import { itemData, itemTag } from '@/types/item';
 import { Divider } from '@nextui-org/react';
 
-export const ItemFormPosterColumn = ({ tagsData, collectionItemsData }: { tagsData: itemTag[], collectionItemsData: itemData[] }) => (
+export const ItemFormPosterColumn = ({ tagsData, listItemsData }: { tagsData: itemTag[], listItemsData: itemData[] }) => (
     <>
         <ItemProgressStateForm />
         <Divider className="my-2" />
@@ -25,7 +25,7 @@ export const ItemFormPosterColumn = ({ tagsData, collectionItemsData }: { tagsDa
         <Divider className="my-2" />
         <ItemExtraFieldsForm />
         <Divider className="my-2" />
-        <ItemRelatedItemsForm dataSet={collectionItemsData} />
+        <ItemRelatedItemsForm dataSet={listItemsData} />
     </>
 )
 

@@ -1,4 +1,4 @@
-import { PrismaClient, collections, items } from '@prisma/client';
+import { PrismaClient, items } from '@prisma/client';
 import express from 'express';
 
 export const prisma = new PrismaClient()
@@ -7,14 +7,14 @@ const router = express.Router();
 /* when you add a propertiy, make sure to add it in the Post thre values */
 // # POST
 
-router.post('/:collection_id', async (req, res) => {
+router.post('/:list_id', async (req, res) => {
     try {
         //should check the title if 1) it exists 2)it is safe
-        const { collection_id } = req.params;
+        const { list_id } = req.params;
         const data = req.body;
 
         await prisma.items.create({
-            data: { collection_id, ...data }
+            data: { list_id, ...data }
         })
 
         console.log("[Items] Inserted:", data.title)
@@ -26,12 +26,12 @@ router.post('/:collection_id', async (req, res) => {
 })
 
 // # GET
-//get items of  a collection
-router.get('/:collection_id', async (req, res) => {
-    const { collection_id } = req.params
+//get items of  a list
+router.get('/:list_id', async (req, res) => {
+    const { list_id } = req.params
     try {
         const items = await prisma.items.findMany({
-            where: { collection_id: collection_id, trash: false },
+            where: { list_id: list_id, trash: false },
             orderBy: { title: 'asc' }
         })
         res.status(200).json(items);

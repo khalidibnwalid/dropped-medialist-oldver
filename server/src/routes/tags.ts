@@ -6,12 +6,12 @@ const router = express.Router();
 
 
 // # GET
-//get all tags of  a collection
-router.get('/:collection_id', async (req, res) => {
+//get all tags of a list
+router.get('/:list_id', async (req, res) => {
     try {
-        const { collection_id } = req.params
+        const { list_id } = req.params
         const tags = await prisma.items_tags.findMany({
-            where: { collection_id },
+            where: { list_id },
             orderBy: { name: 'asc' }
         })
         res.status(200).json(tags);
@@ -22,10 +22,10 @@ router.get('/:collection_id', async (req, res) => {
 })
 
 // # POST
-router.post('/:collection_id', async (req, res) => {
-    const { collection_id } = req.params;
+router.post('/:list_id', async (req, res) => {
+    const { list_id } = req.params;
     const { body }: { body: Pick<items_tags, 'id' | 'description' | 'group_name' | 'name'>[] } = req.body;
-    const toPostTags = body.map(tag => ({ collection_id: collection_id, ...tag }))
+    const toPostTags = body.map(tag => ({ list_id: list_id, ...tag }))
 
     try {
         await prisma.items_tags.createMany({

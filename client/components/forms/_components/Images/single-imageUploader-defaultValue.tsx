@@ -13,7 +13,7 @@ type params = {
     content?: string;
     required?: boolean;
     setValue: UseFormSetValue<any>
-    imgSrc?: string; //should be passed as {collectionData.cover_path ?`${IMG_PATH}/images/collections/${collectionData.cover_path}` : undefined}
+    imgSrc?: string; //should be passed as {listData.cover_path ?`${IMG_PATH}/images/lists/${listData.cover_path}` : undefined}
 }
 
 function SingleImageUploaderDefault({

@@ -4,7 +4,7 @@ import { IMG_PATH } from "@/app/page";
 import SingleImageUploaderDefault from '@/components/forms/_components/Images/single-imageUploader-defaultValue';
 import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/item/layouts";
 import { ItemFormContext } from "@/components/forms/item/provider";
-import type { CollectionData } from '@/types/collection';
+import type { listData } from '@/types/list';
 import type { itemData, itemImageType, itemTag } from '@/types/item';
 import deleteAPI from '@/utils/api/deleteAPI';
 import fetchAPI from '@/utils/api/fetchAPI';
@@ -31,11 +31,11 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
     const { handleSubmit, control, setValue, getValues, resetField, formState: { errors } } = useForm<itemData>();
     const router = useRouter();
 
-    //import tags of the collection in useEffect (client side)
+    //import tags of the list in useEffect (client side)
     const [itemData, setItemData] = useState<itemData>({} as itemData);
     const [tagsData, setTagsData] = useState<itemTag[]>([]);
-    const [collectionItemsData, setcollectionItemsData] = useState<itemData[]>([]);
-    const [collectionData, setcollectionData] = useState<CollectionData>({} as CollectionData);
+    const [listItemsData, setListItemsData] = useState<itemData[]>([]);
+    const [listData, setListData] = useState<listData>({} as listData);
     const [imageArray, setImageArray] = useState<itemImageType[]>([]);
 
     let orderCounter = 0 //to give every image a unique value
@@ -53,16 +53,16 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
                 setValue("tags", data.tags)
                 setValue("content_fields", itemData.content_fields)
 
-                const tags: itemTag[] = await fetchAPI(`tags/${data.collection_id}`)
+                const tags: itemTag[] = await fetchAPI(`tags/${data.list_id}`)
                 setTagsData(tags);
 
-                const collectionItemsData: itemData[] = await fetchAPI(`items/${data.collection_id}`)
-                const filteredCollectionItemsData = collectionItemsData.filter((item) => item.id !== params.id)
+                const listItemsData: itemData[] = await fetchAPI(`items/${data.list_id}`)
+                const filteredlistItemsData = listItemsData.filter((item) => item.id !== params.id)
                 //we don't want the edited item to be in the related items list
-                setcollectionItemsData(filteredCollectionItemsData);
+                setListItemsData(filteredlistItemsData);
 
-                const collectionData: CollectionData = await fetchAPI(`collections/${data.collection_id}`)
-                setcollectionData(collectionData);
+                const listData: listData = await fetchAPI(`lists/${data.list_id}`)
+                setListData(listData);
 
                 const dataImages: itemImageType[] = await fetchAPI(`images/${params.id}`);
                 setImageArray(dataImages)
@@ -75,7 +75,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
         fetchData();
     }, []);
 
-    const fieldTemplates = collectionData.templates?.fieldTemplates
+    const fieldTemplates = listData.templates?.fieldTemplates
 
     async function handleTags(originalArray: string[]) {
         let toPostAPI: itemTag[] = []
@@ -126,8 +126,8 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
             data['cover_path'] = await handleImage(rawCover, itemData.cover_path)
 
             //handle links and badges cause they have logos that should be uploaded
-            data['links'] = await handleEditingLogosFields(links, itemData.links, orderCounter, itemData.collection_id, fieldTemplates?.links)
-            data['badges'] = await handleEditingLogosFields(badges, itemData.badges, orderCounter, itemData.collection_id, fieldTemplates?.badges)
+            data['links'] = await handleEditingLogosFields(links, itemData.links, orderCounter, itemData.list_id, fieldTemplates?.links)
+            data['badges'] = await handleEditingLogosFields(badges, itemData.badges, orderCounter, itemData.list_id, fieldTemplates?.badges)
 
             //filter unchanged value to avoid unneeded changes
             for (let key in data) {
@@ -149,7 +149,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
 
     };
 
-    return ((Object.keys(itemData).length > 0) && (Object.keys(collectionData).length > 0)) ? (
+    return ((Object.keys(itemData).length > 0) && (Object.keys(listData).length > 0)) ? (
         <>
             <ItemFormContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors, itemData, resetField }}>
                 <form className="grid grid-cols-3 py-5 gap-x-7 items-start">
@@ -188,7 +188,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
                         </div>
 
                         <Divider className="my-2" />
-                        <ItemFormPosterColumn collectionItemsData={collectionItemsData} tagsData={tagsData} />
+                        <ItemFormPosterColumn listItemsData={listItemsData} tagsData={tagsData} />
                     </div>
 
                     <div className="col-span-2 grid gap-y-2">

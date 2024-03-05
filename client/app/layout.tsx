@@ -23,7 +23,7 @@ export default function RootLayout({
 
   const navButtons = [
     { title: "Homepage", link: "/", icon: <BiHomeAlt2 key="nav-BiHomeAlt2" /> },
-    { title: "Collections", link: "/Collections", icon: <BiCollection key="nav-BiHomeAlt2" /> },
+    { title: "lists", link: "/lists", icon: <BiCollection key="nav-BiHomeAlt2" /> },
     // { title: "Search", link: "/Search", icon: <BiSearch key="nav-BiHomeAlt2" /> },
     // { title: "Settings", link: "/Settings", icon: <BiSliderAlt key="nav-BiHomeAlt2" /> },
     { title: "Trash", link: "/Trash", icon: <BiTrashAlt key="nav-BiHomeAlt2" /> },

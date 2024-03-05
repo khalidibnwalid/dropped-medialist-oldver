@@ -2,12 +2,11 @@
 
 import SortableFields from "@/components/forms/_components/sortableFields";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Input } from "@nextui-org/react";
+import { useContext } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
 import { IoGridOutline } from "react-icons/io5";
-import { itemFormContextType } from "../provider";
 import { ItemFormContext } from "../provider";
-import { useContext } from "react";
 
 function ItemExtraFieldsForm() {
     const { control, setValue, fieldTemplates, itemData} = useContext(ItemFormContext)

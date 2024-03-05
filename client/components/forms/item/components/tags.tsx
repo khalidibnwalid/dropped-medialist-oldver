@@ -1,6 +1,6 @@
 'use client'
 
-import { tagsGroupsSorter } from "@/app/Collections/[id]/tags/_helper-functions/tagsGroupsSorter";
+import { tagsGroupsSorter } from "@/app/lists/[id]/tags/_helper-functions/tagsGroupsSorter";
 import type { itemTag } from "@/types/item";
 import sanitizeString from "@/utils/helper-functions/sanitizeString";
 import { Button, Checkbox, CheckboxGroup, Divider, Input, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";

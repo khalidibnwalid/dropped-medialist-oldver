@@ -1,6 +1,6 @@
 'use client'
 
-import { tagsGroupsSorter } from "@/app/Collections/[id]/tags/_helper-functions/tagsGroupsSorter"
+import { tagsGroupsSorter } from "@/app/lists/[id]/tags/_helper-functions/tagsGroupsSorter"
 import { Chip } from "@nextui-org/react"
 import { useContext } from "react"
 import { itemViewContext } from "./item-layouts"

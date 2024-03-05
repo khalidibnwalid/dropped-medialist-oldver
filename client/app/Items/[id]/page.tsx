@@ -12,7 +12,7 @@ export default async function ItemsPage({ params }: { params: { id: string } }) 
     try {
         data = await fetchAPI(`items/id/${params.id}`);
         dataImages = await fetchAPI(`images/${params.id}`);
-        unfilteredTagsData = await fetchAPI(`tags/${data.collection_id}`)
+        unfilteredTagsData = await fetchAPI(`tags/${data.list_id}`)
     } catch (e) {
         console.error(e);
         throw e

@@ -8,7 +8,7 @@ export interface itemImageType {
 
 export interface itemData {
     id: string;
-    collection_id: string;
+    list_id: string;
     title: string;
     poster_path?: string | null
     cover_path?: string | null
@@ -36,7 +36,7 @@ export interface main_fields {
 
 export interface itemTag {
     id: string;
-    collection_id?: string;
+    list_id?: string;
     name: string
     description?: string
     group_name?: string

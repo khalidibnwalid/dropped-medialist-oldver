@@ -4,14 +4,14 @@ import getFileExtension from "@/utils/helper-functions/getFileExtinsion";
 import deleteAPI from "../deleteAPI";
 import handleImageUpload from "./handleImageUpload";
 import fetchAPI from "../fetchAPI";
-import { CollectionData } from "@/types/collection";
+import { listData } from "@/types/list";
 
 
 export const handleEditingLogosFields = async (
     dataArray: (itemBadgesType | itemlink)[],
     comparedToData: (itemBadgesType | itemlink)[] = [], //for comparing
     orderCounter: number = 0,
-    collectionID: string,
+    listID: string,
     itemFieldsTemplates?: (itemBadgesType | itemlink)[], //only provide it if it was called from inside an ite
     devmode?: boolean
 ) => {
@@ -25,7 +25,7 @@ export const handleEditingLogosFields = async (
     async function deleteLogo(path: string) {
         //if want to allow plugins should change this to check other things than badges or links
         // it should check if it is used by any items , if so it shouldn't delete it
-        const items: itemData[] = await fetchAPI(`items/${collectionID}`)
+        const items: itemData[] = await fetchAPI(`items/${listID}`)
         if (!items.some(item =>
             item.links?.some(e => e?.logo_path && e.logo_path == path)
             ||
@@ -38,7 +38,7 @@ export const handleEditingLogosFields = async (
                 await deleteAPI('files', { fileNames: [`images/logos/${path}`] })
             }
         }
-        //if collection = fieldsTemplate => called from an item
+        //if list  = fieldsTemplate => called from an item
     }
 
     if (unusedLogos) {

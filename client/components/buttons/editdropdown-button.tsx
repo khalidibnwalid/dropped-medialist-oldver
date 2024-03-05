@@ -6,16 +6,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiSolidPencil, BiSolidStar, BiSolidTrashAlt, BiStar } from "react-icons/bi";
 import type { itemData } from "@/types/item";
-import type { CollectionData } from "@/types/collection";
+import type { listData } from "@/types/list";
 
 type params = {
-    data: itemData | CollectionData;
+    data: itemData | listData;
     item?: boolean;
-    collection?: boolean;
+    list?: boolean;
     children: React.ReactNode;
 }
 
-function EditDropDown({ data, collection, item, children }: params) {
+function EditDropDown({ data, list, item, children }: params) {
     const router = useRouter()
 
     const [isStared, setIsStared] = useState(data.fav);
@@ -24,7 +24,7 @@ function EditDropDown({ data, collection, item, children }: params) {
     function toggleStarState() {
         setIsStared(!isStared);
         item && patchAPI(`items/${data.id}`, { "fav": !isStared });
-        collection && patchAPI(`collections/${data.id}`, { "fav": !isStared })
+        list && patchAPI(`lists/${data.id}`, { "fav": !isStared })
 
         router.refresh();
     }
@@ -33,33 +33,33 @@ function EditDropDown({ data, collection, item, children }: params) {
 
     function deleteFunction() {
         if (item) {
-            router.push(`/Collections/${(data as itemData).collection_id}`);
+            router.push(`/lists/${(data as itemData).list_id}`);
             patchAPI(`items/${(data as itemData).id}`, { "trash": true });
 
         }
-        if (collection) {
-            router.push('/Collections/');
-            patchAPI(`collections/${(data as CollectionData).id}`, { "trash": true });
+        if (list) {
+            router.push('/lists/');
+            patchAPI(`lists/${(data as listData).id}`, { "trash": true });
         }
 
     }
 
     function unTrashFunction() {
         if (item) {
-            router.push(`/Collections/${(data as itemData).collection_id}`);
+            router.push(`/lists/${(data as itemData).list_id}`);
             patchAPI(`items/${(data as itemData).id}`, { "trash": false });
 
         }
-        if (collection) {
-            router.push('/Collections/');
-            patchAPI(`collections/${(data as CollectionData).id}`, { "trash": false });
+        if (list) {
+            router.push('/lists/');
+            patchAPI(`lists/${(data as listData).id}`, { "trash": false });
         }
 
     }
 
     function editPage() {
         if (item) { router.push(`/Items/${(data as itemData).id}/edit`); }
-        if (collection) { router.push(`/Collections/${(data as CollectionData).id}/edit`); }
+        if (list) { router.push(`/lists/${(data as listData).id}/edit`); }
     }
 
     return (

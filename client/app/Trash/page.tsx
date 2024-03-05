@@ -1,12 +1,12 @@
 import fetchAPI from "@/utils/api/fetchAPI"
 import TrashItems from "./_components/trash-items"
-import TrashCollections from "./_components/trash-collections"
+import TrashList from "./_components/trash-lists"
 import { revalidatePath, unstable_noStore } from "next/cache"
 
 export default async function TrashPage() {
     unstable_noStore
     const itemData = await fetchAPI('items/rule/and?trash=true')
-    const collectionData = await fetchAPI('collections/rule/and?trash=true')
+    const listData = await fetchAPI('lists/rule/and?trash=true')
 
     revalidatePath('/Trash', 'page');// to avoid old cashe // not working
 
@@ -17,7 +17,7 @@ export default async function TrashPage() {
                     <TrashItems dataArray={itemData} />
                 </div>
                 <div>
-                    <TrashCollections dataArray={collectionData} />
+                    <TrashList dataArray={listData} />
                 </div>
             </div>
         </>

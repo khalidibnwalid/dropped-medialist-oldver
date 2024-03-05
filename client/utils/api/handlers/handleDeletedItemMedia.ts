@@ -1,6 +1,6 @@
 "use server"
 
-import type { CollectionData } from "@/types/collection";
+import type { listData } from "@/types/list";
 import type { itemData, itemImageType } from "@/types/item";
 import "dotenv/config";
 import fetchAPI from "../fetchAPI";
@@ -14,9 +14,9 @@ export default async function handleDeletedItemMedia(itemID: string) {
 
     const item: itemData = await fetchAPI(`items/id/${itemID}`);
     const itemImages: itemImageType[] = await fetchAPI(`images/${itemID}`);
-    const collectionData: CollectionData = await fetchAPI(`collections/${item.collection_id}`)
+    const listData: listData = await fetchAPI(`lists/${item.list_id}`)
 
-    const templates = collectionData.templates?.fieldTemplates
+    const templates = listData.templates?.fieldTemplates
 
     function deleteImage(filename: string) {
         fileNames.push(`images/items/${filename}`)
@@ -27,8 +27,8 @@ export default async function handleDeletedItemMedia(itemID: string) {
     item.poster_path && deleteImage(item.poster_path)
 
     //delete logos of links and badges
-    item.links && await handleEditingLogosFields([], item.links, 0, item.collection_id, templates?.links)
-    item.badges && await handleEditingLogosFields([], item.badges, 0, item.collection_id, templates?.badges)
+    item.links && await handleEditingLogosFields([], item.links, 0, item.list_id, templates?.links)
+    item.badges && await handleEditingLogosFields([], item.badges, 0, item.list_id, templates?.badges)
 
     //delete images from gallery
     itemImages.length > 0 && itemImages.map((image) => {

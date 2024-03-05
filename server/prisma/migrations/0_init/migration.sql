@@ -1,7 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- CreateTable
-CREATE TABLE "collections" (
+CREATE TABLE "lists" (
     "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "title" VARCHAR NOT NULL,
     "cover_path" VARCHAR,
@@ -11,13 +11,13 @@ CREATE TABLE "collections" (
     "fav" BOOLEAN DEFAULT false,
     "trash" BOOLEAN DEFAULT false,
 
-    CONSTRAINT "collections_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "lists_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "items" (
     "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
-    "collection_id" UUID,
+    "list_id" UUID,
     "title" VARCHAR NOT NULL,
     "poster_path" VARCHAR,
     "cover_path" VARCHAR,
@@ -53,7 +53,7 @@ CREATE TABLE "items_images" (
 -- CreateTable
 CREATE TABLE "items_tags" (
     "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
-    "collection_id" UUID,
+    "list_id" UUID,
     "name" VARCHAR NOT NULL,
     "description" TEXT,
     "group_name" VARCHAR,
@@ -62,13 +62,13 @@ CREATE TABLE "items_tags" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "collections_title_key" ON "collections"("title");
+CREATE UNIQUE INDEX "lists_title_key" ON "lists"("title");
 
 -- AddForeignKey
-ALTER TABLE "items" ADD CONSTRAINT "items_collection_id_fkey" FOREIGN KEY ("collection_id") REFERENCES "collections"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "items" ADD CONSTRAINT "items_list_id_fkey" FOREIGN KEY ("list_id") REFERENCES "lists"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "items_images" ADD CONSTRAINT "items_images_item_id_fkey" FOREIGN KEY ("item_id") REFERENCES "items"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "items_tags" ADD CONSTRAINT "items_tags_collection_id_fkey" FOREIGN KEY ("collection_id") REFERENCES "collections"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "items_tags" ADD CONSTRAINT "items_tags_list_id_fkey" FOREIGN KEY ("list_id") REFERENCES "lists"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

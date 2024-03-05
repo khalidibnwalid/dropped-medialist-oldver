@@ -1,5 +1,5 @@
 
-import type { fieldTemplates } from '@/types/collection';
+import type { fieldTemplates } from '@/types/list';
 import type { itemData } from '@/types/item';
 import type { FieldErrors, UseFormGetValues, UseFormResetField } from 'react-hook-form';
 import { Control, UseFormSetValue } from 'react-hook-form';
