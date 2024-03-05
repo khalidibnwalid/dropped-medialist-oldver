@@ -1,19 +1,19 @@
 version: '3.9'
 services:
-  mediapack-next:
-    container_name: MediaPack-Web
+  medialist-next:
+    container_name: MediaList-Web
     build: ./client
     ports:
       - "4000:3000"
     restart: unless-stopped
     environment:
-      API_URL: http://mediapack-express:3001/api
+      API_URL: http://medialist-express:3001/api
       IMG_PATH: http://localhost:4001
     depends_on:
       - db
-      - mediapack-express
-  mediapack-express:
-    container_name: MediaPack-Server
+      - medialist-express
+  medialist-express:
+    container_name: MediaList-Server
     build: ./server
     ports:
       - "4001:3001"
@@ -26,7 +26,7 @@ services:
     volumes:
       - ./volumes/uploads:/app/public
   db:
-    container_name: MediaPack-Database
+    container_name: MediaList-Database
     image: postgres:16
     restart: unless-stopped
     environment:
