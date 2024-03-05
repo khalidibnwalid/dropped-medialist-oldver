@@ -1,5 +1,5 @@
 import express from 'express';
-import fs, { unlink } from 'fs';
+import fs from 'fs';
 
 import * as formidable from 'formidable';
 
@@ -47,7 +47,7 @@ router.delete('/', async (req, res) => {
     try {
         fileNames.map((fileName: string) => {
             const filePath = `public/${fileName}`
-            unlink(filePath, (err) => {
+            fs.unlink(filePath, (err) => {
                 if (err) {
                     console.error(`(file) ${filePath}: `, err);
                 } else {
