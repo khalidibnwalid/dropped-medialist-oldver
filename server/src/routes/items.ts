@@ -1,5 +1,7 @@
 import { PrismaClient, items } from '@prisma/client';
 import express from 'express';
+import { validate as uuidValidate } from 'uuid';
+import objectBoolFilter from '../utils/helper-function/objectBoolFilter';
 
 export const prisma = new PrismaClient()
 const router = express.Router();
@@ -8,9 +10,9 @@ const router = express.Router();
 // # POST
 
 router.post('/:list_id', async (req, res) => {
+    const { list_id } = req.params;
     try {
-        //should check the title if 1) it exists 2)it is safe
-        const { list_id } = req.params;
+        if (!uuidValidate(list_id)) throw new Error("Bad ID")
         const data = req.body;
 
         await prisma.items.create({
@@ -27,11 +29,15 @@ router.post('/:list_id', async (req, res) => {
 
 // # GET
 //get items of  a list
-router.get('/:list_id', async (req, res) => {
+router.get('/:list_id?', async (req, res) => {
+    const rules = objectBoolFilter(req.query)
     const { list_id } = req.params
+    const where = list_id ? { list_id, ...rules } : rules
+
     try {
+        if (list_id && !uuidValidate(list_id)) throw new Error("Bad ID")
         const items = await prisma.items.findMany({
-            where: { list_id: list_id, trash: false },
+            where,
             orderBy: { title: 'asc' }
         })
         res.status(200).json(items);
@@ -43,8 +49,9 @@ router.get('/:list_id', async (req, res) => {
 
 // ## get a single item's data
 router.get('/id/:id', async (req, res) => {
+    const { id } = req.params
     try {
-        const { id } = req.params // = /{c}
+        if (!uuidValidate(id)) throw new Error("Bad ID")
         const item = await prisma.items.findUnique({
             where: { id }
         })
@@ -60,12 +67,9 @@ router.delete('/', async (req, res) => {
     const { body }: { body: string[] /* items.id[] */ } = req.body;
 
     // should remove the deleted items from other items' related column varchar[]
-
     try {
         await prisma.items.deleteMany({
-            where: {
-                id: { in: body }
-            }
+            where: { id: { in: body } }
         })
         console.log('[Items] Deleted:', body)
         res.status(200).send('OK');
@@ -81,8 +85,9 @@ router.patch('/:id', async (req, res) => {
     const changes = req.body;
 
     try {
+        if (!uuidValidate(id)) throw new Error("Bad ID")
         await prisma.items.update({
-            where: { id: id },
+            where: { id },
             data: changes
         })
         console.log('[Items] Edited:', id)
@@ -93,46 +98,8 @@ router.patch('/:id', async (req, res) => {
     }
 })
 
-// # get items with a boolean (such as trash or fav) using AND
-router.get('/rule/and', async (req, res) => {
-    const rules = req.query;
-    const query = Object.entries(rules).map(([key, value]) => ({ [key]: value === 'true' ? true : false }));
-
-    // and?x=y&y=z 
-
-    try {
-        const items = await await prisma.items.findMany({
-            where: { AND: query },
-            orderBy: { title: 'asc' }
-        })
-        res.status(200).json(items);
-    } catch (e) {
-        console.log("[Items]", e)
-        res.status(500).send('error')
-    }
-})
-
-// # get items with a boolean (such as trash or fav) using OR
-router.get('/rule/or', async (req, res) => {
-    const rules = req.query;
-    const query = Object.entries(rules).map(([key, value]) => ({ [key]: value === 'true' ? true : false }));
-
-    // and?x=y&y=z 
-
-    try {
-        const items = await await prisma.items.findMany({
-            where: { OR: query },
-            orderBy: { title: 'asc' }
-        })
-        res.status(200).json(items);
-    } catch (e) {
-        console.log("[Items]", e)
-        res.status(500).send('error')
-    }
-})
-
 // ## PATCH, change the values for group of items
-router.patch('/rule/group', async (req, res) => {
+router.patch('/group', async (req, res) => {
     const data = req.body; //the json only contain what changed therfore it represents 'changes'
     const { id, ...restData }: { id: string[], changes: items } = data
     const itemsIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
@@ -151,13 +118,14 @@ router.patch('/rule/group', async (req, res) => {
 })
 
 //get items with certain id
-router.get('/rule/group', async (req, res) => {
-    const { id }: { id: string[] /* item.id[] **/ } = req.body
-    const itemsIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
+router.get('/group', async (req, res) => {
+    // const id: string[] /* item.id[] **/ = req.query;
+    // const itemsIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
 
     try {
         const items = await prisma.items.findMany({
-            where: { OR: itemsIDs }
+            // where: { OR: itemsIDs }
+            where: { OR: [] }
         })
         res.status(200).json(items);
     } catch (e) {
