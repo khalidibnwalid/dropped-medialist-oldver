@@ -9,9 +9,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiCheck, BiRevision, BiTrashAlt } from "react-icons/bi"; //BoxIcons
 import { FaEye } from "react-icons/fa";
+import handleDeletedItemMedia from "@/utils/api/handlers/handleDeletedItemMedia";
+import { itemData } from "@/types/item";
 
 
-function TrashList({ dataArray }: { dataArray: listData[] }) {
+//item = false => list, and vice versa
+function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], item?: boolean }) {
     const options = dataArray.map((data) => data.id)
     const [selectAll, setSelectAll] = useState(false)
 
@@ -21,21 +24,21 @@ function TrashList({ dataArray }: { dataArray: listData[] }) {
     const router = useRouter();
 
     function clearTrash() {
-        groupSelected.map((id) => handleDeletedListMedia(id))
-        deleteAPI('lists', { body: groupSelected })
+        groupSelected.map((id) => item ? handleDeletedItemMedia(id) : handleDeletedListMedia(id))
+        deleteAPI(item ? 'items' : 'lists', { body: groupSelected })
         setGroupSelected([])
         setSelectAll(false);
         router.refresh();
     }
 
     function restoreTrash() {
-        patchAPI('lists/rule/group', { id: groupSelected, trash: false })
+        patchAPI(item ? 'items/group' : 'lists/group', { id: groupSelected, trash: false })
         setGroupSelected([])
         setSelectAll(false);
         router.refresh();
     }
 
-    function funSelectAll() {
+    function handleSelectAll() {
         // because how to stateHook works, when it is toggeled it will
         // schlude a change foe the value, the means it didn't change that will make the function work with the old state, instead.
         setSelectAll(prevState => {
@@ -56,13 +59,29 @@ function TrashList({ dataArray }: { dataArray: listData[] }) {
 
                     <div className="flex items-center flex-grow" >
                         <BiTrashAlt className="text-3xl flex-none" />
-                        <p className="pl-2 text-2xl flex-grow font-semibold">Lists</p>
+                        <p className="pl-2 text-2xl flex-grow font-semibold">{item ? "Items" : "Lists"}</p>
                     </div>
 
                     <ButtonGroup className="flex-none shadow-lg bg:w-full rounded-xl">
-                        <Button className={` duration-200 ${selectAll ? 'bg-danger' : ''}`} onPress={funSelectAll} isDisabled={options.length === 0 ? true : false}> <BiCheck className="text-xl" /> Select All</Button>
-                        <Button onPress={restoreTrash} isDisabled={groupSelected.length === 0 ? true : false} ><BiRevision className="text-lg" /> Restore</Button>
-                        <Button onPress={onOpen} isDisabled={groupSelected.length === 0 ? true : false} > <BiTrashAlt className=" text-lg" /> Delete</Button>
+                        <Button
+                            className={` duration-200 ${selectAll ? 'bg-danger' : ''}`}
+                            onPress={handleSelectAll}
+                            isDisabled={options.length === 0 ? true : false}
+                        >
+                            <BiCheck className="text-xl" /> Select All
+                        </Button>
+                        <Button
+                            onPress={restoreTrash}
+                            isDisabled={groupSelected.length === 0 ? true : false}
+                        >
+                            <BiRevision className="text-lg" /> Restore
+                        </Button>
+                        <Button
+                            onPress={onOpen}
+                            isDisabled={groupSelected.length === 0 ? true : false}
+                        >
+                            <BiTrashAlt className=" text-lg" /> Delete
+                        </Button>
                     </ButtonGroup>
                 </div>
 
@@ -70,7 +89,9 @@ function TrashList({ dataArray }: { dataArray: listData[] }) {
                     value={groupSelected}
                     onChange={setGroupSelected}>
                     <div className="grid grid-cols-2 lg:grid-cols-1 gap-7 pl-4 animate-fade-in">
-                        {dataArray?.map((data, index) => <CardCheckBox key={`col-checkbox-${index}}`} data={data} />)}
+                        {dataArray?.map((data, index) =>
+                            <CardCheckBox key={`${item ? 'item' : 'list'}-checkbox-${index}}`} data={data} item={item} />)
+                        }
                     </div>
 
                 </CheckboxGroup>
@@ -104,9 +125,9 @@ function TrashList({ dataArray }: { dataArray: listData[] }) {
 }
 
 
-export default TrashList;
+export default TrashSide;
 
-function CardCheckBox({ data }: { data: listData }) {
+function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolean }) {
     const router = useRouter()
 
     return (
@@ -128,28 +149,25 @@ function CardCheckBox({ data }: { data: listData }) {
         >
             <div className="w-full flex gap-3 items-center">
 
-                {data.cover_path ? <Image
-                    className="flex-none aspect-1 object-cover"
+                {!item && data.cover_path || (data as itemData).poster_path ? <Image
+                    className="flex-none aspect-1 object-cover h-14"
                     alt={data.title}
-                    src={`${IMG_PATH}/images/lists/${data.cover_path}`}
+                    src={`${IMG_PATH}/images/${item ? 'items' : 'lists'}/${item ? (data as itemData).poster_path : data.cover_path}`}
                 /> :
                     <Card
-                        className=" flex-none uppercase font-light text-xl 
-                           aspect-1
-                           items-center justify-center 
-                          bg-[#2f2f2f]"
+                        className=" flex-none uppercase font-light text-xl aspect-1 items-center justify-center bg-[#2f2f2f] h-14"
                         radius="lg"
                     >
                         {data.title[0]}
                     </Card>
                 }
                 <div className="flex flex-col items-start gap-1 flex-grow">
-                    <span className="text-tiny text-default-500">List</span>
-                    <p className="">{data.title}</p>
+                    <span className="text-tiny text-default-500 ">{item ? 'Item' : ' List'}</span>
+                    <p className="line-clamp-2">{data.title}</p>
                 </div>
                 <Button size="sm" radius="full"
                     className="bg-transparent hover:bg-[#3e3e3e]"
-                    onPress={() => router.push(`lists/${data.id}`, { scroll: false })}
+                    onPress={() => router.push(`${item ? 'Items' : 'lists'}/${data.id}`)}
                     isIconOnly>
                     <FaEye className="text-lg" />
                 </Button>

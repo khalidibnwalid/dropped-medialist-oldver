@@ -99,7 +99,7 @@ function ItemLinkForm() {
                             rules={{
                                 required: true,
                                 pattern: {
-                                    value: /^(ftp|http|https):\/\/[^ "]+$/i,
+                                    value: /^(http|https):\/\/[^ "]+$/i,
                                     message: 'Please enter a valid URL',
                                 }
                             }}

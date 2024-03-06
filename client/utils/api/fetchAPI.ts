@@ -1,7 +1,7 @@
 "use server"
 import "dotenv/config";
 
-export default async function fetchAPI(params: string, data?: object) {
+export default async function fetchAPI(params: string) {
   try {
     const res = await fetch(`${process.env.API_URL}/${params}`, { cache: 'no-store' })
     if (!res.ok) {

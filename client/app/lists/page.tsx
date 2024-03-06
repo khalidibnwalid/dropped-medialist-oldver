@@ -14,14 +14,14 @@ export const metadata: Metadata = {
 
 async function AllLists() {
   unstable_noStore
-  const data = await fetchAPI('lists') //real data
+  const data = await fetchAPI('lists?trash=false') //real data
   revalidatePath('/lists');// to avoid old cashe // not working
   return (
     <>
       <TitleBar
         starShowerBlack
         title="Lists"
-        icon={<BiCollection className="text-[30px] mr-3 flex-none "/>}
+        icon={<BiCollection className="text-[30px] mr-3 flex-none " />}
         withButtons
       >
         <RefreshButton />

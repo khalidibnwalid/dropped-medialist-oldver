@@ -33,7 +33,8 @@ export default async function ItemsPage({ params }: { params: { id: string } }) 
 
     //  build url query to fetch the info of related items
     if (data?.related && data.related.length > 0) {
-        dataOfRelatedItems = await fetchAPI('items/rule/group', { IDs: data.related });
+        const queryRelated = data.related.reduce((acc: string, current: string) => (acc + "&id=" + current), `id=${data.related.shift()}`)
+        dataOfRelatedItems = await fetchAPI(`items/group?${queryRelated}`);
     }
 
     return (

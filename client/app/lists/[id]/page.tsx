@@ -23,7 +23,7 @@ import ListAdvancedSearch from "./_components/advanced-search";
 
 async function Listpage({ params }: { params: { id: string } }) {
   unstable_noStore
-  let data: listData = {} as listData
+  let data = {} as listData
   try {
     data = await fetchAPI(`lists/${params.id}`)
   } catch (e) {
@@ -32,7 +32,7 @@ async function Listpage({ params }: { params: { id: string } }) {
   } finally {
     if (Object.keys(data).length == 0) throw new Error("list Doesn't Exist")
   }
-  const items: itemData[] = await fetchAPI(`items/${params.id}`)
+  const items: itemData[] = await fetchAPI(`items/${params.id}?trash=false`)
   const tags: itemTag[] = await fetchAPI(`tags/${params.id}`)
 
   const NumberOfItems = items.length;

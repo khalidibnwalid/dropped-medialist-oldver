@@ -1,4 +1,3 @@
-
 "use server"
 
 import type { listData } from "@/types/list";
@@ -30,18 +29,19 @@ export default async function handleDeletedListMedia(listID: string) {
 
     //should delete its links templates logos
 
-    templates?.links?.forEach((link) => {
+    await templates?.links?.forEach((link) => {
         link.logo_path && deleteLogo(link.logo_path)
     })
 
     //should delete its badgets templates logos
 
-    templates?.badges?.forEach((badge) => {
+    await templates?.badges?.forEach((badge) => {
         badge.logo_path && deleteLogo(badge.logo_path)
     })
 
-    items?.forEach((item) => {
-        handleDeletedItemMedia(item.id)
-    })
-    deleteAPI('files',{ fileNames })
+    if (items?.length > 0) for (const item of items) {
+        await handleDeletedItemMedia(item.id);
+    }
+
+    await deleteAPI('files', { fileNames })
 }
