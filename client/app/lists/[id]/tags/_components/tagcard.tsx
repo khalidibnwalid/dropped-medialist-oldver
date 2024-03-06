@@ -7,13 +7,12 @@ import patchAPI from "@/utils/api/patchAPI";
 import sanitizeObject from "@/utils/helper-functions/sanitizeObject";
 import { Autocomplete, AutocompleteItem, Button, Card, Input, Textarea } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { createSerializer, parseAsArrayOf, parseAsString } from "nuqs";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiSolidPencil, BiTrashAlt } from "react-icons/bi";
 import { FaEye } from "react-icons/fa";
 import { GroupedTagType } from "../_helper-functions/tagsGroupsSorter";
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
-import { createSerializer } from "nuqs";
 
 export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: GroupedTagType[] }) => {
     const router = useRouter();

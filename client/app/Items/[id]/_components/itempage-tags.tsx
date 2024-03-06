@@ -1,7 +1,10 @@
 'use client'
 
 import { tagsGroupsSorter } from "@/app/lists/[id]/tags/_helper-functions/tagsGroupsSorter"
+import { itemTag } from "@/types/item"
 import { Chip } from "@nextui-org/react"
+import { useRouter } from "next/navigation"
+import { createSerializer, parseAsArrayOf, parseAsString } from "nuqs"
 import { useContext } from "react"
 import { itemViewContext } from "./item-layouts"
 
@@ -22,13 +25,8 @@ function ItemTags() {
                             <p className="p-1 font-semibold text-sm">{group.groupName} :</p>
 
                             {group.groupTags.map((tag) => (
-                                <Chip
-                                    size="sm" variant="flat"
-                                    className="m-1 duration-250 hover:bg-pure-opposite hover:text-pure-theme hover:scale-105"
-                                    key={tag.name}
-                                >
-                                    {tag.name}
-                                </Chip>
+                                <TagChip tag={tag} key={tag.name} />
+
                             ))}
                         </div>
                     );
@@ -36,13 +34,7 @@ function ItemTags() {
                     return (
                         <div key="groupless-tags">
                             {group.groupTags.map((tag) => (
-                                <Chip
-                                    size="sm" variant="flat"
-                                    className="m-1 duration-250 hover:bg-pure-opposite hover:text-pure-theme hover:scale-105"
-                                    key={tag.name}
-                                >
-                                    {tag.name}
-                                </Chip>
+                                <TagChip tag={tag} key={tag.name} />
                             ))}
                         </div>
                     )
@@ -55,3 +47,22 @@ function ItemTags() {
 }
 
 export default ItemTags
+
+const TagChip = ({ tag }: { tag: itemTag }) => {
+    const router = useRouter()
+    function pushLink() {
+        const serialize = createSerializer({
+            tags: parseAsArrayOf(parseAsString)
+        })
+        const query = serialize({ tags: [tag.name] })
+        router.push(`/lists/${tag.list_id + query}`)
+    }
+
+    return (<Chip
+        size="sm" variant="flat"
+        className="m-1 duration-250 hover:bg-pure-opposite hover:text-pure-theme hover:scale-105 hover:cursor-pointer"
+        onClick={pushLink}
+    >
+        {tag.name}
+    </Chip>)
+}
