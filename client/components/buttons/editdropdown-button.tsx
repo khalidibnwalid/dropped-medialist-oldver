@@ -23,43 +23,25 @@ function EditDropDown({ data, list, item, children }: params) {
 
     function toggleStarState() {
         setIsStared(!isStared);
-        item && patchAPI(`items/${data.id}`, { "fav": !isStared });
-        list && patchAPI(`lists/${data.id}`, { "fav": !isStared })
-
+        patchAPI(`${item ? 'items' : 'lists'}/${data.id}`, { "fav": !isStared });
         router.refresh();
     }
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     function deleteFunction() {
-        if (item) {
-            router.push(`/lists/${(data as itemData).list_id}`);
-            patchAPI(`items/${(data as itemData).id}`, { "trash": true });
-
-        }
-        if (list) {
-            router.push('/lists/');
-            patchAPI(`lists/${(data as listData).id}`, { "trash": true });
-        }
+        router.push(`/lists/${item && (data as itemData).list_id}`);
+        patchAPI(`${item ? 'items' : 'lists'}/${(data as itemData).id}`, { "trash": true });
 
     }
 
     function unTrashFunction() {
-        if (item) {
-            router.push(`/lists/${(data as itemData).list_id}`);
-            patchAPI(`items/${(data as itemData).id}`, { "trash": false });
-
-        }
-        if (list) {
-            router.push('/lists/');
-            patchAPI(`lists/${(data as listData).id}`, { "trash": false });
-        }
-
+        router.push(`/lists/${item && (data as itemData).list_id}`);
+        patchAPI(`${item ? 'items' : 'lists'}/${(data as itemData).id}`, { "trash": false });
     }
 
     function editPage() {
-        if (item) { router.push(`/Items/${(data as itemData).id}/edit`); }
-        if (list) { router.push(`/lists/${(data as listData).id}/edit`); }
+        router.push(`/${item ? 'Items' : 'lists'}/${(data as itemData).id}/edit`);
     }
 
     return (
