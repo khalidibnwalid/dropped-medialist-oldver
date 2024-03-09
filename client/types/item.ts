@@ -10,20 +10,24 @@ export interface itemData {
     id: string;
     list_id: string;
     title: string;
+    /**if Null = deleting the image */
     poster_path?: string | null
+    /**if Null = deleting the image */
     cover_path?: string | null
     description?: string;
     fav?: boolean;
     trash?: boolean;
-    tags: string[] //it stores the ids not items, items are stores in a saperate table in the database
+    /**array of Tags IDs*/
+    tags: string[]
     progress_state?: itemProgressState;
     links?: itemlink[]
     content_fields?: itemField[]
     main_fields?: main_fields[]
     badges?: itemBadgesType[];
-    related?: string[] //string of ids
+    /**array of Items IDs*/
+    related?: string[]
     configurations: ItemConfiguration
-    extra_fields?: {name: string, value?: string }[]
+    extra_fields?: { name: string, value?: string }[]
 }
 
 export interface main_fields {
@@ -43,9 +47,9 @@ export interface itemTag {
 }
 
 interface ItemConfiguration {
-    layout?:  "1" | "2" | "3" | "4";
-  }
-  
+    layout?: "1" | "2" | "3" | "4";
+}
+
 
 export interface itemlink {
     url?: string;
@@ -65,6 +69,7 @@ interface itemField {
 }
 
 export interface itemProgressState {
+    /**NextUI colors */
     color: "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
     name: string
 }
