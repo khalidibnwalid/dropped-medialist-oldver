@@ -85,7 +85,7 @@ export default function EditListPage({ params }: { params: { id: string } }) {
             //filter unchanged value to avoid unneeded changes
             for (let key in data) {
                 if (data.hasOwnProperty(key) && listData.hasOwnProperty(key)) {
-                    if (data[key] != listData[key]) {
+                    if (data[key] != listData[key as keyof typeof listData]) {
                         finalData[key] = data[key]
                     }
                 }

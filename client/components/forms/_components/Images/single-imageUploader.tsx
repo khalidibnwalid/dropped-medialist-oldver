@@ -13,6 +13,8 @@ type params = {
     required?: boolean;
 }
 
+export type UploadedImage = (File & { file: { name: string } })[]
+
 function SingleImageUploader({ control, fieldName, className, content, required }: params) {
     //add url input
 

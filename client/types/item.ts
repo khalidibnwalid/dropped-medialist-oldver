@@ -1,3 +1,5 @@
+import { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
+
 export interface itemImageType {
     id: string
     image_path: string;
@@ -11,9 +13,9 @@ export interface itemData {
     list_id: string;
     title: string;
     /**if Null = deleting the image */
-    poster_path?: string | null
+    poster_path?: string | null | UploadedImage
     /**if Null = deleting the image */
-    cover_path?: string | null
+    cover_path?: string | null | UploadedImage
     description?: string;
     fav?: boolean;
     trash?: boolean;
@@ -53,13 +55,13 @@ interface ItemConfiguration {
 
 export interface itemlink {
     url?: string;
-    logo_path: string;
+    logo_path: string | UploadedImage;
     name: string
 }
 
 
 export interface itemBadgesType {
-    logo_path: string;
+    logo_path: string | UploadedImage;
     value: string;
 }
 

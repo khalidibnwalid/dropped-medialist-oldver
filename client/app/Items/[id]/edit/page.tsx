@@ -24,6 +24,7 @@ import { BiX } from 'react-icons/bi';
 import { FaSave } from 'react-icons/fa';
 import { validate as uuidValidate } from 'uuid';
 import ItemPageGallery from '../_components/tabs/itempage-gallery';
+import { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
 
 // should setup patter for every input and an array (including tags)
 export default function EditItemPage({ params }: { params: { id: string } }) {
@@ -96,7 +97,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
         return newArray
     }
 
-    const handleImage = async (image: File | undefined, path: string | null | undefined) => {
+    const handleImage = async (image?: UploadedImage, path?: string) => {
         if (image && image[0]) {
             orderCounter++
             const imageName = dateStamped(`${orderCounter.toString()}.${getFileExtension(image[0].file.name)}`)
@@ -116,14 +117,14 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
         // console.log("rawData", rawData)
 
         // saperate the handling of submitted data
-        let finalData: itemData = {} as itemData
+        let finalData = {} as itemData
         const { rawPoster, rawCover, tags, links, badges, ...data }: any = rawData
 
         try {
             if (tags.length > 0) data['tags'] = await handleTags(tags)
 
-            data['poster_path'] = await handleImage(rawPoster, itemData.poster_path)
-            data['cover_path'] = await handleImage(rawCover, itemData.cover_path)
+            data['poster_path'] = await handleImage(rawPoster, itemData.poster_path as string)
+            data['cover_path'] = await handleImage(rawCover, itemData.cover_path as string)
 
             //handle links and badges cause they have logos that should be uploaded
             data['links'] = await handleEditingLogosFields(links, itemData.links, orderCounter, itemData.list_id, fieldTemplates?.links)
@@ -132,8 +133,8 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
             //filter unchanged value to avoid unneeded changes
             for (let key in data) {
                 if (data.hasOwnProperty(key) && itemData.hasOwnProperty(key)) {
-                    if (data[key] != itemData[key]) {
-                        finalData[key] = data[key]
+                    if (data[key] != itemData[key as keyof itemData]) {
+                        finalData[key] = data[key] as itemData
                     }
                 }
             }
@@ -169,8 +170,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
                         <div className='flex gap-x-2'>
                             <Button
                                 onClick={() => { router.push(`/Items/${itemData.id}`) }}
-                                className="focus:outline-none h-14 w-14"
-                                variant="solid"
+                                className="focus:outline-none h-14 w-14 bg-accented"
                                 type="button"
                                 isIconOnly
                             >
