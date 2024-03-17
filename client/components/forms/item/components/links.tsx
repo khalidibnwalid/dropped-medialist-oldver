@@ -67,13 +67,7 @@ function ItemLinkForm() {
                 )}>
 
                 {({ data, index, removeField, fieldControl }) => (
-                    <div className="flex items-center gap-x-2
-                                    my-1 p-1 
-                                    rounded-md
-                                    duration-200 
-                                    md:flex-wrap hover:bg-white/5"
-                        key={'linkfield-' + index}
-                    >
+                    <div className="sortableFieldContainer" key={'linkfield-' + index} >
 
                         <Button onClick={() => removeField(index)} variant="light" isIconOnly><BiX className=" text-3xl" /></Button>
 
@@ -105,10 +99,10 @@ function ItemLinkForm() {
                             }}
                             render={({ field }) =>
                                 <Input
-                                    isInvalid={errors.links?.[index]?.url ? true : false}
-                                    color={errors.links?.[index]?.url ? "danger" : "default"}
+                                    isInvalid={errors.links?.[index]?.url && true}
+                                    color={errors.links?.[index]?.url && "danger"}
                                     isRequired
-                                    errorMessage={errors.links?.[index]?.url && "Please enter a valid link"}
+                                    errorMessage={errors.links?.[index]?.url?.message}
                                     className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
                                     type="text"

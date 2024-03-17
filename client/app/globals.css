@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .sortableFieldContainer {
+    @apply my-1 p-1 flex items-center gap-x-2 rounded-md duration-200 md:flex-wrap hover:bg-white/5;
+  }
+}
 
 
 /* bg svg */
@@ -74,15 +79,7 @@
 }*/
 
 
-/* @layer components{
-  .navbar-Buttons{
-    @apply ;
-  }
-}
-
-
-
-
+/* 
 background-image: 
       radial-gradient(at top left, #000, transparent),
       radial-gradient(at top right, #13437F, transparent),

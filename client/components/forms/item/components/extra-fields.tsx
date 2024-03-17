@@ -9,7 +9,7 @@ import { IoGridOutline } from "react-icons/io5";
 import { ItemFormContext } from "../provider";
 
 function ItemExtraFieldsForm() {
-    const { control, setValue, fieldTemplates, itemData} = useContext(ItemFormContext)
+    const { control, setValue, fieldTemplates, itemData } = useContext(ItemFormContext)
     const templates = fieldTemplates?.extraFields
 
     return (
@@ -56,13 +56,7 @@ function ItemExtraFieldsForm() {
             )}>
 
             {({ data, index, removeField, fieldControl }) => (
-                <div className="flex items-center gap-x-2
-                my-1 p-1 
-                rounded-md
-                duration-200 
-                md:flex-wrap hover:bg-white/5"
-                    key={'extrafield-' + index}
-                >
+                <div className="sortableFieldContainer" key={'extrafield-' + index} >
                     <Button onClick={() => removeField(index)} variant="light" isIconOnly><BiX className=" text-3xl" /></Button>
 
                     <Controller

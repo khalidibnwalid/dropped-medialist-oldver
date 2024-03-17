@@ -35,10 +35,7 @@ function ListLinksForm() {
             >
                 {({ data, index, removeField, fieldControl }) => (
 
-                    <div
-                        className="my-1 p-1 flex items-center gap-x-2 duration-200 md:flex-wrap rounded-md hover:bg-white/5"
-                        key={`mainField-${index}`}
-                    >
+                    <div className="sortableFieldContainer" key={`mainField-${index}`} >
 
                         <Button onClick={() => removeField(index)} variant="light" isIconOnly>
                             <BiX className=" text-3xl" />

@@ -79,15 +79,11 @@ function ItemBadgesForm() {
                 )}>
 
                 {({ data, index, removeField, fieldControl }) => (
-                    <div className="flex items-center gap-x-2
-                                    my-1 p-1 
-                                    rounded-md
-                                    duration-200 
-                                    md:flex-wrap hover:bg-white/5"
-                        key={'badge-' + index}
-                    >
+                    <div className="sortableFieldContainer" key={'badge-' + index} >
 
-                        <Button onClick={() => removeField(index)} variant="light" isIconOnly><BiX className=" text-3xl" /></Button>
+                        <Button onClick={() => removeField(index)} variant="light" isIconOnly>
+                            <BiX className=" text-3xl" />
+                        </Button>
 
                         <Controller
                             defaultValue={() => getValues<any>(`badges[${index}]`)?.value || undefined}

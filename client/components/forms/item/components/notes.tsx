@@ -26,8 +26,7 @@ function ItemNotesForm() {
 
                     {({ data, index, removeField, fieldControl }) => (
                         <div key={'note-' + index}>
-                            <div className="my-1 p-1 flex items-center gap-x-2 md:flex-wrap 
-                                        rounded-md hover:bg-white/5 duration-200">
+                            <div className="sortableFieldContainer">
                                 <Button onClick={() => removeField(index)} variant="light" isIconOnly>
                                     <BiX className=" text-3xl" />
                                 </Button>
