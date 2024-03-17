@@ -53,11 +53,7 @@ function ItemBadgesForm() {
                                                 key={'badgestempl-' + data.value}
                                                 onPress={() => {
                                                     setValue<any>(`badges[${fieldsState.length === 0 ? 0 : fieldsState.length}].value`, data.value)
-                                                    if (data?.logo_path) {
-                                                        setValue<any>(`badges[${fieldsState.length === 0 ? 0 : fieldsState.length}].logo_path`, data.logo_path)
-                                                    } else {
-                                                        setValue<any>(`badges[${fieldsState.length === 0 ? 0 : fieldsState.length}].logo_path`, undefined)
-                                                    }
+                                                    setValue<any>(`badges[${fieldsState.length === 0 ? 0 : fieldsState.length}].logo_path`, data?.logo_path)
                                                     addField()
                                                 }}
                                             >

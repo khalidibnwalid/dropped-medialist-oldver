@@ -39,11 +39,7 @@ function ItemLinkForm() {
                                                 key={'linktempl-' + data.name}
                                                 onPress={() => {
                                                     setValue<any>(`links[${fieldsState.length === 0 ? 0 : fieldsState.length}].name`, data.name)
-                                                    if (data?.logo_path) {
-                                                        setValue<any>(`links[${fieldsState.length === 0 ? 0 : fieldsState.length}].logo_path`, data.logo_path)
-                                                    } else {
-                                                        setValue<any>(`links[${fieldsState.length === 0 ? 0 : fieldsState.length}].logo_path`, undefined)
-                                                    }
+                                                    setValue<any>(`links[${fieldsState.length === 0 ? 0 : fieldsState.length}].logo_path`, data?.logo_path)
                                                     addField()
                                                 }}
                                             >
