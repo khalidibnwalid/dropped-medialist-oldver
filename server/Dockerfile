@@ -1,4 +1,5 @@
-FROM node:20.9-alpine
+FROM node:20.9 
+# to fix -alpine have problems with prisma
 WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
