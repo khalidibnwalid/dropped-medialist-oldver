@@ -26,9 +26,7 @@ import { validate as uuidValidate } from 'uuid';
 import ItemPageGallery from '../_components/tabs/itempage-gallery';
 import { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
 
-// should setup patter for every input and an array (including tags)
 export default function EditItemPage({ params }: { params: { id: string } }) {
-    // check the types (typescript) in" react hook form" docs
     const { handleSubmit, control, setValue, getValues, resetField, formState: { errors } } = useForm<itemData>();
     const router = useRouter();
 
@@ -134,7 +132,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
             for (let key in data) {
                 if (data.hasOwnProperty(key) && itemData.hasOwnProperty(key)) {
                     if (data[key] != itemData[key as keyof itemData]) {
-                        finalData[key] = data[key] as itemData
+                        finalData[key] = data[key] 
                     }
                 }
             }

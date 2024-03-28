@@ -9,6 +9,7 @@ import { CiGrid2H } from "react-icons/ci";
 import { FaDiamond } from "react-icons/fa6";
 import { IoGridOutline } from "react-icons/io5";
 import { LuDiamond } from "react-icons/lu";
+import { TbApiApp } from "react-icons/tb";
 import { TfiViewListAlt } from "react-icons/tfi";
 import { listBodyContext } from "../provider";
 
@@ -24,6 +25,7 @@ function ListNavButtons() {
             {listData.fav && <Button size="sm" color="default" isIconOnly ><BiSolidStar className="text-lg" /></Button>}
 
             {(listData.fav || listData.pincode) && <Divider orientation="vertical" className="h-5" />}
+
             <Button
                 size="sm"
                 className="bg-accented"
@@ -39,8 +41,19 @@ function ListNavButtons() {
                 className="bg-accented"
                 variant="solid"
                 type="button"
-                onClick={() => router.push(`/lists/${listData.id}/tags`)} >
+                onClick={() => router.push(`/lists/${listData.id}/tags`)}
+            >
                 <BiPurchaseTag className="text-lg" />Tags
+            </Button>
+
+            <Button
+                size="sm"
+                className="bg-accented"
+                variant="solid"
+                type="button"
+                onClick={() => router.push(`/lists/${listData.id}/api/add`)}
+            >
+                <TbApiApp className="text-lg" /> APIs
             </Button>
 
             <Divider orientation="vertical" className="h-5" />

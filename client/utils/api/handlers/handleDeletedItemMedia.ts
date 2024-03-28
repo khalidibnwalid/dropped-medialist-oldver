@@ -23,8 +23,8 @@ export default async function handleDeletedItemMedia(itemID: string) {
     }
 
     //delete poster and cover
-    item.cover_path && deleteImage(item.cover_path)
-    item.poster_path && deleteImage(item.poster_path)
+    item.cover_path && deleteImage(item.cover_path as string)
+    item.poster_path && deleteImage(item.poster_path  as string)
 
     //delete logos of links and badges
     item.links && await handleEditingLogosFields([], item.links, 0, item.list_id, templates?.links)

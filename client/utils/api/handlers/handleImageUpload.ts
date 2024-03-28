@@ -11,7 +11,7 @@ export default async function handleImageUpload(image: any, imageFolder: string,
         try {
             await postAPI('files', formData)
         } catch (e) {
-            console.error(e);
+            console.error('(image) Error Uploading Image:', e)
         }
     }
 }

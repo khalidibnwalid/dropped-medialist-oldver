@@ -35,21 +35,23 @@ interface listApi {
   name: string
   baseURL: string
   template: itemData
-  queryTemplates?: { name: string, query: string }[]
-  /** user will set query from the api-Loader*/
+  /** Queries will build with '&' */
+  queries?: { name: string, query: string }[]
+  /** Routes will build with '/ */
+  routes?: { name: string, route: string }[]
 }
 
 interface listApiSearch {
-  searchQueryTemplates: {
+  searchQueries?: {
     /** name: name of the search such as 'Title' will be displayed as 'Search by Title' (only for display)*/
     name: string,
-    /** query: query of the search */
+    /** query of the search */
     query: string
-  }
+  }[]
   /** the value that will be used after picking an item from search results,
-   *  it will pick the 'path' and place it raw in 'query' */
-  searchNeededValue: { path: string, query: string },
-  /**Path to the Title inside the without including search object */
+   *  it will pick the 'path' and place it raw in 'query', if no query is provided it will put it in 'baseURL/ {here}' */
+  searchResultToItem: { path: string, query: string },
+  /**Path to the Title inside the response result onject without including search object */
   searchTitlePath: string
   /**Path to the search result array in the API response */
   searchArrayPath: string

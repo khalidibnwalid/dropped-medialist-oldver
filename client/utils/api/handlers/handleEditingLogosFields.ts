@@ -43,7 +43,7 @@ export const handleEditingLogosFields = async (
 
     if (unusedLogos) {
         if (!devmode) {
-            unusedLogos?.forEach(e => e.logo_path === 'star' ? null : deleteLogo(e.logo_path))
+            unusedLogos?.forEach(e => e.logo_path === 'star' ? null : deleteLogo(e.logo_path as string))
         } else {
             unusedLogos?.forEach(e => e.logo_path === 'star' ? null : console.log(e.logo_path)) //devmode
         }
