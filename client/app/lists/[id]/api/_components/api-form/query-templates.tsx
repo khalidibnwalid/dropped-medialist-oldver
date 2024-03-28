@@ -5,7 +5,6 @@ import { Button, Input } from "@nextui-org/react";
 import { useContext } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
-import { RxSlash } from "react-icons/rx";
 import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiQueries() {

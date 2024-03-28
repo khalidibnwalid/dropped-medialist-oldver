@@ -54,7 +54,6 @@ export default function AddItemPage({ params }: { params: { id: string } }) {
                 setListData(listData);
                 const listItemsData = await fetchAPI(`items/${params.id}`)
                 setListItemsData(listItemsData);
-
             } catch (error) {
                 console.error("Error:", error);
             }

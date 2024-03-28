@@ -108,8 +108,6 @@ export default function ItemApiLoaderProvider({
         try {
             const apiRes = await fetchExternalAPI(apiTemplates.baseURL + query)
             const data = apiDataValuesPicker(apiTemplates.template, apiRes)
-            await console.log('apiRes', apiRes) //devmode
-            await console.log('data', data) //devmode
 
             for (let key in data) {
                 if (!data[key] || data[key] === "") continue; //skip empty values

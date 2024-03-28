@@ -9,5 +9,5 @@ export const queryFromObject = (data: object, symbol: string = '&') => {
         query = query + key + data[key as keyof typeof data]
         counter++
     }
-    return query as string
+    return decodeURIComponent(query)
 }

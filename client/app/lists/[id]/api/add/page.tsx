@@ -20,33 +20,8 @@ import ItemApiPosterCol from '../_components/item-form/poster-col';
 import patchAPI from '@/utils/api/patchAPI';
 
 
-// const apiTemplates: listApiType[] = [
-//     {
-//         name: 'OMDB',
-//         baseURL: "https://www.omdbapi.com/?apikey=64ac7067",
-//         template: { title: "Title", description: "Plot", rawPoster: "Poster" },
-//         queries: [
-//             { name: 'ID', query: 'i=' },
-//             { name: 'Title', query: 't=' }
-//         ],
-//         searchQueries:[ { name: 'Title', query: 's=' }],
-//         searchResultToItem: { path: "imdbID", query: 'i=' },
-//         searchArrayPath: "Search",
-//         searchTitlePath: "Title",
-//     },
-// add routes
-//  routes: [{name: , route: }]
-//  searchRoutes [{name: 'Title', query: 's=' }]
-//
-//
-// ]//devmode
-// url.pathname += '/manga/34e45b02-b5c8-4a4b-a21a-7b5059391dc8';//test, //devmode
-
-
-//pattern of search router shouldn't allow words starting with / or ending with it
+//pattern of search router shouldn't allow words starting with / or ending with it it shouldn't allow spaces too
 // pattern of base url shouldn't allowit to end with '/'
-
-
 
 export default function AddAPIPage({ params }: { params: { id: string } }) {
     const router = useRouter();
@@ -55,7 +30,7 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
 
-    const pathRegex = /("([^"]*)"|'([^']*)')|[\w\d::>>]+/g //shouldn't allow for spaces ' '?
+    const pathRegex = /("([^"]*)"|'([^']*)')|[\w\d::>>]+/g
 
     //force a pattern for queries (which have word = word) and force one for routes
 
@@ -88,11 +63,10 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
         // if apiTemplates doesn't exist, create it
         !templates.apiTemplates && (templates['apiTemplates'] = [])
 
-        let apiTemplate: listApiWithSearchType = {} as listApiWithSearchType
+        let apiTemplate = {} as listApiWithSearchType
 
         const {
             searchQueries,
-            searchRoutes,
             searchResultToItem,
             searchTitlePath,
             searchArrayPath,
@@ -101,7 +75,6 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
 
         if (searchIsAllowed) {
             apiTemplate['searchQueries'] = searchQueries;
-            apiTemplate['searchRoutes'] = searchRoutes;
             apiTemplate['searchResultToItem'] = searchResultToItem;
             apiTemplate['searchTitlePath'] = searchTitlePath;
             apiTemplate['searchArrayPath'] = searchArrayPath;
@@ -115,9 +88,9 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
 
 
         try {
-            console.log("final data", { templates })//devmode
+            // console.log("final data", { templates })//devmode
             await patchAPI(`lists/${params.id}`, { templates })
-            // router.push(`/lists/${params.id}`)
+            router.push(`/lists/${params.id}`)
         } catch (e) {
             console.log("(Item) Error:", "Failed to Add New Item", e)
         }

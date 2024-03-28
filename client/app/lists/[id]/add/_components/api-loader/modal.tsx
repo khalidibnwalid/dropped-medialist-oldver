@@ -13,15 +13,13 @@ function ItemApiModal() {
 
     const [isLoading, setIsLoading] = useState(false)
     const [pageNumber, setPageNumber] = useState<number>(0)
+    const [selectedRoutes, setSelectedRoutes] = useState(new Set([]));
+    const selectedRoutesArray = Array.from(selectedRoutes)
 
     useEffect(() => {
         setPageNumber(0)
-
+        setSelectedRoutes(new Set([]))
     }, [usedAPITemplate])
-
-    //maybe use a system that doesn't diifernate between quries?
-    //or just remove routes and replace them with empty query /////////////////
-    // empty route => '/'
 
     function pickedTitle(result: object) {
         const title = apiDataValuesPicker({ title: (usedAPITemplate as listApiWithSearchType).searchTitlePath }, result)
@@ -48,11 +46,33 @@ function ItemApiModal() {
                                 <ModalBody className="animate-fade-in">
                                     {pageNumber === 0 &&
                                         <>
-                                            <ItemDirectAPILoaders onClose={onClose} setIsLoading={setIsLoading} />
+                                            {(usedAPITemplate as listApiWithSearchType)?.routes?.length !== 0 && (
+                                                <>
+                                                    <p className="text-sm text-zinc-500">Routes</p>
+                                                    <Listbox
+                                                        className="p-0"
+                                                        aria-label="routes"
+                                                        selectionMode="multiple"
+                                                        hideEmptyContent
+                                                        items={(usedAPITemplate as listApiWithSearchType).routes}
+                                                        selectedKeys={selectedRoutes}
+                                                        onSelectionChange={setSelectedRoutes}
+                                                    >
+                                                        {(data =>
+                                                            <ListboxItem key={'/' + data.route} textValue={'/' + data.name}>
+                                                                /{data.name}
+                                                            </ListboxItem>
+                                                        )}
+                                                    </Listbox>
+                                                    <p className="text-sm text-zinc-500">{selectedRoutes}</p>
+                                                </>
+                                            )}
+                                            <ItemDirectAPILoaders selectedRoutes={selectedRoutesArray} onClose={onClose} setIsLoading={setIsLoading} />
+
                                             {(usedAPITemplate as listApiWithSearchType)?.searchTitlePath &&
                                                 <Divider orientation="horizontal" className="mt-2 animate-fade-in" />
                                             }
-                                            <ItemSearchAPILoaders setPageNumber={setPageNumber} />
+                                            <ItemSearchAPILoaders selectedRoutes={selectedRoutesArray} setPageNumber={setPageNumber} />
                                         </>
                                     }
 
@@ -96,7 +116,7 @@ function ItemApiModal() {
                                         <Button
                                             color="primary"
                                             className=" shadow-lg"
-                                            onPress={() => { setPageNumber(0) }}
+                                            onPress={() => setPageNumber(0)}
                                         >
                                             Back
                                         </Button>

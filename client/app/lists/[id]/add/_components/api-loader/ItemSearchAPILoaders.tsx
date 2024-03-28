@@ -2,29 +2,28 @@
 
 import { listApiWithSearchType } from "@/types/list";
 import { queryFromObject } from "@/utils/helper-functions/queryFromObject";
-import { Button, Input, Listbox, ListboxItem, Spinner } from "@nextui-org/react";
+import { Button, Input, Spinner } from "@nextui-org/react";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ItemApiLoaderContext } from "./provider";
 
-export const ItemSearchAPILoaders = ({ setPageNumber }: { setPageNumber: Dispatch<SetStateAction<number>> }) => {
+export const ItemSearchAPILoaders = ({
+    setPageNumber,
+    selectedRoutes
+}: {
+    setPageNumber: Dispatch<SetStateAction<number>>,
+    selectedRoutes: string[]
+}) => {
     const { usedAPITemplate, searchApi } = useContext(ItemApiLoaderContext);
     const { register, handleSubmit } = useForm()
-
-    const [selectedRoutes, setSelectedRoutes] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false)
 
     async function onSubmit(data: object) {
         setIsLoading(true)
 
-        let route = ''
-        selectedRoutes.forEach(currentRoute => route += '/' + currentRoute)
-        let query = decodeURIComponent(queryFromObject(data))
-        const finalRouteAndQuery = route + (selectedRoutes.length !== 0 && query ? '?' : '') + query
-        //it should turn it into query since it take spaces as white spaces which url doesn't accept 
-        //to understand try search for a word with a whitespace such as 'to the'
-        // also make an input for 'after Route' or just let it for an empty query
-        // make routes unifed
+        let route = selectedRoutes.join('')
+        let query = queryFromObject(data)
+        const finalRouteAndQuery = route + (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query
 
         await searchApi(usedAPITemplate as listApiWithSearchType, finalRouteAndQuery)
 
@@ -46,22 +45,6 @@ export const ItemSearchAPILoaders = ({ setPageNumber }: { setPageNumber: Dispatc
                     Search
                 </Button>
             </div>
-            {(usedAPITemplate as listApiWithSearchType)?.searchRoutes?.length !== 0 && (
-                <>
-                    <Listbox
-                        aria-label="routes"
-                        selectionMode="multiple"
-                        hideEmptyContent
-                        items={(usedAPITemplate as listApiWithSearchType).searchRoutes}
-                        selectedKeys={selectedRoutes}
-                        onSelectionChange={(e: any) => setSelectedRoutes(e)}
-                    >
-                        {(data =>
-                            <ListboxItem key={data.route} textValue={'/' + data.name}>/{data.name}</ListboxItem>
-                        )}
-                    </Listbox>
-                </>
-            )}
 
             {(usedAPITemplate as listApiWithSearchType).searchQueries?.map(data =>
                 <div

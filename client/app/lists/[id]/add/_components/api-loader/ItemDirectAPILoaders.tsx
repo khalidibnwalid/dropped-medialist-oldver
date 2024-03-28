@@ -7,17 +7,27 @@ import { Dispatch, SetStateAction, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { ItemApiLoaderContext } from "./provider";
 
-export const ItemDirectAPILoaders = ({ onClose, setIsLoading }: { onClose: () => void, setIsLoading: Dispatch<SetStateAction<boolean>> }) => {
+export const ItemDirectAPILoaders = ({
+    onClose,
+    setIsLoading,
+    selectedRoutes
+}: {
+    onClose: () => void,
+    setIsLoading: Dispatch<SetStateAction<boolean>>
+    selectedRoutes: string[]
+}) => {
     const { loadAPITemplate, usedAPITemplate } = useContext(ItemApiLoaderContext);
     const { register, handleSubmit } = useForm()
 
-    //should send a toast if api is wrong
-
     async function onSubmit(data: object) {
         setIsLoading(true)
-        const queries = '&' + queryFromObject(data)
-        // const routes = queryFromObject(data, '/')
-        await loadAPITemplate(usedAPITemplate as listApiType, queries)
+
+        let route = selectedRoutes
+        let query = queryFromObject(data)
+        // baseURL if it ends with '&' then it is already preparing for a query 
+        const finalRouteAndQuery = route + (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query
+
+        await loadAPITemplate(usedAPITemplate as listApiType, finalRouteAndQuery)
         onClose()
         setIsLoading(false)
     }
