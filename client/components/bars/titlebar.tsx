@@ -2,7 +2,7 @@
 
 import { ButtonGroup } from "@nextui-org/react";
 
-type parms = {
+type params = {
     title?: string;
     children?: React.ReactNode;
     className?: string;
@@ -27,18 +27,21 @@ function TitleBar({
     titleFlexNone,
     withButtons,
     noShadow
-}: parms) {
+}: params) {
     return (
-        <header className={`${className || 'p-5 my-5'} 
-                             flex items-center flex-wrap gap-y-3
-                             rounded-2xl
-                             text capitalize font-extrabold
-                             bg-cover bg-bottom 
-                             ${noShadow ? '' : 'shadow-lg'}
-                             ${starShowerBlack ? 'bg-svg-starshower-black' : ''}
-                             ${edgeOrange ? 'bg-svg-edge-orange' : ''}
-                             ${edgeBlue ? 'bg-svg-edge-blue' : ''}
-                             `}>
+        <header
+            className={`${className || 'p-5 my-5'} 
+                        flex items-center lg:justify-center flex-wrap gap-y-3
+                        rounded-2xl
+                        text capitalize font-extrabold
+                        bg-cover bg-bottom 
+                        ${noShadow ? '' : 'shadow-lg'}
+                        ${starShowerBlack ? 'bg-svg-starshower-black' : ''}
+                        ${edgeOrange ? 'bg-svg-edge-orange' : ''}
+                        ${edgeBlue ? 'bg-svg-edge-blue' : ''}
+                        `}
+        >
+
             {icon}
             <h1 className={`text-lg ${titleFlexNone ? 'flex-none' : 'flex-grow'} `}>{title}</h1>
 

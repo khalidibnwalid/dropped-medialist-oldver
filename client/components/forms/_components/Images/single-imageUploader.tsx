@@ -11,17 +11,19 @@ type params = {
     className?: string;
     content?: string;
     required?: boolean;
+    defaultValue?: { dataURL: string }[]
 }
 
-export type UploadedImage = (File & { file: { name: string } })[]
+export type UploadedImage = (File & { file: { name: string }, dataURL: string })[]
 
-function SingleImageUploader({ control, fieldName, className, content, required }: params) {
+function SingleImageUploader({ control, fieldName, className, content, required, defaultValue }: params) {
     //add url input
 
     return (
         <div className={className}>
             <Controller
                 name={fieldName}
+                defaultValue={defaultValue}
                 control={control}
                 rules={{ required: required }}
                 render={({ field: { value, onChange } }) => (
