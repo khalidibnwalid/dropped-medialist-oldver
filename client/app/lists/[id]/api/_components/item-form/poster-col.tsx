@@ -15,7 +15,6 @@ function ItemApiPosterCol() {
     return (
         <div className="col-span-1 grid gap-y-2">
             <Controller
-                // defaultValue={}
                 control={control}
                 name="template.rawPoster"
                 rules={{ pattern }}

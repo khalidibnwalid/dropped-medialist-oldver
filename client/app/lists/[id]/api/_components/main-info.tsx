@@ -6,12 +6,11 @@ import { Controller } from 'react-hook-form';
 import { ItemApiTemplateContext } from "../provider";
 
 function ItemApiMainInfo() {
-    const { control, errors } = useContext(ItemApiTemplateContext)
+    const { control, errors, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     return (
         <>
             <Controller
-                // defaultValue={}
                 control={control}
                 name="name"
                 rules={{ required: true }}
@@ -25,7 +24,6 @@ function ItemApiMainInfo() {
                     />
                 } />
             <Controller
-                // defaultValue={}
                 control={control}
                 name="baseURL"
                 rules={{

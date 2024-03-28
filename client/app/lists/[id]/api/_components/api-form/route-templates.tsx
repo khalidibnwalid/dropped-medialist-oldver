@@ -9,13 +9,13 @@ import { ItemApiTemplateContext } from "../../provider";
 import { RxSlash } from "react-icons/rx";
 
 function ItemApiRoutes() {
-    const { control, errors, pathRegex, pattern, setValue, fieldTemplates } = useContext(ItemApiTemplateContext)
+    const { control, errors, pathRegex, pattern, setValue, fieldTemplates, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     return (
         <div>
 
             <SortableFields
-                fieldsNumber={1}
+                fieldsNumber={currentApiTemplate?.routes?.length}
                 fieldControl={control}
                 fieldName='routes'
                 startContent={({ addField, fieldsState }) => (

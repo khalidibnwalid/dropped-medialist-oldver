@@ -51,7 +51,7 @@ function ListNavButtons() {
                 className="bg-accented"
                 variant="solid"
                 type="button"
-                onClick={() => router.push(`/lists/${listData.id}/api/add`)}
+                onClick={() => router.push(`/lists/${listData.id}/api`)}
             >
                 <TbApiApp className="text-lg" /> APIs
             </Button>

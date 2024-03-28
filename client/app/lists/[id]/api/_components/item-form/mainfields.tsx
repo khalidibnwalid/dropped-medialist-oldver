@@ -11,13 +11,13 @@ import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiMainFields() {
 
-    const { control, fieldTemplates, getValues, setValue, pattern, errors } = useContext(ItemApiTemplateContext)
+    const { control, fieldTemplates, getValues, setValue, pattern, errors, currentApiTemplate } = useContext(ItemApiTemplateContext)
     const templates = fieldTemplates?.mainFields
 
     return (
         <div className="grid grid-cols-1">
             <SortableFields
-                // fieldsNumber={itemData?.main_fields?.length}
+                fieldsNumber={currentApiTemplate?.template?.main_fields?.length}
                 fieldControl={control}
                 fieldName='template.main_fields'
                 startContent={({ addField, fieldsState }) => (

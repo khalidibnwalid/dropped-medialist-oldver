@@ -11,7 +11,6 @@ function ItemApiSearchMainInfo() {
     return (
         <>
             <Controller
-                // defaultValue={}
                 disabled={!searchIsAllowed}
                 control={control}
                 name="searchArrayPath"
@@ -30,7 +29,6 @@ function ItemApiSearchMainInfo() {
                     />
                 } />
             <Controller
-                // defaultValue={}
                 disabled={!searchIsAllowed}
                 control={control}
                 name="searchTitlePath"
@@ -51,7 +49,6 @@ function ItemApiSearchMainInfo() {
 
             <div className="grid grid-cols-2 gap-x-3">
                 <Controller
-                    // defaultValue={}
                     disabled={!searchIsAllowed}
                     control={control}
                     name="searchResultToItem.path"
@@ -70,7 +67,6 @@ function ItemApiSearchMainInfo() {
                         />
                     } />
                 <Controller
-                    // defaultValue={}
                     disabled={!searchIsAllowed}
                     control={control}
                     name="searchResultToItem.query"

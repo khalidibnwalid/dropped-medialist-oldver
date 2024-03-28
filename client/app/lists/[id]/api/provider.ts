@@ -1,6 +1,6 @@
 'ues client'
 
-import type { fieldTemplates } from '@/types/list';
+import type { fieldTemplates, listApiType } from '@/types/list';
 import { listApiWithSearchType } from '@/types/list';
 import { Dispatch, SetStateAction, createContext } from "react";
 import type { FieldErrors, UseFormGetValues, UseFormResetField } from 'react-hook-form';
@@ -17,6 +17,7 @@ interface context {
     pattern: { value: RegExp, message: string }
     setSearchIsAllowed: Dispatch<SetStateAction<boolean>>
     searchIsAllowed: boolean
+    currentApiTemplate?: listApiType
 }
 
 

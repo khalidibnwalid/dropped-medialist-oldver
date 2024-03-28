@@ -11,14 +11,14 @@ import { LuImagePlus } from "react-icons/lu";
 import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiBadges() {
-    const { control, setValue, getValues, errors, fieldTemplates, pattern } = useContext(ItemApiTemplateContext)
+    const { control, setValue, getValues, errors, fieldTemplates, pattern, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     const templates = fieldTemplates?.badges
 
     return (
         <div className="grid grid-cols-1">
             <SortableFields
-                // fieldsNumber={itemData?.badges?.length}
+                fieldsNumber={currentApiTemplate?.template?.badges?.length}
                 fieldControl={control}
                 fieldName='template.badges'
                 startContent={({ addField, fieldsState }) => (

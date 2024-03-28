@@ -1,33 +1,31 @@
 'use client'
 
-import LoadingLists from '@/app/lists/loading';
 import TitleBar from '@/components/bars/titlebar';
 import type { listApiType, listApiWithSearchType, listData } from '@/types/list';
 import fetchAPI from '@/utils/api/fetchAPI';
 import patchAPI from '@/utils/api/patchAPI';
 import sanitizeObject from '@/utils/helper-functions/sanitizeObject';
-import { Button } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BiInfoCircle, BiPlus } from 'react-icons/bi';
-import ApiFormLayout from '../_components/general-layout';
-import { ItemApiTemplateContext } from '../provider';
+import { FaSave } from 'react-icons/fa';
+import LoadingLists from '../../loading';
+import ApiFormLayout from './_components/general-layout';
+import { ItemApiTemplateContext } from './provider';
 
 
-//pattern of search router shouldn't allow words starting with / or ending with it it shouldn't allow spaces too
-// pattern of base url shouldn't allowit to end with '/'
-
-export default function AddAPIPage({ params }: { params: { id: string } }) {
+export default function APIPage({ params }: { params: { id: string } }) {
     const router = useRouter();
     const [listData, setListData] = useState<listData>({} as listData);
     const [searchIsAllowed, setSearchIsAllowed] = useState(false)
+    const [currentApiTemplate, setCurrentApiTemplate] = useState<listApiType>({} as listApiType)
+    const [SelectedAutocompleteKey, setSelectedAutocompleteKey] = useState('')
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
 
     const pathRegex = /("([^"]*)"|'([^']*)')|[\w\d::>>]+/g
-
-    //force a pattern for queries (which have word = word) and force one for routes
 
     /** React Hook Form's Input Pattern  */
     const pattern = {
@@ -35,12 +33,26 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
         message: 'Please enter a valid Path',
     }
 
+    function useApiTemplate(apiTemplate: listApiType) {
+        setCurrentApiTemplate(apiTemplate);
+        setSelectedAutocompleteKey(apiTemplate.name)
+        if ((apiTemplate as listApiWithSearchType).searchTitlePath) setSearchIsAllowed(true)
+
+        for (let key in apiTemplate) {
+            setValue((key as keyof listApiType), apiTemplate[key as keyof listApiType])
+        }
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const listData = await fetchAPI(`lists/${params.id}`)
-                setListData(listData);
-
+                if (listData.templates?.apiTemplates?.length > 0) {
+                    setListData(listData);
+                    useApiTemplate(listData.templates?.apiTemplates[0])
+                } else {
+                    router.push(`/lists/${listData.id}/api/add`);
+                }
             } catch (error) {
                 console.error("Error:", error);
             }
@@ -49,7 +61,7 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
         fetchData();
     }, []);
 
-    const fieldTemplates = listData.templates?.fieldTemplates
+    const fieldTemplates = listData.templates?.fieldTemplates;
 
     async function onSubmit(rawData: listApiWithSearchType) {
         // console.log("rawData", rawData) //devmode
@@ -79,30 +91,44 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
         apiTemplate = { ...apiTemplate, ...restData };
 
         sanitizeObject(apiTemplate)
-        templates.apiTemplates.push(apiTemplate as listApiType)
+        const currentApiTemplateIndex = templates.apiTemplates.findIndex((template) => template.name === currentApiTemplate.name)
+        templates.apiTemplates[currentApiTemplateIndex] = apiTemplate
 
 
         try {
             // console.log("final data", { templates })//devmode
             await patchAPI(`lists/${params.id}`, { templates })
-            router.push(`/lists/${params.id}`)
+            router.refresh()
         } catch (e) {
             console.log("(Item) Error:", "Failed to Add New Item", e)
         }
 
     };
 
-
+    // if no apitemplate exist redirect to add api page
     return listData.title ? (
         <>
-            <ItemApiTemplateContext.Provider value={{ searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern }}>
-
-                <form>
-
-                    <TitleBar starShowerBlack
-                        title="Add an API Template"
+            <ItemApiTemplateContext.Provider value={{ searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, currentApiTemplate }}>
+                <form key={currentApiTemplate.name}>
+                    <TitleBar
+                        starShowerBlack
+                        title=""
                         icon={
-                            <BiPlus className="text-[30px] mr-3 flex-none" />
+                            <Autocomplete
+                                variant='bordered'
+                                size='sm'
+                                label="Select an Api Template"
+                                className="max-w-xs"
+                                selectedKey={SelectedAutocompleteKey}
+                                onSelectionChange={(e: any) => setSelectedAutocompleteKey(e)}
+                                defaultItems={listData.templates?.apiTemplates}
+                            >
+                                {(template) => (
+                                    <AutocompleteItem onClick={() => useApiTemplate(template)} key={template.name} value={template.name}>
+                                        {template.name}
+                                    </AutocompleteItem>
+                                )}
+                            </Autocomplete>
                         }
                         withButtons
                     >
@@ -119,7 +145,14 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
                             variant="solid"
                             onClick={handleSubmit(onSubmit)}
                         >
-                            <BiPlus className="text-xl" /> Save Api Template
+                            <FaSave className="text-xl" /> Save
+                        </Button>
+                        <Button
+                            className="focus:outline-none bg-accented"
+                            variant="solid"
+                            onClick={() => router.push(`/lists/${params.id}/api/add`)}
+                        >
+                            <BiPlus className="text-xl" /> Add New
                         </Button>
                     </TitleBar>
 

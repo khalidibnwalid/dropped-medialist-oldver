@@ -9,12 +9,12 @@ import { IoGridOutline } from "react-icons/io5";
 import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiExtraFields() {
-    const { control, setValue, fieldTemplates, pattern, errors } = useContext(ItemApiTemplateContext)
+    const { control, setValue, fieldTemplates, pattern, errors, currentApiTemplate } = useContext(ItemApiTemplateContext)
     const templates = fieldTemplates?.extraFields
 
     return (
         <SortableFields
-            // fieldsNumber={itemData?.extra_fields?.length}
+            fieldsNumber={currentApiTemplate?.template?.extra_fields?.length}
             fieldControl={control}
             fieldName='template.extra_fields'
             startContent={({ addField, fieldsState }) => (

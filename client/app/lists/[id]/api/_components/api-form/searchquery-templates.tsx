@@ -6,15 +6,16 @@ import { useContext } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
 import { ItemApiTemplateContext } from "../../provider";
+import { listApiWithSearchType } from "@/types/list";
 
 function ItemApisearchQueries() {
-    const { control, errors, pathRegex, pattern, setValue, fieldTemplates, searchIsAllowed } = useContext(ItemApiTemplateContext)
+    const { control, errors, pathRegex, pattern, setValue, fieldTemplates, searchIsAllowed, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     return (
         <div>
 
             <SortableFields
-                // fieldsNumber={?.length}
+                fieldsNumber={(currentApiTemplate as listApiWithSearchType)?.searchQueries?.length}
                 fieldControl={control}
                 fieldName='searchQueries'
                 startContent={({ addField, fieldsState }) => (

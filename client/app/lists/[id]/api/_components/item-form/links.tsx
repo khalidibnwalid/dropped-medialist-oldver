@@ -10,7 +10,7 @@ import { LuImagePlus } from "react-icons/lu";
 import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiLinks() {
-    const { control, setValue, getValues, fieldTemplates, errors, pattern } = useContext(ItemApiTemplateContext)
+    const { control, setValue, getValues, fieldTemplates, errors, pattern, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     const templates = fieldTemplates?.links
     const urlRegex = /"([^"]*)"|'([^']*)'|(\w+::\w+)|(\w+>>\d+)/g || /^(?:["']?)(http|https):\/\/[^ "]+(?:["']?)(?:::|>>)?$/i
@@ -18,7 +18,7 @@ function ItemApiLinks() {
     return (
         <div className="grid grid-cols-1">
             <SortableFields
-                // fieldsNumber={itemData?.links?.length}
+                fieldsNumber={currentApiTemplate?.template?.links?.length}
                 fieldControl={control}
                 fieldName='template.links'
                 startContent={({ addField, fieldsState }) => (

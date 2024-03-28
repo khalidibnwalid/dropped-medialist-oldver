@@ -11,7 +11,6 @@ function ItemApiCoverCol() {
     return (
         <div className="col-span-2 grid gap-y-2">
             <Controller
-                // defaultValue={}
                 control={control}
                 name="template.rawCover"
                 rules={{ pattern }}
@@ -29,7 +28,6 @@ function ItemApiCoverCol() {
             <Divider className="my-2" />
 
             <Controller
-                // defaultValue={itemData?.title}
                 control={control}
                 name="template.title"
                 rules={{ required: true, pattern }}
@@ -47,7 +45,6 @@ function ItemApiCoverCol() {
                 } />
 
             <Controller
-                // defaultValue={itemData?.description}
                 control={control}
                 name="template.description"
                 rules={{ pattern }}

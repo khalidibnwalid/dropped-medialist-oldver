@@ -8,13 +8,13 @@ import { BiPlus, BiX } from "react-icons/bi";
 import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiQueries() {
-    const { control, errors, pathRegex, pattern, setValue, fieldTemplates } = useContext(ItemApiTemplateContext)
+    const { control, errors, pathRegex, pattern, setValue, fieldTemplates, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     return (
         <div>
 
             <SortableFields
-                fieldsNumber={1}
+                fieldsNumber={currentApiTemplate?.queries?.length}
                 fieldControl={control}
                 fieldName='queries'
                 startContent={({ addField, fieldsState }) => (
@@ -34,7 +34,7 @@ function ItemApiQueries() {
                         <Button onClick={() => removeField(index)} variant="light" isIconOnly>
                             <BiX className=" text-3xl" />
                         </Button>
-                        
+
                         <Controller
                             control={fieldControl}
                             name={`queries[${index}].name`}
