@@ -70,10 +70,9 @@ function ItemApiSearchMainInfo() {
                     disabled={!searchIsAllowed}
                     control={control}
                     name="searchResultToItem.query"
-                    rules={{ required: true, pattern: queryPattern }}
+                    rules={{ pattern: queryPattern }}
                     render={({ field }) =>
                         <Input
-                            isRequired
                             isDisabled={!searchIsAllowed}
                             isInvalid={errors?.searchResultToItem?.query && true}
                             color={errors?.searchResultToItem?.query && "danger"}

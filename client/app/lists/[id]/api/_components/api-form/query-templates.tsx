@@ -58,13 +58,12 @@ function ItemApiQueries() {
                         <Controller
                             control={fieldControl}
                             name={`queries[${index}].query`}
-                            rules={{ required: true, pattern: queryPattern }}
+                            rules={{ pattern: queryPattern }}
                             render={({ field }) =>
                                 <Input
                                     isInvalid={errors.queries?.[index]?.query && true}
                                     color={errors.queries?.[index]?.query && "danger"}
                                     errorMessage={errors.queries?.[index]?.query?.message}
-                                    isRequired
                                     className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
                                     type="text"

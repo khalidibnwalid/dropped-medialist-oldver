@@ -10,27 +10,41 @@ import { ItemApiLoaderContext } from "./provider";
 export const ItemDirectAPILoaders = ({
     onClose,
     setIsLoading,
-    selectedRoutes
+    selectedRoutes,
+    setError
 }: {
     onClose: () => void,
     setIsLoading: Dispatch<SetStateAction<boolean>>
-    selectedRoutes: string[]
+    selectedRoutes: string[],
+    setError: Dispatch<SetStateAction<string | null>>
 }) => {
     const { loadAPITemplate, usedAPITemplate } = useContext(ItemApiLoaderContext);
     const { register, handleSubmit } = useForm()
 
-    async function onSubmit(data: object) {
+    async function onSubmit(data: { emptyQuery?: string[] }) {
         setIsLoading(true)
+        const { emptyQuery, ...restData } = data
 
-        let route = selectedRoutes
-        let query = queryFromObject(data)
+        let route = selectedRoutes.join('')
+        let query = queryFromObject(restData)
+
         // baseURL if it ends with '&' then it is already preparing for a query 
-        const finalRouteAndQuery = route + (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query
+        const finalRouteAndQuery = route
+            + (query ? (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query : '')
+            + (emptyQuery ? '/' + decodeURIComponent(emptyQuery.join('')) : '');
 
-        await loadAPITemplate(usedAPITemplate as listApiType, finalRouteAndQuery)
-        onClose()
-        setIsLoading(false)
+        try {
+            await loadAPITemplate(usedAPITemplate as listApiType, finalRouteAndQuery)
+
+            setIsLoading(false)
+            onClose()
+        } catch (e) {
+            setIsLoading(false)
+            setError('Bad API Request')}
     }
+
+    let emptyQueryIndex = 0
+
     return (
         <form className="space-y-2 animate-fade-in">
             <div className="flex items-center">
@@ -61,7 +75,7 @@ export const ItemDirectAPILoaders = ({
                 </div>
             )}
 
-            {usedAPITemplate?.queries?.map((template, index) =>
+            {usedAPITemplate?.queries?.map((template) =>
                 <div
                     key={'apiQueryInput' + template.name}
                     className="flex items-center gap-x-2 "
@@ -73,7 +87,7 @@ export const ItemDirectAPILoaders = ({
                         className="flex-grow"
                         variant="bordered"
                         size="sm"
-                        {...register(template.query)}
+                        {...register(template.query || `emptyQuery[${emptyQueryIndex++}]`)}
                     />
                 </div>
             )}

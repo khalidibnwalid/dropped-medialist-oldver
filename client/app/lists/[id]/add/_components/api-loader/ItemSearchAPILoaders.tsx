@@ -9,27 +9,42 @@ import { ItemApiLoaderContext } from "./provider";
 
 export const ItemSearchAPILoaders = ({
     setPageNumber,
-    selectedRoutes
+    selectedRoutes,
+    setError
 }: {
     setPageNumber: Dispatch<SetStateAction<number>>,
-    selectedRoutes: string[]
+    selectedRoutes: string[],
+    setError: Dispatch<SetStateAction<string | null>>
 }) => {
     const { usedAPITemplate, searchApi } = useContext(ItemApiLoaderContext);
     const { register, handleSubmit } = useForm()
     const [isLoading, setIsLoading] = useState(false)
 
-    async function onSubmit(data: object) {
+    async function onSubmit(data: { emptyQuery?: string[] }) {
         setIsLoading(true)
+        const { emptyQuery, ...restData } = data
 
         let route = selectedRoutes.join('')
-        let query = queryFromObject(data)
-        const finalRouteAndQuery = route + (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query
+        let query = queryFromObject(restData)
 
-        await searchApi(usedAPITemplate as listApiWithSearchType, finalRouteAndQuery)
+        // baseURL if it ends with '&' then it is already preparing for a query 
+        const finalRouteAndQuery =
+            route
+            + (query ? (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query : '')
+            + (emptyQuery ? '/' + decodeURIComponent(emptyQuery.join('')) : '');
 
-        setPageNumber(1)
-        setIsLoading(false)
+        try {
+            await searchApi(usedAPITemplate as listApiWithSearchType, finalRouteAndQuery)
+
+            setPageNumber(1)
+            setIsLoading(false)
+        } catch (e) {
+            setPageNumber(0)
+            setIsLoading(false)
+            setError('Bad API Request')
+        }
     }
+    let emptyQueryIndex = 0
 
     return !isLoading ? (
         <form className="space-y-2 animate-fade-in">
@@ -46,7 +61,7 @@ export const ItemSearchAPILoaders = ({
                 </Button>
             </div>
 
-            {(usedAPITemplate as listApiWithSearchType).searchQueries?.map(data =>
+            {(usedAPITemplate as listApiWithSearchType).searchQueries?.map((data) =>
                 <div
                     key={'apiQueryInput' + data.name}
                     className="flex items-center gap-x-2 "
@@ -58,7 +73,7 @@ export const ItemSearchAPILoaders = ({
                         className="flex-grow"
                         variant="bordered"
                         size="sm"
-                        {...register(data.query)}
+                        {...register(data.query || `emptyQuery[${emptyQueryIndex++}]`)}
                     />
                 </div>)
             }

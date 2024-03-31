@@ -50,7 +50,7 @@ export default function ItemApiLoaderProvider({
      *  const apiTemplate = { title: "Title", language: "lang::ar", tags: "myArray>>1", MyLang: `"My Language is: "lang::ar ' !!'` }
      *  const dataFetchedFromApi = { Title: "test-title",  lang: { en: "English", ar: "Arabic" },  myArray: ["indexZero", "indexOne"] }
      *  apiDataValuesPicker( apiTemplate , dataFetchedFromApi )
-     *  returns: {title: "test-title", language: "Arabic", tags: "indexOne", MyLang: "test is: Arabic"}
+     *  returns: {title: "test-title", language: "Arabic", tags: "indexOne", MyLang: "My Language is: Arabic !!"}
      *  @function 
      *  it will decode the paths and set them as value for the apiTemplate Object like this:
      * 
