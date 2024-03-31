@@ -2,14 +2,13 @@ import type { itemBadgesType, itemData, itemlink } from "@/types/item";
 import { dateStamped } from "@/utils/helper-functions/dateStamped";
 import getFileExtension from "@/utils/helper-functions/getFileExtinsion";
 import deleteAPI from "../deleteAPI";
-import handleImageUpload from "./handleImageUpload";
 import fetchAPI from "../fetchAPI";
-import { listData } from "@/types/list";
+import handleImageUpload from "./handleImageUpload";
 
 
 export const handleEditingLogosFields = async (
-    dataArray: (itemBadgesType | itemlink)[],
-    comparedToData: (itemBadgesType | itemlink)[] = [], //for comparing
+    newData: (itemBadgesType | itemlink)[],
+    originalData: (itemBadgesType | itemlink)[] = [], //for comparing
     orderCounter: number = 0,
     listID: string,
     itemFieldsTemplates?: (itemBadgesType | itemlink)[], //only provide it if it was called from inside an ite
@@ -18,8 +17,8 @@ export const handleEditingLogosFields = async (
     //if unuseed logos exist delete them
     //star shouldn't be deleted
 
-    const unusedLogos = comparedToData?.filter(
-        templ => !dataArray?.some((e) => e.logo_path === templ.logo_path)
+    const unusedLogos = originalData?.filter(
+        templ => !newData?.some((e) => e.logo_path === templ.logo_path)
     )
 
     async function deleteLogo(path: string) {
@@ -28,8 +27,7 @@ export const handleEditingLogosFields = async (
         const items: itemData[] = await fetchAPI(`items/${listID}`)
         if (!items.some(item =>
             item.links?.some(e => e?.logo_path && e.logo_path == path)
-            ||
-            item.badges?.some(e => e?.logo_path && e.logo_path == path)
+            || item.badges?.some(e => e?.logo_path && e.logo_path == path)
         )) {
             if (itemFieldsTemplates) { //=> called inside an item 
                 // if inside an item it should see if it is using a template's logo, if so don't delete it
@@ -49,8 +47,8 @@ export const handleEditingLogosFields = async (
         }
     }
 
-    return dataArray?.map(e => {
-        //otherwise upload a new logo
+    return newData?.map(e => {
+        // upload a new logo
         if (typeof (e.logo_path) === 'object') {
             orderCounter++
             const logoName = dateStamped(`${orderCounter.toString()}.${getFileExtension(e.logo_path[0].file.name)}`)
@@ -59,8 +57,11 @@ export const handleEditingLogosFields = async (
             return e
         }
 
-        //if logoless or the logo already exists, jsut push it without uploading it
-        if (e.logo_path === undefined || comparedToData?.some((temp) => (temp.logo_path == e.logo_path))) {
+        if (e.logo_path === undefined //if logoless
+            || originalData?.some((original) => (original.logo_path == e.logo_path //if already exists in the original data
+                || itemFieldsTemplates?.some((temp) => temp.logo_path == e.logo_path)) //if it is a template's logo
+                )) {
+                    //just push it without uploading it
             return e
         }
 
