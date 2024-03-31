@@ -6,11 +6,11 @@ import type { listApiType, listApiWithSearchType, listData } from '@/types/list'
 import fetchAPI from '@/utils/api/fetchAPI';
 import patchAPI from '@/utils/api/patchAPI';
 import sanitizeObject from '@/utils/helper-functions/sanitizeObject';
-import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button, Spinner } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { BiInfoCircle, BiPlus, BiTrash } from 'react-icons/bi';
+import { BiCheckDouble, BiInfoCircle, BiPlus, BiTrash } from 'react-icons/bi';
 import { FaSave } from 'react-icons/fa';
 import { TbApiApp } from 'react-icons/tb';
 import LoadingLists from '../../loading';
@@ -23,6 +23,8 @@ export default function APIPage({ params }: { params: { id: string } }) {
     const [searchIsAllowed, setSearchIsAllowed] = useState(false)
     const [currentApiTemplate, setCurrentApiTemplate] = useState<listApiType>({} as listApiType)
     const [SelectedAutocompleteKey, setSelectedAutocompleteKey] = useState('')
+    const [isSaved, setIsSaved] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
 
@@ -50,6 +52,8 @@ export default function APIPage({ params }: { params: { id: string } }) {
         for (let key in apiTemplate) {
             setValue((key as keyof listApiType), apiTemplate[key as keyof listApiType])
         }
+        isSaved === true && setIsSaved(false)
+        isSaving === true && setIsSaving(false)
     }
 
     useEffect(() => {
@@ -79,7 +83,7 @@ export default function APIPage({ params }: { params: { id: string } }) {
             await patchAPI(`lists/${listData.id}`, {
                 templates: { ...listData.templates, apiTemplates: filtredApiTemplates }
             })
-            router.push(`/lists/${listData.id}`)
+            router.push(`/lists/${listData.id}/api`)
         } catch (e) {
             console.log("(API Template) Error:", "Failed to Delete API Template", e)
         }
@@ -118,8 +122,13 @@ export default function APIPage({ params }: { params: { id: string } }) {
 
         try {
             // console.log("final data", { templates })//devmode
+            setIsSaving(true)
             await patchAPI(`lists/${params.id}`, { templates })
-            router.refresh()
+            /** reFetch data instead of refreshing */
+            const listData = await fetchAPI(`lists/${params.id}`)
+            setListData(listData);
+            setIsSaving(false)
+            setIsSaved(true)
         } catch (e) {
             console.log("(API Template) Error:", "Failed to Add New API", e)
         }
@@ -190,13 +199,24 @@ export default function APIPage({ params }: { params: { id: string } }) {
                             {/* //devmode //put wiki's link */}
                             <BiInfoCircle className="text-xl" /> Guide
                         </Button>
-                        <Button
-                            className="focus:outline-none bg-accented"
-                            variant="solid"
-                            onClick={handleSubmit(onSubmit)}
-                        >
-                            <FaSave className="text-xl" /> Save
-                        </Button>
+                        {isSaving ?
+                            <Button className='bg-accented'>
+                                <Spinner size='sm' />
+                            </Button>
+                            : <Button
+                                className={"focus:outline-none" + isSaved ? '' : 'bg-accented'}
+                                variant="solid"
+                                color={isSaved ? 'success' : undefined}
+                                onClick={handleSubmit(onSubmit)}
+                            >
+                                {isSaved
+                                    ? <BiCheckDouble className="text-xl" />
+                                    : <FaSave className="text-xl" />
+                                }
+
+                                {isSaved ? 'Saved' : 'Save'}
+                            </Button>}
+
                     </TitleBar>
 
                     <ApiFormLayout />

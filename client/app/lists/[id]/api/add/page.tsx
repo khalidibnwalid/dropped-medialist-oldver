@@ -6,11 +6,11 @@ import type { listApiType, listApiWithSearchType, listData } from '@/types/list'
 import fetchAPI from '@/utils/api/fetchAPI';
 import patchAPI from '@/utils/api/patchAPI';
 import sanitizeObject from '@/utils/helper-functions/sanitizeObject';
-import { Button } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { BiInfoCircle, BiPlus } from 'react-icons/bi';
+import { set, useForm } from 'react-hook-form';
+import { BiCheckDouble, BiInfoCircle, BiPlus } from 'react-icons/bi';
 import ApiFormLayout from '../_components/general-layout';
 import { ItemApiTemplateContext } from '../provider';
 
@@ -18,6 +18,8 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
     const router = useRouter();
     const [listData, setListData] = useState<listData>({} as listData);
     const [searchIsAllowed, setSearchIsAllowed] = useState(false)
+    const [isSaved, setIsSaved] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
 
@@ -84,9 +86,14 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
 
 
         try {
+            setIsSaving(true)
             // console.log("final data", { templates })//devmode
             await patchAPI(`lists/${params.id}`, { templates })
-            router.push(`/lists/${params.id}`)
+            setIsSaving(false)
+            setIsSaved(true)
+            setTimeout(() => {
+                router.push(`/lists/${params.id}`)
+            }, 3000);
         } catch (e) {
             console.log("(API Template) Error:", "Failed to Add New API", e)
         }
@@ -115,13 +122,22 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
                             {/* //devmode //put wiki's link */}
                             <BiInfoCircle className="text-xl" /> Guide
                         </Button>
-                        <Button
-                            className="focus:outline-none bg-accented"
-                            variant="solid"
-                            onClick={handleSubmit(onSubmit)}
-                        >
-                            <BiPlus className="text-xl" /> Save Api Template
-                        </Button>
+                        {isSaving ?
+                            <Button className='bg-accented'>
+                                <Spinner size='sm' />
+                            </Button>
+                            : <Button
+                                className={"focus:outline-none" + isSaved ? '' : 'bg-accented'}
+                                variant="solid"
+                                color={isSaved ? 'success' : undefined}
+                                onClick={handleSubmit(onSubmit)}
+                            >
+                                {isSaved
+                                    ? <BiCheckDouble className="text-xl" />
+                                    : <BiPlus className="text-xl" />
+                                }
+                                {isSaved ? 'Saved' : 'Save'}
+                            </Button>}
                     </TitleBar>
 
                     <ApiFormLayout />
