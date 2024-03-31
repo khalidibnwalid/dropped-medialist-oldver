@@ -15,6 +15,7 @@ interface context {
     fieldTemplates?: fieldTemplates
     pathRegex: RegExp
     pattern: { value: RegExp, message: string }
+    queryPattern: { value: RegExp, message: string }
     setSearchIsAllowed: Dispatch<SetStateAction<boolean>>
     searchIsAllowed: boolean
     currentApiTemplate?: listApiType

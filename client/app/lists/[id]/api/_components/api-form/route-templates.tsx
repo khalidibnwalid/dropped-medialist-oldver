@@ -9,7 +9,10 @@ import { ItemApiTemplateContext } from "../../provider";
 import { RxSlash } from "react-icons/rx";
 
 function ItemApiRoutes() {
-    const { control, errors, pathRegex, pattern, setValue, fieldTemplates, currentApiTemplate } = useContext(ItemApiTemplateContext)
+    const { control, errors, currentApiTemplate } = useContext(ItemApiTemplateContext)
+
+    /** Route Patter that desin't start or end with '/' */
+    const pattern = { value: /^(?!\/)[\w\d\/]+(?<!\/)$/, message: `Route shouldn't start or end with '/'` }
 
     return (
         <div>
@@ -39,12 +42,9 @@ function ItemApiRoutes() {
                         <Controller
                             control={fieldControl}
                             name={`routes[${index}].name`}
-                            rules={{ required: true, pattern }}
+                            rules={{ required: true }}
                             render={({ field }) =>
                                 <Input
-                                    isInvalid={errors.routes?.[index]?.name && true}
-                                    color={errors.routes?.[index]?.name && "danger"}
-                                    errorMessage={errors.routes?.[index]?.name?.message}
                                     isRequired
                                     className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"

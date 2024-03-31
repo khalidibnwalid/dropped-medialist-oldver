@@ -8,7 +8,9 @@ import { BiPlus, BiX } from "react-icons/bi";
 import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiQueries() {
-    const { control, errors, pathRegex, pattern, setValue, fieldTemplates, currentApiTemplate } = useContext(ItemApiTemplateContext)
+    const { control, errors, currentApiTemplate, queryPattern } = useContext(ItemApiTemplateContext)
+
+
 
     return (
         <div>
@@ -17,7 +19,7 @@ function ItemApiQueries() {
                 fieldsNumber={currentApiTemplate?.queries?.length}
                 fieldControl={control}
                 fieldName='queries'
-                startContent={({ addField, fieldsState }) => (
+                startContent={({ addField }) => (
                     <div className="flex items-center justify-between">
                         <p className="text-zinc-500">Queries (drag and drop)</p>
                         <Button
@@ -29,7 +31,7 @@ function ItemApiQueries() {
                     </div>
                 )}>
 
-                {({ data, index, removeField, fieldControl }) => (
+                {({ index, removeField, fieldControl }) => (
                     <div className="sortableFieldContainer" key={'queryTemplate-' + index} >
                         <Button onClick={() => removeField(index)} variant="light" isIconOnly>
                             <BiX className=" text-3xl" />
@@ -38,12 +40,9 @@ function ItemApiQueries() {
                         <Controller
                             control={fieldControl}
                             name={`queries[${index}].name`}
-                            rules={{ required: true, pattern }}
+                            rules={{ required: true }}
                             render={({ field }) =>
                                 <Input
-                                    isInvalid={errors.queries?.[index]?.name && true}
-                                    color={errors.queries?.[index]?.name && "danger"}
-                                    errorMessage={errors.queries?.[index]?.name?.message}
                                     isRequired
                                     className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
@@ -59,7 +58,7 @@ function ItemApiQueries() {
                         <Controller
                             control={fieldControl}
                             name={`queries[${index}].query`}
-                            rules={{ required: true, pattern }}
+                            rules={{ required: true, pattern: queryPattern }}
                             render={({ field }) =>
                                 <Input
                                     isInvalid={errors.queries?.[index]?.query && true}

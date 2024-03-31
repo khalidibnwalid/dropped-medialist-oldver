@@ -14,10 +14,6 @@ import { BiInfoCircle, BiPlus } from 'react-icons/bi';
 import ApiFormLayout from '../_components/general-layout';
 import { ItemApiTemplateContext } from '../provider';
 
-
-//pattern of search router shouldn't allow words starting with / or ending with it it shouldn't allow spaces too
-// pattern of base url shouldn't allowit to end with '/'
-
 export default function AddAPIPage({ params }: { params: { id: string } }) {
     const router = useRouter();
     const [listData, setListData] = useState<listData>({} as listData);
@@ -25,14 +21,19 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
 
+    /** Input Pattern bassed on apiDataValuesPicker() function of load_api provider */
     const pathRegex = /("([^"]*)"|'([^']*)')|[\w\d::>>]+/g
 
-    //force a pattern for queries (which have word = word) and force one for routes
-
-    /** React Hook Form's Input Pattern  */
     const pattern = {
         value: pathRegex,
         message: 'Please enter a valid Path',
+    }
+
+    /** Query Pattern */
+    const queryRegex = /^(\w+=\w+&)*\w+=$/
+    const queryPattern = {
+        value: queryRegex,
+        message: 'query must be in the form of key= or key=value&key=...'
     }
 
     useEffect(() => {
@@ -87,7 +88,7 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
             await patchAPI(`lists/${params.id}`, { templates })
             router.push(`/lists/${params.id}`)
         } catch (e) {
-            console.log("(Item) Error:", "Failed to Add New Item", e)
+            console.log("(API Template) Error:", "Failed to Add New API", e)
         }
 
     };
@@ -95,7 +96,7 @@ export default function AddAPIPage({ params }: { params: { id: string } }) {
 
     return listData.title ? (
         <>
-            <ItemApiTemplateContext.Provider value={{ searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern }}>
+            <ItemApiTemplateContext.Provider value={{ searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, queryPattern }}>
 
                 <form>
 

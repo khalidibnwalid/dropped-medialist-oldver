@@ -6,7 +6,7 @@ import { Controller } from 'react-hook-form';
 import { ItemApiTemplateContext } from "../../provider";
 
 function ItemApiSearchMainInfo() {
-    const { control, errors, pattern, searchIsAllowed } = useContext(ItemApiTemplateContext)
+    const { control, errors, pattern, searchIsAllowed, queryPattern } = useContext(ItemApiTemplateContext)
 
     return (
         <>
@@ -18,9 +18,9 @@ function ItemApiSearchMainInfo() {
                 render={({ field }) =>
                     <Input
                         isDisabled={!searchIsAllowed}
-                        isInvalid={errors.baseURL && true}
-                        color={errors.baseURL && "danger"}
-                        errorMessage={errors?.baseURL?.message}
+                        isInvalid={errors.searchArrayPath && true}
+                        color={errors.searchArrayPath && "danger"}
+                        errorMessage={errors?.searchArrayPath?.message}
                         isRequired
                         className="shadow-sm rounded-xl"
                         type="text"
@@ -36,9 +36,9 @@ function ItemApiSearchMainInfo() {
                 render={({ field }) =>
                     <Input
                         isDisabled={!searchIsAllowed}
-                        isInvalid={errors.baseURL && true}
-                        color={errors.baseURL && "danger"}
-                        errorMessage={errors?.baseURL?.message}
+                        isInvalid={errors.searchTitlePath && true}
+                        color={errors.searchTitlePath && "danger"}
+                        errorMessage={errors?.searchTitlePath?.message}
                         isRequired
                         className="shadow-sm rounded-xl"
                         type="text"
@@ -56,9 +56,9 @@ function ItemApiSearchMainInfo() {
                     render={({ field }) =>
                         <Input
                             isDisabled={!searchIsAllowed}
-                            isInvalid={errors.baseURL && true}
-                            color={errors.baseURL && "danger"}
-                            errorMessage={errors?.baseURL?.message}
+                            isInvalid={errors?.searchResultToItem?.path && true}
+                            color={errors?.searchResultToItem?.path && "danger"}
+                            errorMessage={errors?.searchResultToItem?.path?.message}
                             isRequired
                             className="shadow-sm rounded-xl"
                             type="text"
@@ -70,13 +70,14 @@ function ItemApiSearchMainInfo() {
                     disabled={!searchIsAllowed}
                     control={control}
                     name="searchResultToItem.query"
-                    rules={{ pattern }}
+                    rules={{ required: true, pattern: queryPattern }}
                     render={({ field }) =>
                         <Input
+                            isRequired
                             isDisabled={!searchIsAllowed}
-                            isInvalid={errors.baseURL && true}
-                            color={errors.baseURL && "danger"}
-                            errorMessage={errors?.baseURL?.message}
+                            isInvalid={errors?.searchResultToItem?.query && true}
+                            color={errors?.searchResultToItem?.query && "danger"}
+                            errorMessage={errors?.searchResultToItem?.query?.message}
                             className="shadow-sm rounded-xl"
                             type="text"
                             label="Needed Query for Search"

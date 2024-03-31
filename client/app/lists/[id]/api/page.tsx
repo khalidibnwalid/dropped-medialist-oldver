@@ -1,6 +1,7 @@
 'use client'
 
 import TitleBar from '@/components/bars/titlebar';
+import { TrashPopover } from '@/components/buttons/trashpop-button';
 import type { listApiType, listApiWithSearchType, listData } from '@/types/list';
 import fetchAPI from '@/utils/api/fetchAPI';
 import patchAPI from '@/utils/api/patchAPI';
@@ -9,12 +10,12 @@ import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { BiInfoCircle, BiPlus } from 'react-icons/bi';
+import { BiInfoCircle, BiPlus, BiTrash } from 'react-icons/bi';
 import { FaSave } from 'react-icons/fa';
+import { TbApiApp } from 'react-icons/tb';
 import LoadingLists from '../../loading';
 import ApiFormLayout from './_components/general-layout';
 import { ItemApiTemplateContext } from './provider';
-
 
 export default function APIPage({ params }: { params: { id: string } }) {
     const router = useRouter();
@@ -25,15 +26,23 @@ export default function APIPage({ params }: { params: { id: string } }) {
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
 
+    /** Input Pattern bassed on apiDataValuesPicker() function of load_api provider */
     const pathRegex = /("([^"]*)"|'([^']*)')|[\w\d::>>]+/g
 
-    /** React Hook Form's Input Pattern  */
     const pattern = {
         value: pathRegex,
         message: 'Please enter a valid Path',
     }
 
-    function useApiTemplate(apiTemplate: listApiType) {
+    /** Query Pattern */
+    const queryRegex = /^(\w+=\w+&)*\w+=$/
+    const queryPattern = {
+        value: queryRegex,
+        message: 'query must be in the form of key= or key=value&key=...'
+    }
+
+    /** Load it as Current API template */
+    function loadApiTemplate(apiTemplate: listApiType) {
         setCurrentApiTemplate(apiTemplate);
         setSelectedAutocompleteKey(apiTemplate.name)
         if ((apiTemplate as listApiWithSearchType).searchTitlePath) setSearchIsAllowed(true)
@@ -49,7 +58,7 @@ export default function APIPage({ params }: { params: { id: string } }) {
                 const listData = await fetchAPI(`lists/${params.id}`)
                 if (listData.templates?.apiTemplates?.length > 0) {
                     setListData(listData);
-                    useApiTemplate(listData.templates?.apiTemplates[0])
+                    loadApiTemplate(listData.templates?.apiTemplates[0])
                 } else {
                     router.push(`/lists/${listData.id}/api/add`);
                 }
@@ -62,6 +71,19 @@ export default function APIPage({ params }: { params: { id: string } }) {
     }, []);
 
     const fieldTemplates = listData.templates?.fieldTemplates;
+
+    async function deleteApiTemplate() {
+        const filtredApiTemplates = listData.templates?.apiTemplates?.filter((template) => template.name !== currentApiTemplate.name)
+
+        try {
+            await patchAPI(`lists/${listData.id}`, {
+                templates: { ...listData.templates, apiTemplates: filtredApiTemplates }
+            })
+            router.push(`/lists/${listData.id}`)
+        } catch (e) {
+            console.log("(API Template) Error:", "Failed to Delete API Template", e)
+        }
+    }
 
     async function onSubmit(rawData: listApiWithSearchType) {
         // console.log("rawData", rawData) //devmode
@@ -94,13 +116,12 @@ export default function APIPage({ params }: { params: { id: string } }) {
         const currentApiTemplateIndex = templates.apiTemplates.findIndex((template) => template.name === currentApiTemplate.name)
         templates.apiTemplates[currentApiTemplateIndex] = apiTemplate
 
-
         try {
             // console.log("final data", { templates })//devmode
             await patchAPI(`lists/${params.id}`, { templates })
             router.refresh()
         } catch (e) {
-            console.log("(Item) Error:", "Failed to Add New Item", e)
+            console.log("(API Template) Error:", "Failed to Add New API", e)
         }
 
     };
@@ -108,27 +129,56 @@ export default function APIPage({ params }: { params: { id: string } }) {
     // if no apitemplate exist redirect to add api page
     return listData.title ? (
         <>
-            <ItemApiTemplateContext.Provider value={{ searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, currentApiTemplate }}>
+            <ItemApiTemplateContext.Provider value={{ searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, currentApiTemplate, queryPattern }}>
                 <form key={currentApiTemplate.name}>
                     <TitleBar
                         starShowerBlack
                         title=""
                         icon={
-                            <Autocomplete
-                                variant='bordered'
-                                size='sm'
-                                label="Select an Api Template"
-                                className="max-w-xs"
-                                selectedKey={SelectedAutocompleteKey}
-                                onSelectionChange={(e: any) => setSelectedAutocompleteKey(e)}
-                                defaultItems={listData.templates?.apiTemplates}
-                            >
-                                {(template) => (
-                                    <AutocompleteItem onClick={() => useApiTemplate(template)} key={template.name} value={template.name}>
-                                        {template.name}
-                                    </AutocompleteItem>
-                                )}
-                            </Autocomplete>
+                            <div className='flex gap-x-2 items-center'>
+                                <TbApiApp className="text-5xl" />
+                                <Autocomplete
+                                    isClearable={false}
+                                    variant='bordered'
+                                    size='sm'
+                                    label="Select an Api Template"
+                                    className="max-w-xs flex-grow"
+                                    selectedKey={SelectedAutocompleteKey}
+                                    onSelectionChange={(e: any) => setSelectedAutocompleteKey(e)}
+                                    defaultItems={listData.templates?.apiTemplates}
+                                >
+                                    {(template) => (
+                                        <AutocompleteItem onClick={() => loadApiTemplate(template)} key={template.name} value={template.name}>
+                                            {template.name}
+                                        </AutocompleteItem>
+                                    )}
+                                </Autocomplete>
+                                <Button
+                                    variant='bordered'
+                                    size='lg'
+                                    onClick={() => router.push(`/lists/${params.id}/api/add`)}
+                                    isIconOnly
+                                >
+                                    <BiPlus className=" text-3xl" />
+                                </Button>
+
+                                <TrashPopover
+                                    onPress={deleteApiTemplate}
+                                    placement='bottom'
+                                >
+                                    {({ isTrashOpen }) => (
+                                        <Button
+                                            variant='bordered'
+                                            size='lg'
+                                            isIconOnly
+                                            className={isTrashOpen ? 'bg-danger' : ''}
+                                        >
+                                            <BiTrash className=" text-xl" />
+                                        </Button>
+                                    )}
+                                </TrashPopover>
+
+                            </div>
                         }
                         withButtons
                     >
@@ -147,20 +197,13 @@ export default function APIPage({ params }: { params: { id: string } }) {
                         >
                             <FaSave className="text-xl" /> Save
                         </Button>
-                        <Button
-                            className="focus:outline-none bg-accented"
-                            variant="solid"
-                            onClick={() => router.push(`/lists/${params.id}/api/add`)}
-                        >
-                            <BiPlus className="text-xl" /> Add New
-                        </Button>
                     </TitleBar>
 
                     <ApiFormLayout />
 
-                </form>
+                </form >
 
-            </ItemApiTemplateContext.Provider>
+            </ItemApiTemplateContext.Provider >
         </>
     ) : (<LoadingLists />)
 }

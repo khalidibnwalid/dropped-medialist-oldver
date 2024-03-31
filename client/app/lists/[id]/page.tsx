@@ -20,7 +20,6 @@ import ListAdvancedSearch from "./_components/advanced-search";
 //   }
 // }
 
-
 async function Listpage({ params }: { params: { id: string } }) {
   unstable_noStore
   let data = {} as listData
