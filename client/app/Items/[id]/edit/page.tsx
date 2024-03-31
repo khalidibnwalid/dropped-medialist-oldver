@@ -110,10 +110,8 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
         }
     }
 
-
     async function onSubmit(rawData: itemData) {
         // console.log("rawData", rawData)
-
         // saperate the handling of submitted data
         let finalData = {} as itemData
         const { rawPoster, rawCover, tags, links, badges, ...data }: any = rawData
@@ -132,13 +130,13 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
             for (let key in data) {
                 if (data.hasOwnProperty(key) && itemData.hasOwnProperty(key)) {
                     if (data[key] != itemData[key as keyof itemData]) {
-                        finalData[key] = data[key] 
+                        finalData[key] = data[key]
                     }
                 }
             }
 
             sanitizeObject(finalData)
-            // console.log("Final Data", finalData) 
+            // console.log("Final Data", finalData)
             await patchAPI(`items/${itemData.id}`, finalData)
             router.push(`/Items/${params.id}`)
             //send a toast of the item being saved

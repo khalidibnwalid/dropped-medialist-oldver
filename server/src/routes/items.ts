@@ -118,14 +118,13 @@ router.patch('/group', async (req, res) => {
 })
 
 //get items with certain id
-router.get('/group', async (req, res) => {
-    // const id: string[] /* item.id[] **/ = req.query;
-    // const itemsIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
+router.get('/group/or?', async (req, res) => {
+    const id = req.query.id as string | string[];
+    const itemsIDs: string[] = Array.isArray(id) ? id : [id];
 
     try {
         const items = await prisma.items.findMany({
-            // where: { OR: itemsIDs }
-            where: { OR: [] }
+            where: { id: { in: itemsIDs } }
         })
         res.status(200).json(items);
     } catch (e) {
@@ -133,12 +132,5 @@ router.get('/group', async (req, res) => {
         res.status(500).send('error')
     }
 })
-
-
-
-
-
-
-
 
 export default router;

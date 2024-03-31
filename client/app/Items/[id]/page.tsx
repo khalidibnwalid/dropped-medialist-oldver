@@ -24,18 +24,15 @@ export default async function ItemsPage({ params }: { params: { id: string } }) 
     let tagsData: itemTag[] = []
 
     if (unfilteredTagsData.length > 0 && data.tags) {
-        tagsData = data.tags.map((id) => unfilteredTagsData.find((tag) => tag.id == id)).filter(Boolean) as itemTag[];
+        tagsData = data.tags.map((id) => unfilteredTagsData.find((tag) => tag.id == id && tag !== undefined)).filter(Boolean) as itemTag[];
         // in Typescript:
         //the mapped ".find" method returns an undefined when it doesn't find a value,
         //so we filter it out using .filter(Boolean) that removes falsy values to avoid typescript errors
     }
-    let dataOfRelatedItems = []
 
     //  build url query to fetch the info of related items
-    if (data?.related && data.related.length > 0) {
-        const queryRelated = data.related.reduce((acc: string, current: string) => (acc + "&id=" + current), `id=${data.related.shift()}`)
-        dataOfRelatedItems = await fetchAPI(`items/group?${queryRelated}`);
-    }
+    const queryRelated = data.related && data.related?.length !== 0 && data.related?.reduce((acc: string, current: string) => (acc + "&id=" + current), `id=${data.related.shift()}`) || undefined
+    const dataOfRelatedItems = data?.related && queryRelated && await fetchAPI(`items/group/or?${queryRelated}`) || [];
 
     return (
         <>
