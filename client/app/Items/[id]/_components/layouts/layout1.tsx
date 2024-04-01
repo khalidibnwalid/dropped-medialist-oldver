@@ -11,6 +11,7 @@ import ItemUpperFields from "../fields/itempage-upperfields";
 import ItemLinks from "../fields/itempage-links";
 import ItemTags from "../itempage-tags";
 import ItemLowerFields from "../fields/itempage-lowerfields";
+import ItemDescription from "../item-description";
 
 
 export default function ItemLayout1() {
@@ -46,7 +47,7 @@ export default function ItemLayout1() {
                            bg-pure-theme bg-opacity-[0.85]
                             backdrop-blur-xl shadow-lg`}>
                         <div className="flex">
-                            <h1 className="flex-grow text-5xl font-extrabold capitalize px-3 drop-shadow-lg">{itemData.title}</h1>
+                            <h1 className="flex-grow text-5xl lg:text-4xl sm:text-2xl font-extrabold capitalize px-3 drop-shadow-lg">{itemData.title}</h1>
                             <EditDropDown data={itemData} item>
                                 <Button isIconOnly variant="bordered" radius="full">
                                     <BiDotsVerticalRounded />
@@ -57,10 +58,10 @@ export default function ItemLayout1() {
 
                         <div className="flex items-center gap-x-1 py-3">
                             {itemData.trash &&
-                                <Chip className=" p-2 font-black" variant="flat" color="danger" startContent={<BiSolidTrashAlt size={14} />} key="fav-chip-0632">In Trash</Chip>
+                                <Chip className=" p-2 font-black" variant="flat" color="danger" startContent={<BiSolidTrashAlt size={14} />} >In Trash</Chip>
                             }
                             {itemData.fav &&
-                                <Chip className=" p-2 opacity-90" variant="flat" color="warning" startContent={<BiSolidStar size={14} />} key="fav-chip-0632">Stared</Chip>
+                                <Chip className=" p-2 opacity-90" variant="flat" color="warning" startContent={<BiSolidStar size={14} />} >Stared</Chip>
                             }
                             {itemData.progress_state &&
                                 <Chip className=" p-2 opacity-90" variant="flat" color={itemData.progress_state.color}>{itemData.progress_state.name}</Chip>
@@ -68,7 +69,7 @@ export default function ItemLayout1() {
                             {itemData.badges && <ItemBadges badgesArray={itemData.badges} />}
                         </div>
 
-                        <p className=" whitespace-pre-wrap">{itemData.description}</p>
+                        <ItemDescription description={itemData.description} />
 
                     </div>
                 </header>

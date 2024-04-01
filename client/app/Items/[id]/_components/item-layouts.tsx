@@ -5,6 +5,7 @@ import { createContext } from "react";
 import ItemLayout1 from "./layouts/layout1";
 import { IMG_PATH } from "@/app/page";
 import ItemLayout2 from "./layouts/layout2";
+import ItemLayout3 from "./layouts/layout3";
 
 interface context {
     tagsData: itemTag[]
@@ -12,7 +13,6 @@ interface context {
     imagesData: itemImageType[]
     relatedItems: itemData[]
     coverPath? : string; //COVER is the BACKGROUND IMAGE!!!!!!! NOT the POSTER 
-
 }
 
 interface params {
@@ -20,7 +20,6 @@ interface params {
     itemData: itemData
     imagesData: itemImageType[]
     relatedItems: itemData[]
-
 }
 
 export const itemViewContext = createContext({} as context);
@@ -36,6 +35,7 @@ export default function ItemLayouts({ tagsData, itemData, imagesData, relatedIte
         <itemViewContext.Provider value={{ tagsData, itemData, imagesData, relatedItems, coverPath }}>
             {itemData.configurations?.layout == "1" && <ItemLayout1 />}
             {itemData.configurations?.layout == "2" && <ItemLayout2 />}
+            {itemData.configurations?.layout == "3" && <ItemLayout3 />}
 
         </itemViewContext.Provider>
     )

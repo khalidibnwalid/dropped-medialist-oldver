@@ -11,7 +11,7 @@ function ItemExtraInfoForm() {
 
     return (
         <div>
-            <p className="text-zinc-500">Choose Layout:</p>
+            <p className="text-zinc-500">Header Layout:</p>
             <Controller
                 defaultValue={itemData?.configurations?.layout || '1'}
                 control={control}
@@ -29,13 +29,7 @@ function ItemExtraInfoForm() {
                                 <img className="w-full -ml-1 mt-1" src="\svg\misc\layout2.svg" />
                             </BoxRadio>
                             <BoxRadio value="3">
-
-                            </BoxRadio>
-                            <BoxRadio value="4">
-
-                            </BoxRadio>
-                            <BoxRadio value="5">
-
+                                <img className="w-full -ml-1 mt-1" src="\svg\misc\layout3.svg" />
                             </BoxRadio>
                         </div>
                     </RadioGroup>
