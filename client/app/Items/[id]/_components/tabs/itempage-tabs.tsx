@@ -11,7 +11,7 @@ import ItemPageGallery from "./itempage-gallery";
 
 
 
-function ItemPageTabs({className}: {className?: string}) {
+function ItemPageTabs({ className }: { className?: string }) {
     const { tagsData, itemData, imagesData, relatedItems } = useContext(itemViewContext)
 
     const defaultSelected = () => {
@@ -56,7 +56,7 @@ function ItemPageTabs({className}: {className?: string}) {
                         <span>Gallery</span>
                     </div>}>
 
-                   <ItemPageGallery imageArray={imagesData} item={itemData} />
+                    <ItemPageGallery imageArray={imagesData} item={itemData} />
 
                 </Tab>
 
@@ -85,18 +85,18 @@ function ItemPageTabs({className}: {className?: string}) {
                     </div>
                 </Tab>
 
-                <Tab key="RSS" title={
+                {/* <Tab key="RSS" title={
                     <div className="flex items-center space-x-2">
                         <BiRss className=" text-xl" />
                         <span>RSS</span>
-                    </div>}>
-                    {/* rss object that contains "URL" and "followed" if followed it will be 
-                    showed in RSS page and will be showed like favorite and badges as chip under the title */}
-                    <div className="grid grid-cols-1 gap-y-3 p-2">
+                    </div>}> 
+                   {// rss object that contains "URL" and "followed" if followed it will be }
+                   {// showed in RSS page and will be showed like favorite and badges as chip under the title }
+                 <div className="grid grid-cols-1 gap-y-3 p-2">
 
 
                     </div>
-                </Tab>
+                </Tab> */}
             </Tabs>
         </div>
     )

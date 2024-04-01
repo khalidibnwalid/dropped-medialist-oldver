@@ -40,7 +40,7 @@ function ListSearchBar() {
                 ],
             }}
             placeholder="Search Items..."
-            size="sm"
+            size="md"
             startContent={
                 <BiSearch size={30} />
             }

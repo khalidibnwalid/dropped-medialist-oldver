@@ -58,11 +58,14 @@ const TagChip = ({ tag }: { tag: itemTag }) => {
         router.push(`/lists/${tag.list_id + query}`)
     }
 
-    return (<Chip
-        size="sm" variant="flat"
-        className="m-1 duration-250 hover:bg-pure-opposite hover:text-pure-theme hover:scale-105 hover:cursor-pointer"
-        onClick={pushLink}
-    >
-        {tag.name}
-    </Chip>)
+    return (
+        <Chip
+            size="sm"
+            variant="flat"
+            className="m-1 duration-250 hover:bg-pure-opposite hover:text-pure-theme hover:scale-105 hover:cursor-pointer"
+            onClick={pushLink}
+            title={tag.description}
+        >
+            {tag.name}
+        </Chip>)
 }
