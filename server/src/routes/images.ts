@@ -1,7 +1,7 @@
 import { PrismaClient, items_images } from '@prisma/client';
 import express from 'express';
 
-export const prisma = new PrismaClient()
+const prisma = new PrismaClient()
 const router = express.Router();
 
 // # POST

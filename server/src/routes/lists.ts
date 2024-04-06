@@ -4,7 +4,7 @@ import { validate as uuidValidate } from 'uuid';
 import objectBoolFilter from '../utils/helper-function/objectBoolFilter';
 
 
-export const prisma = new PrismaClient()
+const prisma = new PrismaClient()
 const router = express.Router();
 
 //get
