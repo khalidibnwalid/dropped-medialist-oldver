@@ -6,7 +6,6 @@ import objectBoolFilter from '../utils/helper-function/objectBoolFilter';
 const prisma = new PrismaClient()
 const router = express.Router();
 
-/* when you add a propertiy, make sure to add it in the Post thre values */
 // # POST
 
 router.post('/:list_id', async (req, res) => {
