@@ -5,8 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon src/index.ts",
-    "start": "ts-node src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
     "start:migrate": "npx prisma migrate deploy && npm start"
   },
   "keywords": [],
@@ -18,6 +18,7 @@
     "@types/node": "^20.11.24",
     "express": "^4.18.3",
     "prisma": "^5.12.1",
+    "tsx": "^4.7.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
@@ -27,7 +28,6 @@
     "formidable": "^3.5.1",
     "lucia": "^3.1.1",
     "oslo": "^1.2.0",
-    "ts-node": "^10.9.2",
     "uuid": "^9.0.1"
   }
 }
