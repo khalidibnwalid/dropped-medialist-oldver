@@ -21,6 +21,8 @@ services:
     environment:
       PORT: 3001
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
+      NODE_ENV: production
+      USING_HTTPS: false # For security reasons, set to true only if you are using HTTPS, it won't make the app use HTTPS
     depends_on:
       - db
     volumes:
