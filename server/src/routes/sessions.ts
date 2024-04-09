@@ -9,7 +9,7 @@ const sessionsRoutes = express.Router();
 sessionsRoutes.post('/:user_id', async (req, res) => {
     const user_id = req.params.user_id;
 
-    //Login
+    //need Login Logic
 
     try {
         const session = await lucia.createSession(user_id, {})
@@ -33,10 +33,8 @@ sessionsRoutes.get('/', async (req, res) => {
         const user = res.locals.user
 
         if (!user || !res.locals.session) return res.status(401).send('Unauthorized')
-            
-        const sessions = await prisma.users_sessions.findMany({
-            where: { userId: user.id }
-        })
+
+        const sessions = await lucia.getUserSessions(user.id);
         res.status(200).json(sessions);
 
     } catch (e) {
@@ -53,20 +51,10 @@ sessionsRoutes.delete('/:session_id?', async (req, res) => {
     const currentSessionId = res.locals.session?.id
 
     try {
+        await lucia.invalidateSession(providedSessionId || currentSessionId);
+        if (!providedSessionId && currentSessionId) res.appendHeader("Set-Cookie", lucia.createBlankSessionCookie().serialize())
 
-        if (providedSessionId) {
-            await prisma.users_sessions.delete({
-                where: { id: providedSessionId }
-            })
-        } else {
-            res.appendHeader("Set-Cookie", lucia.createBlankSessionCookie().serialize())
-
-            await prisma.users_sessions.delete({
-                where: { id: currentSessionId }
-            })
-        }
-
-        console.log(`ُ[ID: ${res.locals.user.id}] [Sessions- Delete] Deleted:`)
+        console.log(`ُ[ID: ${res.locals.user.id}] [Sessions- Delete] Deleted`)
         res.status(200).send('OK');
     } catch (e) {
         console.log(`ُ[ID: ${res.locals.user.id}] [Sessions - Delete] Error:`, e)
