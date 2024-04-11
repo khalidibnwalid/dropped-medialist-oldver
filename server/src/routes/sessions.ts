@@ -1,28 +1,42 @@
 import { PrismaClient } from '@prisma/client';
 import express from 'express';
 import { lucia } from '../index';
+import { Argon2id } from 'oslo/password';
 
 const prisma = new PrismaClient()
 const sessionsRoutes = express.Router();
 
-// # POST
-sessionsRoutes.post('/:user_id', async (req, res) => {
-    const user_id = req.params.user_id;
+// # POST - LOGIN
+sessionsRoutes.post('/', async (req, res) => {
+    const username = req.body.username; // email or username
+    const password = req.body.password;
 
-    //need Login Logic
+    if (!password || !username || typeof (username) !== 'string' || typeof (password) !== 'string')
+        return res.status(400).send('wrong data')
 
     try {
-        const session = await lucia.createSession(user_id, {})
-        const sessionCookie = lucia.createSessionCookie(session.id).serialize()
 
+        const user = await prisma.users.findFirst({
+            where: {
+                OR: [{ email: username }, { username }]
+            }
+        })
+        if (!user) return res.status(401).send('invalid login')
+
+        const validPassword = await new Argon2id().verify(user.hashed_password, password);
+        if (!validPassword) return res.status(401).send('invalid login')
+
+        const session = await lucia.createSession(user.id, {})
+        const sessionCookie = lucia.createSessionCookie(session.id).serialize()
         res
             .appendHeader("Set-Cookie", sessionCookie)
             .status(201)
             .send('OK');
 
-        console.log(`[ID: ${user_id}] [Sessions - POST] added `)
+        console.log(`[ID: ${user.id}] [Sessions - POST] logged in `)
+        
     } catch (e) {
-        console.log(`ُ[ID: ${user_id}] [Sessions - POST] Error:`, e.message)
+        console.log(`ُ[Sessions - POST] Error:`, e.message)
         res.status(500).send('session creation error')
     }
 })
@@ -44,7 +58,7 @@ sessionsRoutes.get('/', async (req, res) => {
 })
 
 
-// # DELETE
+// # DELETE - LOGOUT
 sessionsRoutes.delete('/:session_id?', async (req, res) => {
 
     const providedSessionId = req.params.session_id
