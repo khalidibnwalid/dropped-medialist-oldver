@@ -3,8 +3,9 @@ import { PrismaClient } from "@prisma/client";
 import 'dotenv/config';
 import express from "express";
 import { Lucia, TimeSpan } from "lucia";
-import { verifyRequestOriginHeader, validateSession } from "./middlewares";
+import { validateSession, verifyRequestOriginHeader } from "./middlewares";
 import routes from './routes';
+const cors = require('cors');
 
 declare module "lucia" {
     interface Register {
@@ -17,6 +18,7 @@ const port = process.env.PORT
 // initialize lucia auth
 const client = new PrismaClient()
 const adapter = new PrismaAdapter(client.users_sessions, client.users);
+const whitelist = process.env.ORIGIN_WHITELIST.split(',')
 
 export const lucia = new Lucia(adapter, {
     sessionExpiresIn: new TimeSpan(30, "d"), // 30 days
@@ -32,10 +34,16 @@ export const lucia = new Lucia(adapter, {
 const app = express()
 app.use(express.static('public')); //for images public folder
 
-app.use(express.json())
+app.use(cors({
+    origin: whitelist,
+    credentials: true,
+}));
+
 
 app.use(verifyRequestOriginHeader)
 app.use(validateSession)
+
+app.use(express.json())
 
 app.use('/api', routes) //routes
 
