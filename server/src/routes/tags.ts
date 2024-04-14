@@ -2,16 +2,17 @@ import { PrismaClient, items_tags } from '@prisma/client';
 import express from 'express';
 
 const prisma = new PrismaClient()
-const router = express.Router();
-
+const tagsRouter = express.Router();
 
 // # GET
 //get all tags of a list
-router.get('/:list_id', async (req, res) => {
+tagsRouter.get('/:list_id', async (req, res) => {
+    const user_id = res.locals.user.id
+
     try {
         const { list_id } = req.params
         const tags = await prisma.items_tags.findMany({
-            where: { list_id },
+            where: { list_id, user_id },
             orderBy: { name: 'asc' }
         })
         res.status(200).json(tags);
@@ -22,10 +23,12 @@ router.get('/:list_id', async (req, res) => {
 })
 
 // # POST
-router.post('/:list_id', async (req, res) => {
+tagsRouter.post('/:list_id', async (req, res) => {
     const { list_id } = req.params;
     const { body }: { body: Pick<items_tags, 'id' | 'description' | 'group_name' | 'name'>[] } = req.body;
-    const toPostTags = body.map(tag => ({ list_id: list_id, ...tag }))
+    const user_id = res.locals.user.id
+    const toPostTags = body.map(tag => ({ list_id, user_id, ...tag }))
+
 
     try {
         await prisma.items_tags.createMany({
@@ -40,14 +43,16 @@ router.post('/:list_id', async (req, res) => {
 })
 
 // # DELETE
-router.delete('/', async (req, res) => {
+tagsRouter.delete('/', async (req, res) => {
     const { body }: { body: string[] } = req.body; //id[]
+    const user_id = res.locals.user.id
 
     // should remove the deleted tags from tags column varchar[] in items table 
 
     try {
         await prisma.items_tags.deleteMany({
             where: {
+                user_id,
                 id: { in: body }
             }
         })
@@ -62,13 +67,14 @@ router.delete('/', async (req, res) => {
 
 
 // # Patch
-router.patch('/:id', async (req, res) => {
+tagsRouter.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const changes = req.body; //the json only contain what changed therfore it represents 'changes'
+    const user_id = res.locals.user.id
 
     try {
         await prisma.items_tags.update({
-            where: { id },
+            where: { id, user_id },
             data: changes
         })
         console.log('[Tags] Edited:', id)
@@ -79,4 +85,4 @@ router.patch('/:id', async (req, res) => {
     }
 })
 
-export default router;
+export default tagsRouter;

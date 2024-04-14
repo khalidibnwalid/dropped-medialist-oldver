@@ -8,6 +8,9 @@ const router = express.Router();
 //upload file
 
 router.post('/', async (req, res) => {
+    const user = res.locals.user;
+    if (!user || !res.locals.session) return res.status(401).send('Unauthorized')
+
     try {
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
@@ -18,7 +21,7 @@ router.post('/', async (req, res) => {
 
             //setting a new place for the saved image instead of the appdata/temp
             const filepath = files.file[0].filepath;  // path to temp
-            const newPath = `public/${filename}`;
+            const newPath = `public/${user.id}/${filename}`;
 
             // Copy the file to newPath's location
             fs.copyFileSync(filepath, newPath);
@@ -44,9 +47,14 @@ router.delete('/', async (req, res) => {
         console.log(`No File Was Deleted`)
         res.status(500).send('No File was Passed')
     }
+
+    const user = res.locals.user;
+    if (!user || !res.locals.session) return res.status(401).send('Unauthorized')
+
     try {
+
         fileNames.map((fileName: string) => {
-            const filePath = `public/${fileName}`
+            const filePath = `public/${user.id}/${fileName}`
             fs.unlink(filePath, (err) => {
                 if (err) {
                     console.error(`(file) ${filePath}: `, err);

@@ -9,7 +9,7 @@ const usersRouter = express.Router();
 
 //general info for user
 
-// # POST - Register
+// # POST - Sign Up
 usersRouter.post('/', async (req, res) => {
 
     //need auth check from the client to send the request
