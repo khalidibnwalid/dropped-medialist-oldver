@@ -10,7 +10,7 @@ function UserAuthLayout() {
     return (
         <div className="w-full flex flex-col items-center mt-[14%]">
 
-            <Tabs aria-label="auth-option" size="lg" color="primary">
+            <Tabs className="max-w-[30rem]" aria-label="auth-option" size="lg" color="primary" fullWidth>
                 <Tab key="login" title="Login">
                     <LoginForm />
                 </Tab>

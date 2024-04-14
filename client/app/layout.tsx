@@ -1,18 +1,19 @@
 import NavSideBar from "@/components/bars/navsidebar";
+import UserAuthLayout from "@/components/forms/user-auth/layout";
+import "dotenv/config";
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
-import { BiCollection, BiHomeAlt2, BiRss, BiSearch, BiSliderAlt, BiTrashAlt } from "react-icons/bi";
+import { cookies } from "next/headers";
+import { BiCollection, BiHomeAlt2, BiTrashAlt } from "react-icons/bi";
 import './globals.css';
 import { Providers } from "./providers";
-import { cookies } from "next/headers";
-import UserAuthLayout from "@/components/forms/user-auth/layout";
 
 const poppins = Poppins({ weight: '400', subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    template: 'MediaPack - %s',
-    default: 'MediaPack',
+    template: 'Medialist - %s',
+    default: 'Medialist',
   },
   description: '',
 }
@@ -23,9 +24,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
 
-  // const encryptedSessionData = cookies().get('auth_session')?.value
-
-  const isLoggedin = false;
+  //should check if user exist
+  const isLoggedin = cookies().get('auth_session')?.value
 
   const navButtons = [
     { title: "Homepage", link: "/", icon: <BiHomeAlt2 key="nav-BiHomeAlt2" /> },
@@ -36,7 +36,7 @@ export default function RootLayout({
     // { title: "RSS", link: "/RSS", icon: <BiRss key="nav-BiHomeAlt2" /> },
   ]
 
-  const onRight = false
+  const RightToLeft = false
 
   return (
     <html lang="en" className="dark">
@@ -44,9 +44,9 @@ export default function RootLayout({
         <Providers>
           {isLoggedin
             ? <>
-              <NavSideBar navButtons={navButtons} onRight={onRight} />
+              <NavSideBar navButtons={navButtons} onRight={RightToLeft} />
 
-              <div className={(onRight ? " mr-[90px] ml-[20px]" : " ml-[90px] mr-[20px]") + " pb-20"}>
+              <div className={(RightToLeft ? " mr-[90px] ml-[20px]" : " ml-[90px] mr-[20px]") + " pb-20"}>
                 {children}
               </div>
             </>
