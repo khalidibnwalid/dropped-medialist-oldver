@@ -3,7 +3,7 @@ import type { itemBadgesType } from "@/types/item";
 import { Avatar, Chip } from "@nextui-org/react";
 import { FaStar } from "react-icons/fa";
 import { Image } from "@nextui-org/react";
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 
 type params = {
     badgesArray: itemBadgesType[];
@@ -32,7 +32,7 @@ function ItemBadges({ badgesArray }: params) {
                                 <Image
                                     className=" rounded-full object-contain"
                                     alt={`avatar-${index}`}
-                                    src={`${IMG_PATH}/images/logos/${data.logo_path}`}
+                                    src={`${process.env.PUBLIC_IMG_PATH}/images/logos/${data.logo_path}`}
                                 />
                             )} >
                             {data.value}

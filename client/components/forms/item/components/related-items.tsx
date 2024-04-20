@@ -1,6 +1,6 @@
 'use client'
 
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 import { itemData } from "@/types/item";
 import { Autocomplete, AutocompleteItem, Button, Card, Chip, Image } from "@nextui-org/react";
 import type { Key } from "react";
@@ -104,7 +104,7 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                                     ? <Image
                                         className="flex-shrink-0 h-10 aspect-1 object-cover"
                                         alt={data.title}
-                                        src={`${IMG_PATH}/images/items/${data.poster_path}`}
+                                        src={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.poster_path}`}
                                     />
                                     : <Card
                                         className="uppercase font-light text-xl 

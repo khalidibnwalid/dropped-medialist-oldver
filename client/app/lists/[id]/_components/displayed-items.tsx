@@ -1,7 +1,7 @@
 'use client'
 
 import ItemBadges from "@/app/Items/[id]/_components/itempage-badges";
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 import ListCard from "@/components/cards/list-cards";
 import { Card, CardFooter, Chip, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ function ListDisplayedItems() {
                                 ? <Image
                                     alt={item.title}
                                     className="object-cover aspect-[2/3]"
-                                    src={`${IMG_PATH}/images/items/${item.poster_path}`}
+                                    src={`${process.env.PUBLIC_IMG_PATH}/images/items/${item.poster_path}`}
                                 />
                                 : <Card className=" aspect-[2/3] h-full w-full p-2 bg-accented flex items-center justify-center capitalize text-xl" >
                                     {item.title}
@@ -58,7 +58,7 @@ function ListDisplayedItems() {
                             <ListCard
                                 title={item.title}
                                 discrip={item.description}
-                                image={item.poster_path ? `${IMG_PATH}/images/items/${item.poster_path}` : undefined}
+                                image={item.poster_path ? `${process.env.PUBLIC_IMG_PATH}/images/items/${item.poster_path}` : undefined}
                                 link={`../Items/${item.id}`}
                                 underTitle={item.badges && <ItemBadges badgesArray={item.badges} />}
                             />
@@ -92,7 +92,7 @@ function ListDisplayedItems() {
                                         ? <Image
                                             className="flex-shrink-0 max-h-10 aspect-1 object-cover"
                                             alt={item.title}
-                                            src={`${IMG_PATH}/images/items/${item.poster_path}`}
+                                            src={`${process.env.PUBLIC_IMG_PATH}/images/items/${item.poster_path}`}
                                         />
                                         : <Card
                                             className="uppercase font-light text-xl 

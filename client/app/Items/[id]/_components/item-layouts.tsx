@@ -1,9 +1,9 @@
 'use client'
 
 import { itemData, itemImageType, itemTag } from "@/types/item";
+import "dotenv/config";
 import { createContext } from "react";
 import ItemLayout1 from "./layouts/layout1";
-import { IMG_PATH } from "@/app/page";
 import ItemLayout2 from "./layouts/layout2";
 import ItemLayout3 from "./layouts/layout3";
 
@@ -26,9 +26,9 @@ export const itemViewContext = createContext({} as context);
 
 export default function ItemLayouts({ tagsData, itemData, imagesData, relatedItems }: params) {
     const coverPath = itemData.cover_path ?
-        `${IMG_PATH}/images/items/${itemData.cover_path}` :
+        `${process.env.PUBLIC_IMG_PATH}/images/items/${itemData.cover_path}` :
         (itemData.poster_path ?
-            `${IMG_PATH}/images/items/${itemData.poster_path}` :
+            `${process.env.PUBLIC_IMG_PATH}/images/items/${itemData.poster_path}` :
             undefined
         )
     return (

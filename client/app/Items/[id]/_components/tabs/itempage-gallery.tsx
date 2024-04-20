@@ -1,15 +1,14 @@
 'use client'
 
-import { IMG_PATH } from "@/app/page";
+import { TrashPopover } from "@/components/buttons/trashpop-button";
 import type { itemData, itemImageType } from "@/types/item";
-import { Button, Card, CardFooter, Image, CardHeader } from "@nextui-org/react";
-import type { ImageType } from "react-images-uploading";
+import deleteAPI from "@/utils/api/deleteAPI";
+import { Button, Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
+import "dotenv/config";
+import { useRouter } from "next/navigation";
+import { BiTrashAlt } from "react-icons/bi";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { AddImageGalleryButton } from "./addImage-button";
-import { TrashPopover } from "@/components/buttons/trashpop-button";
-import { BiTrashAlt } from "react-icons/bi";
-import deleteAPI from "@/utils/api/deleteAPI";
-import { useRouter } from "next/navigation";
 
 
 function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], item: itemData }) {
@@ -59,9 +58,9 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                             </TrashPopover>
                         </CardHeader>
 
-                        <a href={`${IMG_PATH}/images/items/${data.image_path}`} target="_blank">
+                        <a href={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.image_path}`} target="_blank">
                             <Image
-                                src={`${IMG_PATH}/images/items/${data.image_path}`}
+                                src={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.image_path}`}
                                 className="object-contain"
                                 alt={data.image_path}
                             />

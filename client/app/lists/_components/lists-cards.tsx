@@ -1,6 +1,6 @@
 'use client'
 
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 import type { listData } from "@/types/list";
 import { Card, CardBody, Image } from "@nextui-org/react";
 import "dotenv/config";
@@ -33,7 +33,7 @@ function ListCards({ dataArray }: cardParam) {
                 radius="lg"
                 alt={data.title}
                 className=" object-cover aspect-1 bg-accented shadow-lg"
-                src={`${IMG_PATH}/images/lists/${data.cover_path}`}
+                src={`${process.env.PUBLIC_IMG_PATH}/images/lists/${data.cover_path}`}
               />
               :
               <Card

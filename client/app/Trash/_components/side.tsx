@@ -4,7 +4,7 @@ import deleteAPI from "@/utils/api/deleteAPI";
 import handleDeletedListMedia from "@/utils/api/handlers/handleDeletedListMedia";
 import patchAPI from "@/utils/api/patchAPI";
 import { Button, ButtonGroup, Checkbox, CheckboxGroup, Image, Modal, Card, ModalBody, ModalContent, ModalFooter, ModalHeader, cn, useDisclosure } from "@nextui-org/react";
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiCheck, BiRevision, BiTrashAlt } from "react-icons/bi"; //BoxIcons
@@ -152,7 +152,7 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
                 {!item && data.cover_path || (data as itemData).poster_path ? <Image
                     className="flex-none aspect-1 object-cover h-14"
                     alt={data.title}
-                    src={`${IMG_PATH}/images/${item ? 'items' : 'lists'}/${item ? (data as itemData).poster_path : data.cover_path}`}
+                    src={`${process.env.PUBLIC_IMG_PATH}/images/${item ? 'items' : 'lists'}/${item ? (data as itemData).poster_path : data.cover_path}`}
                 /> :
                     <Card
                         className=" flex-none uppercase font-light text-xl aspect-1 items-center justify-center bg-[#2f2f2f] h-14"

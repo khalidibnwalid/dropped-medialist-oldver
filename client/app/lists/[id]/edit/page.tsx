@@ -1,6 +1,6 @@
 'use client'
 
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 import TitleBar from "@/components/bars/titlebar";
 import SingleImageUploaderDefault from "@/components/forms/_components/Images/single-imageUploader-defaultValue";
 import ListMainInfoForm from "@/components/forms/list/components/main-info";
@@ -142,7 +142,7 @@ export default function EditListPage({ params }: { params: { id: string } }) {
                                 setValue={setValue}
                                 content="Cover"
                                 imgSrc={listData.cover_path
-                                    ? `${IMG_PATH}/images/lists/${listData.cover_path}`
+                                    ? `${process.env.PUBLIC_IMG_PATH}/images/lists/${listData.cover_path}`
                                     : undefined}
                             />
                             <ListMainInfoForm />

@@ -1,6 +1,6 @@
 'use client'
 
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 import ListCard from "@/components/cards/list-cards";
 import { Accordion, AccordionItem, Tab, Tabs } from "@nextui-org/react";
 import { useContext, useState } from 'react';
@@ -8,7 +8,6 @@ import { BiImages, BiRss, BiSelectMultiple, BiSolidNote } from "react-icons/bi";
 import { itemViewContext } from "../item-layouts";
 import ItemBadges from "../itempage-badges";
 import ItemPageGallery from "./itempage-gallery";
-
 
 
 function ItemPageTabs({ className }: { className?: string }) {
@@ -72,7 +71,7 @@ function ItemPageTabs({ className }: { className?: string }) {
                             <ListCard
                                 key={data.title}
                                 title={data.title}
-                                image={`${IMG_PATH}/images/items/${data.poster_path}`}
+                                image={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.poster_path}`}
                                 discrip={data.description} link={`../Items/${data.id}`}
                                 underTitle={<div className="flex gap-x-1">
                                     {data.badges && <ItemBadges badgesArray={data.badges} />

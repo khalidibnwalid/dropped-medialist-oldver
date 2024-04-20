@@ -1,12 +1,12 @@
 'use client'
 
 import TitleBar from "@/components/bars/titlebar";
-import { ListFormLowerLayout } from "@/components/forms/list/layouts";
-import ListMainInfoForm from "@/components/forms/list/components/main-info";
-import { ListFormContext } from "@/components/forms/list/provider";
 import SingleImageUploader from "@/components/forms/_components/Images/single-imageUploader";
-import type { listData } from "@/types/list";
+import ListMainInfoForm from "@/components/forms/list/components/main-info";
+import { ListFormLowerLayout } from "@/components/forms/list/layouts";
+import { ListFormContext } from "@/components/forms/list/provider";
 import type { itemBadgesType, itemlink } from "@/types/item";
+import type { listData } from "@/types/list";
 import handleImageUpload from "@/utils/api/handlers/handleImageUpload";
 import postAPI from "@/utils/api/postAPI";
 import { dateStamped } from "@/utils/helper-functions/dateStamped";
@@ -26,7 +26,7 @@ export default function AddListPage() {
     let orderCounter = 0
 
     async function onSubmit(rawData: any) {
-        console.log("rawData", rawData) //test
+        // console.log("rawData", rawData) //test
         const { templates: { fieldTemplates: { badges, links, ...fieldTemplates }, ...main }, rawCover, ...data }: any = rawData
 
         data['templates'] = { fieldTemplates } //returns the rest of 'fieldTemplates' objects
@@ -71,7 +71,7 @@ export default function AddListPage() {
         //templates: { fieldTemplates: badges }, templates: { fieldTemplates: links },
 
         sanitizeObject(data)
-        console.log("finalData", data) //test
+        // console.log("finalData", data) //test
         await postAPI('lists', data) //for testing
         router.push('/lists') //for testing
     }

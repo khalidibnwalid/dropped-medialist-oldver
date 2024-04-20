@@ -3,7 +3,8 @@
 import { useContext } from "react"
 import { itemViewContext } from "./item-layouts"
 import { Image } from "@nextui-org/react"
-import { IMG_PATH } from "@/app/page"
+import "dotenv/config";
+
 
 function ItemPoster({className = "w-full"}: {className?: string}) {
     const { itemData, coverPath } = useContext(itemViewContext)
@@ -17,7 +18,7 @@ function ItemPoster({className = "w-full"}: {className?: string}) {
             <Image
                 alt={itemData.title}
                 className="w-full shadow-perfect-md object-cover duration-100 hover:scale-105 mb-5"
-                src={`${IMG_PATH}/images/items/${itemData.poster_path}`}
+                src={`${process.env.PUBLIC_IMG_PATH}/images/items/${itemData.poster_path}`}
             />
         </a>
 

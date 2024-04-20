@@ -1,6 +1,6 @@
 'use client'
 
-import { IMG_PATH } from "@/app/page";
+import "dotenv/config";
 import SingleImageUploaderDefault from '@/components/forms/_components/Images/single-imageUploader-defaultValue';
 import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/item/layouts";
 import { ItemFormContext } from "@/components/forms/item/provider";
@@ -159,7 +159,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
                             resetField={resetField}
                             setValue={setValue}
                             content="Item's Poster"
-                            imgSrc={itemData.poster_path ? `${IMG_PATH}/images/items/${itemData.poster_path}` : undefined}
+                            imgSrc={itemData.poster_path ? `${process.env.PUBLIC_IMG_PATH}/images/items/${itemData.poster_path}` : undefined}
                         />
                         <Divider className="my-2" />
 
@@ -195,7 +195,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
                             resetField={resetField}
                             setValue={setValue}
                             content="Item's Cover"
-                            imgSrc={itemData.cover_path ? `${IMG_PATH}/images/items/${itemData.cover_path}` : undefined}
+                            imgSrc={itemData.cover_path ? `${process.env.PUBLIC_IMG_PATH}/images/items/${itemData.cover_path}` : undefined}
                         />
                         <Divider className="my-2" />
                         <ItemFormCoverColumn />
