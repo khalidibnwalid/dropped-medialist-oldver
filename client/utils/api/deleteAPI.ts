@@ -1,16 +1,22 @@
-"use server"
+"use client"
 
-import "dotenv/config";
-import axios from "axios";
-
-export default async function deleteAPI(params: string, data: object) {
+export default async function deleteAPI(params: string, data?: object) {
   try {
-    await axios.delete(`${process.env.API_URL}/${params}`, {
-      data: data,
+    const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, {
+      method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+          'Content-Type': 'application/json',
+      },
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: 'include',
+  })
+
+  if (!res.ok) {
+      throw new Error('Failed to Add Data')
+  }
+
+  console.log(res)
+  return res.json()
 
   } catch (e) {
     console.error(e)

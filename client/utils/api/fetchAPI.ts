@@ -1,9 +1,12 @@
-"use server"
-import "dotenv/config";
+"use client"
 
 export default async function fetchAPI(params: string) {
   try {
-    const res = await fetch(`${process.env.API_URL}/${params}`, { cache: 'no-store' })
+    const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, { 
+      cache: 'no-store',
+      credentials: 'include'
+    })
+
     if (!res.ok) {
       throw new Error('Failed to Get Data From The Database');
     }

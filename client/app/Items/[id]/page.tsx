@@ -1,5 +1,5 @@
 import type { itemData, itemTag } from "@/types/item";
-import fetchAPI from "@/utils/api/fetchAPI";
+import serverFetchAPI from "@/utils/api/serverFetchAPI";
 import { unstable_noStore } from "next/cache";
 import ItemLayouts from "./_components/item-layouts";
 
@@ -10,9 +10,9 @@ export default async function ItemsPage({ params }: { params: { id: string } }) 
     let unfilteredTagsData: itemTag[] = []
 
     try {
-        data = await fetchAPI(`items/id/${params.id}`);
-        dataImages = await fetchAPI(`images/${params.id}`);
-        unfilteredTagsData = await fetchAPI(`tags/${data.list_id}`)
+        data = await serverFetchAPI(`items/id/${params.id}`);
+        dataImages = await serverFetchAPI(`images/${params.id}`);
+        unfilteredTagsData = await serverFetchAPI(`tags/${data.list_id}`)
     } catch (e) {
         console.error(e);
         throw e
@@ -32,7 +32,7 @@ export default async function ItemsPage({ params }: { params: { id: string } }) 
 
     //  build url query to fetch the info of related items
     const queryRelated = data.related && data.related?.length !== 0 && data.related?.reduce((acc: string, current: string) => (acc + "&id=" + current), `id=${data.related.shift()}`) || undefined
-    const dataOfRelatedItems = data?.related && queryRelated && await fetchAPI(`items/group/or?${queryRelated}`) || [];
+    const dataOfRelatedItems = data?.related && queryRelated && await serverFetchAPI(`items/group/or?${queryRelated}`) || [];
 
     return (
         <>

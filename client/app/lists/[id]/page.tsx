@@ -1,14 +1,14 @@
 import TitleBar from "@/components/bars/titlebar";
+import { itemData, itemTag } from "@/types/item";
 import type { listData } from "@/types/list";
-import fetchAPI from "@/utils/api/fetchAPI";
+import serverFetchAPI from "@/utils/api/serverFetchAPI";
 import { unstable_noStore } from "next/cache";
 import { BiCollection } from "react-icons/bi";
+import ListAdvancedSearch from "./_components/advanced-search";
 import ListDisplayedItems from "./_components/displayed-items";
-import { itemData, itemTag } from "@/types/item";
-import ListBodyProvider from "./provider";
 import ListNavButtons from "./_components/navbuttons";
 import ListSearchBar from "./_components/search-bar";
-import ListAdvancedSearch from "./_components/advanced-search";
+import ListBodyProvider from "./provider";
 
 // import type { Metadata } from 'next'
 
@@ -24,15 +24,15 @@ async function Listpage({ params }: { params: { id: string } }) {
   unstable_noStore
   let data = {} as listData
   try {
-    data = await fetchAPI(`lists/${params.id}`)
+    data = await serverFetchAPI(`lists/${params.id}`)
   } catch (e) {
     console.error(e);
     throw e
   } finally {
     if (Object.keys(data).length == 0) throw new Error("list Doesn't Exist")
   }
-  const items: itemData[] = await fetchAPI(`items/${params.id}?trash=false`)
-  const tags: itemTag[] = await fetchAPI(`tags/${params.id}`)
+  const items: itemData[] = await serverFetchAPI(`items/${params.id}?trash=false`)
+  const tags: itemTag[] = await serverFetchAPI(`tags/${params.id}`)
 
   const NumberOfItems = items.length;
 

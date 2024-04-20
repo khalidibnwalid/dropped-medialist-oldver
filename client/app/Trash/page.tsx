@@ -1,11 +1,11 @@
-import fetchAPI from "@/utils/api/fetchAPI"
+import serverFetchAPI from "@/utils/api/serverFetchAPI"
 import { revalidatePath, unstable_noStore } from "next/cache"
 import TrashSide from "./_components/side"
 
 export default async function TrashPage() {
     unstable_noStore
-    const itemData = await fetchAPI('items?trash=true')
-    const listData = await fetchAPI('lists?trash=true')
+    const itemData = await serverFetchAPI('items?trash=true')
+    const listData = await serverFetchAPI('lists?trash=true')
 
     revalidatePath('/Trash', 'page');// to avoid old cashe
 
