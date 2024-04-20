@@ -1,11 +1,11 @@
 'use client'
 
-import "dotenv/config";
+import { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
 import SingleImageUploaderDefault from '@/components/forms/_components/Images/single-imageUploader-defaultValue';
 import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/item/layouts";
 import { ItemFormContext } from "@/components/forms/item/provider";
-import type { listData } from '@/types/list';
 import type { itemData, itemImageType, itemTag } from '@/types/item';
+import type { listData } from '@/types/list';
 import deleteAPI from '@/utils/api/deleteAPI';
 import fetchAPI from '@/utils/api/fetchAPI';
 import { handleEditingLogosFields } from '@/utils/api/handlers/handleEditingLogosFields';
@@ -24,7 +24,6 @@ import { BiX } from 'react-icons/bi';
 import { FaSave } from 'react-icons/fa';
 import { validate as uuidValidate } from 'uuid';
 import ItemPageGallery from '../_components/tabs/itempage-gallery';
-import { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
 
 export default function EditItemPage({ params }: { params: { id: string } }) {
     const { handleSubmit, control, setValue, getValues, resetField, formState: { errors } } = useForm<itemData>();

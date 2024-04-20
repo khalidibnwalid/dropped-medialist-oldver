@@ -4,7 +4,6 @@ import { useContext } from "react"
 import { itemViewContext } from "../item-layouts"
 import { Image } from "@nextui-org/react"
 import { Button } from "@nextui-org/react"
-import "dotenv/config";
 
 function ItemLinks({ className }: { className?: string }) {
     const { itemData } = useContext(itemViewContext)

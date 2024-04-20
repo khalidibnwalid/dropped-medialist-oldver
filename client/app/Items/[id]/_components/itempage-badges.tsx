@@ -1,9 +1,7 @@
 'use client'
 import type { itemBadgesType } from "@/types/item";
-import { Avatar, Chip } from "@nextui-org/react";
+import { Chip, Image } from "@nextui-org/react";
 import { FaStar } from "react-icons/fa";
-import { Image } from "@nextui-org/react";
-import "dotenv/config";
 
 type params = {
     badgesArray: itemBadgesType[];

@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 function Home() {
   return (
     <main className="">

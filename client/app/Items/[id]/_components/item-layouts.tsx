@@ -1,7 +1,6 @@
 'use client'
 
 import { itemData, itemImageType, itemTag } from "@/types/item";
-import "dotenv/config";
 import { createContext } from "react";
 import ItemLayout1 from "./layouts/layout1";
 import ItemLayout2 from "./layouts/layout2";

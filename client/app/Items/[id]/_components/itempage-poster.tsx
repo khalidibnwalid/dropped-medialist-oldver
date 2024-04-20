@@ -1,10 +1,8 @@
 'use client'
 
+import { Image } from "@nextui-org/react"
 import { useContext } from "react"
 import { itemViewContext } from "./item-layouts"
-import { Image } from "@nextui-org/react"
-import "dotenv/config";
-
 
 function ItemPoster({className = "w-full"}: {className?: string}) {
     const { itemData, coverPath } = useContext(itemViewContext)

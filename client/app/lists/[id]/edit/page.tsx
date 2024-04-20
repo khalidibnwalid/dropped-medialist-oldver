@@ -1,6 +1,5 @@
 'use client'
 
-import "dotenv/config";
 import TitleBar from "@/components/bars/titlebar";
 import SingleImageUploaderDefault from "@/components/forms/_components/Images/single-imageUploader-defaultValue";
 import ListMainInfoForm from "@/components/forms/list/components/main-info";

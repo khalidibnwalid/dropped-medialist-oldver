@@ -1,10 +1,9 @@
-import ListCards from '@/app/lists/_components/lists-cards';
-import fetchAPI from '@/utils/api/fetchAPI';
-import { revalidatePath, unstable_noStore } from 'next/cache';
 import AddListButton from '@/app/lists/_components/addlist-button';
+import ListCards from '@/app/lists/_components/lists-cards';
 import TitleBar from '@/components/bars/titlebar';
-import "dotenv/config";
+import fetchAPI from '@/utils/api/fetchAPI';
 import type { Metadata } from 'next';
+import { revalidatePath, unstable_noStore } from 'next/cache';
 import { BiCollection } from "react-icons/bi";
 import RefreshButton from './_components/refresh-button';
 

@@ -1,6 +1,5 @@
 'use client'
 
-import "dotenv/config";
 import { itemData } from "@/types/item";
 import { Autocomplete, AutocompleteItem, Button, Card, Chip, Image } from "@nextui-org/react";
 import type { Key } from "react";

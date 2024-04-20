@@ -4,7 +4,6 @@ import { TrashPopover } from "@/components/buttons/trashpop-button";
 import type { itemData, itemImageType } from "@/types/item";
 import deleteAPI from "@/utils/api/deleteAPI";
 import { Button, Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
-import "dotenv/config";
 import { useRouter } from "next/navigation";
 import { BiTrashAlt } from "react-icons/bi";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";

@@ -1,7 +1,6 @@
 'use client'
 
 import ItemBadges from "@/app/Items/[id]/_components/itempage-badges";
-import "dotenv/config";
 import ListCard from "@/components/cards/list-cards";
 import { Card, CardFooter, Chip, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useRouter } from "next/navigation";

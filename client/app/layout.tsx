@@ -1,6 +1,5 @@
 import NavSideBar from "@/components/bars/navsidebar";
 import UserAuthLayout from "@/components/forms/user-auth/layout";
-import "dotenv/config";
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { cookies } from "next/headers";

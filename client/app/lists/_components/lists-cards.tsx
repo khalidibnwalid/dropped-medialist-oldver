@@ -1,9 +1,7 @@
 'use client'
 
-import "dotenv/config";
 import type { listData } from "@/types/list";
 import { Card, CardBody, Image } from "@nextui-org/react";
-import "dotenv/config";
 import { useRouter } from 'next/navigation';
 
 

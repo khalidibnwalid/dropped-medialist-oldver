@@ -1,8 +1,7 @@
 "use server"
 
-import type { listData } from "@/types/list";
 import type { itemData } from "@/types/item";
-import "dotenv/config";
+import type { listData } from "@/types/list";
 import deleteAPI from "../deleteAPI";
 import fetchAPI from "../fetchAPI";
 import handleDeletedItemMedia from "./handleDeletedItemMedia";

@@ -1,5 +1,4 @@
 "use client"
-import "dotenv/config";
 
 export default async function fetchExternalAPI(link: string) {
   try {

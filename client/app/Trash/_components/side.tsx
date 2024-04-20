@@ -1,16 +1,16 @@
 'use client'
+
+import { itemData } from "@/types/item";
 import type { listData } from "@/types/list";
 import deleteAPI from "@/utils/api/deleteAPI";
+import handleDeletedItemMedia from "@/utils/api/handlers/handleDeletedItemMedia";
 import handleDeletedListMedia from "@/utils/api/handlers/handleDeletedListMedia";
 import patchAPI from "@/utils/api/patchAPI";
-import { Button, ButtonGroup, Checkbox, CheckboxGroup, Image, Modal, Card, ModalBody, ModalContent, ModalFooter, ModalHeader, cn, useDisclosure } from "@nextui-org/react";
-import "dotenv/config";
+import { Button, ButtonGroup, Card, Checkbox, CheckboxGroup, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, cn, useDisclosure } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiCheck, BiRevision, BiTrashAlt } from "react-icons/bi"; //BoxIcons
 import { FaEye } from "react-icons/fa";
-import handleDeletedItemMedia from "@/utils/api/handlers/handleDeletedItemMedia";
-import { itemData } from "@/types/item";
 
 
 //item = false => list, and vice versa

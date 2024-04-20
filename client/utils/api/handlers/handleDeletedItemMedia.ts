@@ -1,10 +1,9 @@
 "use server"
 
-import type { listData } from "@/types/list";
 import type { itemData, itemImageType } from "@/types/item";
-import "dotenv/config";
-import fetchAPI from "../fetchAPI";
+import type { listData } from "@/types/list";
 import deleteAPI from "../deleteAPI";
+import fetchAPI from "../fetchAPI";
 import { handleEditingLogosFields } from "./handleEditingLogosFields";
 
 //SHOULD be called BEFORE an item is deleted
