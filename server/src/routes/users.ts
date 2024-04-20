@@ -21,7 +21,7 @@ usersRouter.post('/', async (req, res) => {
         || typeof (username) !== 'string' || typeof (password) !== 'string' || typeof (email) !== 'string'
         || !emailRegex.test(email)
     )
-        return res.status(400).send('wrong data')
+        return res.status(400).json({ message: 'wrong data' })
 
     try {
         const userExist = await prisma.users.findFirst({ where: { OR: [{ email }, { username }] } });
@@ -29,9 +29,9 @@ usersRouter.post('/', async (req, res) => {
         // need protection against brute-force attacks and login throttling.
         if (userExist) {
             if (userExist.email === email) {
-                return res.status(400).send('Email already in use');
+                return res.status(400).json({ message: 'Email already in use' });
             } else if (userExist.username === username) {
-                return res.status(400).send('Username already in use');
+                return res.status(400).json({ message: 'Username already in use' });
             }
         }
 
@@ -53,13 +53,13 @@ usersRouter.post('/', async (req, res) => {
         res
             .appendHeader("Set-Cookie", sessionCookie)
             .status(201)
-            .send('OK');
+            .json({ message: 'User Added' });
 
         console.log(`[ID: ${userId}] [Users - POST] added `)
 
     } catch (e) {
         console.log("[Users - POST] Error:", e)
-        res.status(500).send('error item')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -82,7 +82,7 @@ usersRouter.get('/:user_id?', async (req, res) => {
 
     } catch (e) {
         console.log("[Users]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -97,10 +97,10 @@ usersRouter.get('/:user_id?', async (req, res) => {
 //             where: { id: { in: body } }
 //         })
 //         console.log('[Users] Deleted:', body)
-//         res.status(200).send('OK');
+//         res.status(200).json({});
 //     } catch (e) {
 //         console.log("[Users]", e)
-//         res.status(500).send('error')
+//         res.status(500).json({ message: 'error' })
 //     }
 // })
 
@@ -116,10 +116,10 @@ usersRouter.get('/:user_id?', async (req, res) => {
 //             where: { id }
 //         })
 //         console.log('[Users] Edited:', id)
-//         res.status(200).send('OK');
+//         res.status(200).json({});
 //     } catch (e) {
 //         console.log("[Users]", e)
-//         res.status(500).send('error')
+//         res.status(500).json({ message: 'error' })
 //     }
 // })
 

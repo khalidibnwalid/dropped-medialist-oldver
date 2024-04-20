@@ -12,7 +12,7 @@ sessionsRoutes.post('/', async (req, res) => {
     const password = req.body.password;
 
     if (!password || !username || typeof (username) !== 'string' || typeof (password) !== 'string')
-        return res.status(400).send('wrong data')
+        return res.status(400).json({ message: 'wrong data' })
 
     try {
 
@@ -21,23 +21,23 @@ sessionsRoutes.post('/', async (req, res) => {
                 OR: [{ email: username }, { username }]
             }
         })
-        if (!user) return res.status(401).send('invalid login')
+        if (!user) return res.status(401).json({ message: 'invalid login' })
 
         const validPassword = await new Argon2id().verify(user.hashed_password, password);
-        if (!validPassword) return res.status(401).send('invalid login')
+        if (!validPassword) return res.status(401).json({ message: 'invalid login' })
 
         const session = await lucia.createSession(user.id, {})
         const sessionCookie = lucia.createSessionCookie(session.id).serialize()
         res
             .appendHeader("Set-Cookie", sessionCookie)
             .status(201)
-            .send('OK');
+            .json({ message: 'logged in' })
 
         console.log(`[ID: ${user.id}] [Sessions - POST] logged in `)
-        
+
     } catch (e) {
         console.log(`ُ[Sessions - POST] Error:`, e.message)
-        res.status(500).send('session creation error')
+        res.status(500).json({ error: 'session creation error' })
     }
 })
 
@@ -46,14 +46,14 @@ sessionsRoutes.get('/', async (req, res) => {
     try {
         const user = res.locals.user
 
-        if (!user || !res.locals.session) return res.status(401).send('Unauthorized')
+        if (!user || !res.locals.session) return res.status(401).json({ message: 'Unauthorized' })
 
         const sessions = await lucia.getUserSessions(user.id);
         res.status(200).json(sessions);
 
     } catch (e) {
         console.log("[Sessions - GET] Error:", e.message)
-        res.status(500).send('sessions GET error')
+        res.status(500).json({ error: 'session GET error' })
     }
 })
 
@@ -69,10 +69,10 @@ sessionsRoutes.delete('/:session_id?', async (req, res) => {
         if (!providedSessionId && currentSessionId) res.appendHeader("Set-Cookie", lucia.createBlankSessionCookie().serialize())
 
         console.log(`ُ[ID: ${res.locals.user.id}] [Sessions- Delete] Deleted`)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'logged out' });
     } catch (e) {
         console.log(`ُ[ID: ${res.locals.user.id}] [Sessions - Delete] Error:`, e)
-        res.status(500).send('error')
+        res.status(500).json({ error: 'error' })
     }
 })
 

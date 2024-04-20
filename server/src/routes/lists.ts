@@ -24,7 +24,7 @@ listsRouter.get('/:id?', async (req, res) => {
         res.status(200).json(list); //needs json
     } catch (e) {
         console.log("[lists]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -33,11 +33,11 @@ listsRouter.post('/', async (req, res) => {
     //should check the title if 1) it exists 2)it is safe
     try {
         await prisma.lists.create({ data })
-        res.status(200).send("OK");
+        res.status(200).json({ message: 'List Added' });
         console.log("[lists] Inserted:", data.title)
     } catch (e) {
         console.log("[lists]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -52,10 +52,10 @@ listsRouter.delete('/', async (req, res) => {
                 { user_id, id: { in: body } }
         })
         console.log('[lists] Deleted:', body)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Lists Deleted' });
     } catch (e) {
         console.log("[lists]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -73,10 +73,10 @@ listsRouter.patch('/:id', async (req, res) => {
             data: changes
         })
         console.log('[lists] Edited:', id)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'List Edited' });
     } catch (e) {
         console.log("[lists]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -94,10 +94,10 @@ listsRouter.patch('/group', async (req, res) => {
             where: { user_id, OR: listIDs }
         })
         console.log('[lists] Edited:', id)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Lists Edited' });
     } catch (e) {
         console.log("[lists]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 

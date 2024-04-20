@@ -18,7 +18,7 @@ tagsRouter.get('/:list_id', async (req, res) => {
         res.status(200).json(tags);
     } catch (e) {
         console.log("[Tags]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -35,10 +35,10 @@ tagsRouter.post('/:list_id', async (req, res) => {
             data: toPostTags
         })
         console.log('[Tags] Inserted New Tags')
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Tags Added' });
     } catch (e) {
         console.log("[Tags]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -58,10 +58,10 @@ tagsRouter.delete('/', async (req, res) => {
         })
         console.log('[Tags] Deleted:', body)
 
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Tags Deleted' });
     } catch (e) {
         console.log("[Tags]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -78,10 +78,10 @@ tagsRouter.patch('/:id', async (req, res) => {
             data: changes
         })
         console.log('[Tags] Edited:', id)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Tag Edited' });
     } catch (e) {
         console.log("[Tags]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 

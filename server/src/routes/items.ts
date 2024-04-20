@@ -21,10 +21,10 @@ itemsRouter.post('/:list_id', async (req, res) => {
         })
 
         console.log("[Items] Inserted:", data.title)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Item Added' });
     } catch (e) {
         console.log("[Items]", e)
-        res.status(500).send('error item')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -45,7 +45,7 @@ itemsRouter.get('/:list_id?', async (req, res) => {
         res.status(200).json(items);
     } catch (e) {
         console.log("[Items]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -62,7 +62,7 @@ itemsRouter.get('/id/:id', async (req, res) => {
         res.status(200).json(item);
     } catch (e) {
         console.log("[Items]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -77,10 +77,10 @@ itemsRouter.delete('/', async (req, res) => {
             where: { id: { in: body }, user_id }
         })
         console.log('[Items] Deleted:', body)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Items Deleted' });
     } catch (e) {
         console.log("[Items]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -97,10 +97,10 @@ itemsRouter.patch('/:id', async (req, res) => {
             data: changes
         })
         console.log('[Items] Edited:', id)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Item Edited' });
     } catch (e) {
         console.log("[Items]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -117,10 +117,10 @@ itemsRouter.patch('/group', async (req, res) => {
             where: { user_id, OR: itemsIDs }
         })
         console.log('[Items] Edited:', id)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Items Edited' });
     } catch (e) {
         console.log("[Items]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -137,7 +137,7 @@ itemsRouter.get('/group/or?', async (req, res) => {
         res.status(200).json(items);
     } catch (e) {
         console.log("[Items]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 

@@ -15,10 +15,10 @@ router.post('/:item_id', async (req, res) => {
             data: toPostImages
         })
         console.log('[Images] Inserted New Images')
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Images Added' });
     } catch (e) {
         console.log("[Images]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -31,7 +31,7 @@ router.get('/:item_id', async (req, res) => {
         res.status(200).json(images);
     } catch (e) {
         console.log("[Images]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -44,10 +44,10 @@ router.delete('/', async (req, res) => {
             where: { id: { in: body } }
         })
         console.log('[Images] Deleted:', body)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Images Deleted' });
     } catch (e) {
         console.log("[Images]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
@@ -63,10 +63,10 @@ router.patch('/:id', async (req, res) => {
             data
         })
         console.log('[Images] Edited:', id)
-        res.status(200).send('OK');
+        res.status(200).json({ message: 'Images Edited' });
     } catch (e) {
         console.log("[Images]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 

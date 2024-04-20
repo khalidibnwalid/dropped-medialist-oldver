@@ -9,13 +9,13 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     const user = res.locals.user;
-    if (!user || !res.locals.session) return res.status(401).send('Unauthorized')
+    if (!user || !res.locals.session) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
-            if (!files.file) return new Error('no file was provided')
-            if (!fields.filename) return new Error('no Filename was provided')
+            if (!files.file) return res.status(400).json({ error: 'no file was provided' })
+            if (!fields.filename) return res.status(400).json({ error: 'no filename was provided' })
             //fields
             const filename = fields.filename[0];
 
@@ -29,12 +29,12 @@ router.post('/', async (req, res) => {
             // Delete the original file
             fs.unlinkSync(filepath);
 
-            res.status(200).send("OK"); //only needs a signal
+            res.status(200).json({ message: 'File Uploaded' }); //only needs a signal
             console.log("Passed:", filename);
         });
     } catch (e) {
         console.log("[File Upload]", e)
-        res.status(500).send('error');
+        res.status(500).json({ message: 'error' })
     }
 });
 
@@ -44,12 +44,11 @@ router.delete('/', async (req, res) => {
     const { fileNames } = req.body;
 
     if (!(fileNames.length > 0 || fileNames)) {
-        console.log(`No File Was Deleted`)
-        res.status(500).send('No File was Passed')
+        return res.status(400).json({ error: 'No File Was Passed' })
     }
 
     const user = res.locals.user;
-    if (!user || !res.locals.session) return res.status(401).send('Unauthorized')
+    if (!user || !res.locals.session) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
 
@@ -65,10 +64,10 @@ router.delete('/', async (req, res) => {
             // image path be in request: ['images/items/{file}']
 
         })
-        res.status(200).send("OK"); //only needs a signal
+        res.status(200).json({ message: 'File Deleted' });
     } catch (e) {
         console.log("[File Delete]", e)
-        res.status(500).send('error')
+        res.status(500).json({ message: 'error' })
     }
 })
 
