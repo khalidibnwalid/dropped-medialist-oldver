@@ -11,7 +11,9 @@ const listsRouter = express.Router();
 listsRouter.get('/:id?', async (req, res) => {
     const { id } = req.params
     const rules = objectBoolFilter(req.query)
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         if (id && !uuidValidate(id)) throw new Error("Bad ID")
@@ -44,7 +46,7 @@ listsRouter.post('/', async (req, res) => {
 // DELETE
 listsRouter.delete('/', async (req, res) => {
     const { body }: { body: string[] /* lists.id[] */ } = req.body;
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
 
     try {
         await prisma.lists.deleteMany({
@@ -64,7 +66,9 @@ listsRouter.delete('/', async (req, res) => {
 listsRouter.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const changes = req.body;
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         if (!uuidValidate(id)) throw new Error("Bad ID")
@@ -86,7 +90,9 @@ listsRouter.patch('/group', async (req, res) => {
     const data = req.body; //the json only contain what changed therfore it represents 'changes'
     const { id, ...restData }: { id: string[], changes: lists } = data
     const listIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         await prisma.lists.updateMany({

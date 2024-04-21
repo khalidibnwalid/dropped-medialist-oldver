@@ -10,7 +10,9 @@ const itemsRouter = express.Router();
 
 itemsRouter.post('/:list_id', async (req, res) => {
     const { list_id } = req.params;
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         if (!uuidValidate(list_id)) throw new Error("Bad ID")
@@ -33,7 +35,9 @@ itemsRouter.post('/:list_id', async (req, res) => {
 itemsRouter.get('/:list_id?', async (req, res) => {
     const rules = objectBoolFilter(req.query)
     const { list_id } = req.params
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
     const where = list_id ? { ...rules, user_id, list_id } : { ...rules, user_id }
 
     try {
@@ -52,7 +56,9 @@ itemsRouter.get('/:list_id?', async (req, res) => {
 // ## get a single item's data
 itemsRouter.get('/id/:id', async (req, res) => {
     const { id } = req.params
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         if (!uuidValidate(id)) throw new Error("Bad ID")
@@ -69,7 +75,9 @@ itemsRouter.get('/id/:id', async (req, res) => {
 // # DELETE
 itemsRouter.delete('/', async (req, res) => {
     const { body }: { body: string[] /* items.id[] */ } = req.body;
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     // should remove the deleted items from other items' related column varchar[]
     try {
@@ -88,7 +96,9 @@ itemsRouter.delete('/', async (req, res) => {
 itemsRouter.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const changes = req.body;
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         if (!uuidValidate(id)) throw new Error("Bad ID")
@@ -109,7 +119,9 @@ itemsRouter.patch('/group', async (req, res) => {
     const data = req.body; //the json only contain what changed therfore it represents 'changes'
     const { id, ...restData }: { id: string[], changes: items } = data
     const itemsIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         await prisma.items.updateMany({
@@ -128,7 +140,9 @@ itemsRouter.patch('/group', async (req, res) => {
 itemsRouter.get('/group/or?', async (req, res) => {
     const id = req.query.id as string | string[];
     const itemsIDs: string[] = Array.isArray(id) ? id : [id];
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         const items = await prisma.items.findMany({

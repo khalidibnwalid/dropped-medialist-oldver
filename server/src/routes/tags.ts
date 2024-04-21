@@ -7,7 +7,9 @@ const tagsRouter = express.Router();
 // # GET
 //get all tags of a list
 tagsRouter.get('/:list_id', async (req, res) => {
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         const { list_id } = req.params
@@ -26,9 +28,11 @@ tagsRouter.get('/:list_id', async (req, res) => {
 tagsRouter.post('/:list_id', async (req, res) => {
     const { list_id } = req.params;
     const { body }: { body: Pick<items_tags, 'id' | 'description' | 'group_name' | 'name'>[] } = req.body;
-    const user_id = res.locals.user.id
-    const toPostTags = body.map(tag => ({ list_id, user_id, ...tag }))
+    const user_id = res.locals?.user?.id
 
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
+
+    const toPostTags = body.map(tag => ({ list_id, user_id, ...tag }))
 
     try {
         await prisma.items_tags.createMany({
@@ -45,7 +49,9 @@ tagsRouter.post('/:list_id', async (req, res) => {
 // # DELETE
 tagsRouter.delete('/', async (req, res) => {
     const { body }: { body: string[] } = req.body; //id[]
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     // should remove the deleted tags from tags column varchar[] in items table 
 
@@ -70,7 +76,9 @@ tagsRouter.delete('/', async (req, res) => {
 tagsRouter.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const changes = req.body; //the json only contain what changed therfore it represents 'changes'
-    const user_id = res.locals.user.id
+    const user_id = res.locals?.user?.id
+
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
         await prisma.items_tags.update({
