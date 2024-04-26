@@ -1,11 +1,9 @@
-'use client'
-
-import ItemBadges from "@/app/Items/[id]/_components/itempage-badges";
+import ItemBadges from "@/app old/Items/[id]/_components/itempage-badges";
 import ListCard from "@/components/cards/list-cards";
 import { Card, CardFooter, Chip, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { listBodyContext } from "../provider";
+import { listBodyContext } from "./provider";
 
 function ListDisplayedItems() {
     const { viewMode, displayedItems } = useContext(listBodyContext)
@@ -19,7 +17,7 @@ function ListDisplayedItems() {
                         <Card
                             isFooterBlurred
                             radius="lg"
-                            className="group border-none duration-200 hover:scale-110 shadow-lg group aspect-[2/3] "
+                            className="group border-none duration-200 hover:scale-110 shadow-lg group aspect-[2/3] animate-fade-in"
                             key={item.title}
                             isPressable onPress={() => router.push(`../Items/${item.id}`)}
                         >

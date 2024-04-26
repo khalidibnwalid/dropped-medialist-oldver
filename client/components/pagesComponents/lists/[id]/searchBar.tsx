@@ -1,16 +1,12 @@
-'use client'
-
 import { Button, Input } from "@nextui-org/react"
 import { useContext } from "react"
 import { BiSearch } from "react-icons/bi"
 import { BsThreeDotsVertical } from "react-icons/bs"
 import { IoIosArrowUp } from "react-icons/io"
-import { listBodyContext } from "../provider"
-
+import { listBodyContext } from "./provider"
 
 function ListSearchBar() {
     const { setAdvancedSearchVisability, advancedSearchVisability, searchRef, handleSearch } = useContext(listBodyContext)
-
 
     return (
         <Input

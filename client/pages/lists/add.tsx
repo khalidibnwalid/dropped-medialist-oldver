@@ -1,7 +1,6 @@
-'use client'
-
 import TitleBar from "@/components/bars/titlebar";
 import SingleImageUploader from "@/components/forms/_components/Images/single-imageUploader";
+import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWithIndicators";
 import ListMainInfoForm from "@/components/forms/list/components/main-info";
 import { ListFormLowerLayout } from "@/components/forms/list/layouts";
 import { ListFormContext } from "@/components/forms/list/provider";
@@ -9,10 +8,12 @@ import type { itemBadgesType, itemlink } from "@/types/item";
 import type { listData } from "@/types/list";
 import handleImageUpload from "@/utils/api/handlers/handleImageUpload";
 import postAPI from "@/utils/api/postAPI";
-import { dateStamped } from "@/utils/helper-functions/dateStamped";
-import getFileExtension from "@/utils/helper-functions/getFileExtinsion";
-import sanitizeObject from "@/utils/helper-functions/sanitizeObject";
+import { dateStamped } from "@/utils/helperFunctions/dateStamped";
+import getFileExtension from "@/utils/helperFunctions/getFileExtinsion";
+import sanitizeObject from "@/utils/helperFunctions/sanitizeObject";
+import { mutateListCache } from "@/utils/query/cacheMutation";
 import { Button, Tooltip } from "@nextui-org/react";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { BiInfoCircle, BiPlus } from "react-icons/bi";
@@ -22,14 +23,21 @@ export default function AddListPage() {
     const router = useRouter();
     const { handleSubmit, control, setValue, getValues, formState: { errors } } = useForm<listData>();
 
+    const mutation = useMutation({
+        mutationFn: (data: listData) => postAPI('lists', data),
+        onSuccess: (data) => {
+            mutateListCache(data, "add")
+            router.push(`/lists/${data.id}`)
+        },
+    })
 
     let orderCounter = 0
 
     async function onSubmit(rawData: any) {
         // console.log("rawData", rawData) //test
-        const { templates: { fieldTemplates: { badges, links, ...fieldTemplates }, ...main }, rawCover, ...data }: any = rawData
+        const { templates: { fieldTemplates: { badges, links, ...fieldTemplates }, ...templates }, rawCover, ...data }: any = rawData
 
-        data['templates'] = { fieldTemplates } //returns the rest of 'fieldTemplates' objects
+        data['templates'] = { fieldTemplates, ...templates } //returns the rest of 'fieldTemplates' objects
 
         const badgesArray = badges.map((badge: itemBadgesType) => {
             orderCounter++
@@ -58,7 +66,6 @@ export default function AddListPage() {
         })
         data['templates']['fieldTemplates']['links'] = linksArray
 
-
         if (rawCover && rawCover[0]) {
             orderCounter++
             const coverName = dateStamped(`${orderCounter.toString()}.${getFileExtension(rawCover[0].file.name)}`)
@@ -66,35 +73,27 @@ export default function AddListPage() {
             data['cover_path'] = coverName;
         }
 
-        //handle the upload of logos, remember that u can't just get {links, badges,} by deconstructing, cuz they are inside inside the template object
+        //handle the upload of logos, remember that u can't just get {links, badges,} by deconstructing, cause they are inside inside the template object
         // templates > fieldTemplates -> 1. badges 2. links
         //templates: { fieldTemplates: badges }, templates: { fieldTemplates: links },
 
         sanitizeObject(data)
-        // console.log("finalData", data) //test
-        await postAPI('lists', data) //for testing
-        router.push('/lists') //for testing
+        mutation.mutate(data)
+        // console.log("finalData", data) 
     }
-
-    //for pincode input hide
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form>
                 <TitleBar starShowerBlack
                     title="Add a List"
-                    icon={
-                        <BiPlus className="text-[30px] mr-3 flex-none" />
-                    }
-                    withButtons>
-                    <Button
-                        onClick={() => { router.refresh() }}
-                        className="focus:outline-none bg-accented"
-                        variant="solid"
-                        type="submit"
-                    >
-                        <BiPlus className="text-xl" /> Save List
-                    </Button>
+                    startContent={<BiPlus className="text-[30px] mr-3 flex-none" />}
+                    withButtons
+                >
+                    <SubmitButtonWithIndicators
+                        mutation={mutation}
+                        onClick={handleSubmit(onSubmit)}
+                    />
                 </TitleBar>
 
                 <ListFormContext.Provider value={{ control, setValue, getValues, errors }}>

@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'; // Only for
 
 const defaultQueryConfig = { staleTime: 60*1000 } // 1 minute
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: { queries: defaultQueryConfig },
 })
 

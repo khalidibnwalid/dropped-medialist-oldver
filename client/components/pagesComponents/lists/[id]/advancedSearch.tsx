@@ -1,11 +1,9 @@
-'use client'
-
 import { itemTag } from "@/types/item";
 import { Button, Card, Checkbox, CheckboxGroup, Divider, Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useContext, useRef, useState } from "react";
-import { listBodyContext } from "../provider";
-import { tagsGroupsSorter } from "../tags/_helper-functions/tagsGroupsSorter";
+import { listBodyContext } from "./provider";
+import { tagsGroupsSorter } from "@/utils/helperFunctions/tagsGroupsSorter";
 
 function ListAdvancedSearch() {
     const { tags, advancedSearchVisability, setAdvancedSearchVisability, usedTags, setUsedTags, setTagsQuery, tagsSearchOR, setTagsSearchOR } = useContext(listBodyContext)

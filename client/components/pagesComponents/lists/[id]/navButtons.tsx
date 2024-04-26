@@ -1,8 +1,6 @@
-'use client'
-
 import EditDropDown from "@/components/buttons/editdropdown-button";
 import { Button, Divider } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useContext } from "react";
 import { BiDotsVerticalRounded, BiLockOpenAlt, BiPlus, BiPurchaseTag, BiRevision, BiSolidStar, BiStar } from "react-icons/bi";
 import { CiGrid2H } from "react-icons/ci";
@@ -11,7 +9,7 @@ import { IoGridOutline } from "react-icons/io5";
 import { LuDiamond } from "react-icons/lu";
 import { TbApiApp } from "react-icons/tb";
 import { TfiViewListAlt } from "react-icons/tfi";
-import { listBodyContext } from "../provider";
+import { listBodyContext } from "./provider";
 
 function ListNavButtons() {
 
@@ -126,7 +124,7 @@ function ListNavButtons() {
             </EditDropDown>
             <Button
                 size="sm" className="bg-accented" variant="solid" type="button" isIconOnly
-                onPress={() => router.refresh()}
+                onPress={() => router.reload()}
             >
                 <BiRevision className="text-lg" />
             </Button>

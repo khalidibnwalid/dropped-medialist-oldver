@@ -1,16 +1,8 @@
-'use client'
-
 import type { listData } from "@/types/list";
 import { Card, CardBody, Image } from "@nextui-org/react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 
-
-type cardParam = {
-  dataArray: listData[]
-}
-
-
-function ListCards({ dataArray }: cardParam) {
+function ListCards({ dataArray }: { dataArray: listData[] }) {
   const router = useRouter();
 
   return (
@@ -20,7 +12,7 @@ function ListCards({ dataArray }: cardParam) {
           className=" group bg-transparent duration-200 hover:scale-110 animate-fade-in"
           key={data.title}
           shadow="none"
-          onPress={() => router.push(`../lists/${data.id}`, { scroll: false })}
+          onPress={() => router.push(`../lists/${data.id}`)}
           isPressable
         >
 
