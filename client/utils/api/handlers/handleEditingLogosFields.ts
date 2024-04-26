@@ -1,6 +1,6 @@
 import type { itemBadgesType, itemData, itemlink } from "@/types/item";
-import { dateStamped } from "@/utils/helper-functions/dateStamped";
-import getFileExtension from "@/utils/helper-functions/getFileExtinsion";
+import { dateStamped } from "@/utils/helperFunctions/dateStamped";
+import getFileExtension from "@/utils/helperFunctions/getFileExtinsion";
 import deleteAPI from "../deleteAPI";
 import fetchAPI from "../fetchAPI";
 import handleImageUpload from "./handleImageUpload";

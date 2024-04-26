@@ -1,5 +1,3 @@
-"use client"
-
 export default async function fetchExternalAPI(link: string) {
   try {
     const res = await fetch(link, { cache: 'no-store' })

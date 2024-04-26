@@ -1,4 +1,4 @@
-import sanitizeString from "../../helper-functions/sanitizeString";
+import sanitizeString from "../../helperFunctions/sanitizeString";
 import postAPI from "../postAPI";
 //devMode will prevent the image from being uploaded
 export default async function handleImageUpload(image: any, imageFolder: string, filename: string, devMove?: boolean) {

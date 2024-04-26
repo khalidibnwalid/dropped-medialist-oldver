@@ -1,5 +1,3 @@
-'use client'
-
 export default async function patchAPI(params: string, data: object[] | object) {
     try {
         const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, {

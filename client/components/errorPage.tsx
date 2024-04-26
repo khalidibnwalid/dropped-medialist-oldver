@@ -1,47 +1,39 @@
-'use client' // Error components must be Client Components
-
-import { useEffect } from 'react'
-import { Button } from '@nextui-org/react'
-import { useRouter } from 'next/navigation'
+import { Button, ButtonProps } from '@nextui-org/react'
+import { useRouter } from 'next/router'
 import { BiArrowBack, BiRevision } from 'react-icons/bi'
 
-type params ={
-    error: Error & { digest?: string };
-    reset: () => void;
-}
-
-export default function Error({ error, reset }: params) {
+export default function ErrorPage({ message, MainMessage }: { message?: string, MainMessage?: string }) {
     const router = useRouter()
-    useEffect(() => {
-        // Log the error to an error reporting service
-        console.error(error)
-    }, [error])
+
+    const buttonProps: ButtonProps = {
+        className: ' shadow-lg',
+        size: 'lg',
+
+    }
 
     return (
         <div className=' w-full h-[90vh] flex items-center justify-center flex-col gap-y-10 pr-[70px] animate-fade-in'>
 
-            <p className=' text-7xl'>Something went wrong!</p>
-            {error.message && <p className=' text-xl font-semibold text-neutral-400'>Error: {error.message}</p>}
+            <p className=' text-9xl'>{MainMessage || "Something went wrong!"}</p>
+            {message && <p className=' text-xl font-semibold text-neutral-400'>{message}</p>}
             <div className='flex gap-x-4'>
                 <Button
                     variant='bordered'
-                    className=' shadow-lg'
-                    size='lg'
                     onClick={
                         () => router.back()
                     }
+                    {...buttonProps}
                 >
                     <BiArrowBack className=" text-xl" />
                     Go Back
                 </Button>
                 <Button
                     variant='ghost'
-                    className=' shadow-lg'
                     color='primary'
-                    size='lg'
                     onClick={
-                        () => reset()
+                        () => router.reload()
                     }
+                    {...buttonProps}
                 >
                     <BiRevision className=" text-xl" />
                     Try again

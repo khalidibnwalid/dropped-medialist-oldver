@@ -1,5 +1,3 @@
-"use client"
-
 export default async function fetchAPI(params: string) {
   try {
     const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, { 

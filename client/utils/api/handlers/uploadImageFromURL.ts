@@ -1,5 +1,5 @@
 import postAPI from '../postAPI'
-import sanitizeString from '@/utils/helper-functions/sanitizeString';
+import sanitizeString from '@/utils/helperFunctions/sanitizeString';
 
 async function uploadImageFromURL(imageURL: string, imageFolder: string, filename: string) {
   filename = sanitizeString(filename)
