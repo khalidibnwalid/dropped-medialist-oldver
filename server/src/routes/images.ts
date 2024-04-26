@@ -4,6 +4,8 @@ import express from 'express';
 const prisma = new PrismaClient()
 const router = express.Router();
 
+//need auth check
+
 // # POST
 router.post('/:item_id', async (req, res) => {
     const { item_id } = req.params;
@@ -11,11 +13,11 @@ router.post('/:item_id', async (req, res) => {
     const toPostImages = body.map(image => ({ item_id: item_id, ...image }))
 
     try {
-        await prisma.items_images.createMany({
+        const image = await prisma.items_images.createMany({
             data: toPostImages
         })
         console.log('[Images] Inserted New Images')
-        res.status(200).json({ message: 'Images Added' });
+        res.status(200).json(image);
     } catch (e) {
         console.log("[Images]", e)
         res.status(500).json({ message: 'error' })
@@ -58,12 +60,12 @@ router.patch('/:id', async (req, res) => {
     const data = req.body; //the json only contain what changed therfore it represents 'changes'
 
     try {
-        await prisma.items_images.update({
+        const image = await prisma.items_images.update({
             where: { id },
             data
         })
         console.log('[Images] Edited:', id)
-        res.status(200).json({ message: 'Images Edited' });
+        res.status(200).json(image);
     } catch (e) {
         console.log("[Images]", e)
         res.status(500).json({ message: 'error' })
