@@ -32,10 +32,11 @@ listsRouter.get('/:id?', async (req, res) => {
 
 listsRouter.post('/', async (req, res) => {
     const data = req.body
-    //should check the title if 1) it exists 2)it is safe
+    const user_id = res.locals?.user?.id
+
     try {
-        await prisma.lists.create({ data })
-        res.status(200).json({ message: 'List Added' });
+        const list = await prisma.lists.create({ data: { ...data, user_id } })
+        res.status(200).json(list);
         console.log("[lists] Inserted:", data.title)
     } catch (e) {
         console.log("[lists]", e)
@@ -72,12 +73,13 @@ listsRouter.patch('/:id', async (req, res) => {
 
     try {
         if (!uuidValidate(id)) throw new Error("Bad ID")
-        await prisma.lists.update({
+        const list = await prisma.lists.update({
             where: { user_id, id: id },
             data: changes
         })
+
         console.log('[lists] Edited:', id)
-        res.status(200).json({ message: 'List Edited' });
+        res.status(200).json(list);
     } catch (e) {
         console.log("[lists]", e)
         res.status(500).json({ message: 'error' })

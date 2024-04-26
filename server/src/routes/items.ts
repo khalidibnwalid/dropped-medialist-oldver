@@ -18,12 +18,12 @@ itemsRouter.post('/:list_id', async (req, res) => {
         if (!uuidValidate(list_id)) throw new Error("Bad ID")
         const data = req.body;
 
-        await prisma.items.create({
+        const item = await prisma.items.create({
             data: { ...data, user_id, list_id }
         })
 
         console.log("[Items] Inserted:", data.title)
-        res.status(200).json({ message: 'Item Added' });
+        res.status(200).json(item);
     } catch (e) {
         console.log("[Items]", e)
         res.status(500).json({ message: 'error' })
@@ -102,12 +102,12 @@ itemsRouter.patch('/:id', async (req, res) => {
 
     try {
         if (!uuidValidate(id)) throw new Error("Bad ID")
-        await prisma.items.update({
+            const item = await prisma.items.update({
             where: { id, user_id },
             data: changes
         })
         console.log('[Items] Edited:', id)
-        res.status(200).json({ message: 'Item Edited' });
+        res.status(200).json(item);
     } catch (e) {
         console.log("[Items]", e)
         res.status(500).json({ message: 'error' })

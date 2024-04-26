@@ -39,7 +39,7 @@ tagsRouter.post('/:list_id', async (req, res) => {
             data: toPostTags
         })
         console.log('[Tags] Inserted New Tags')
-        res.status(200).json({ message: 'Tags Added' });
+        res.status(200).json(toPostTags);
     } catch (e) {
         console.log("[Tags]", e)
         res.status(500).json({ message: 'error' })
@@ -85,8 +85,9 @@ tagsRouter.patch('/:id', async (req, res) => {
             where: { id, user_id },
             data: changes
         })
+        const tag = await prisma.items_tags.findUnique({ where: { id, user_id } })
         console.log('[Tags] Edited:', id)
-        res.status(200).json({ message: 'Tag Edited' });
+        res.status(200).json(tag);
     } catch (e) {
         console.log("[Tags]", e)
         res.status(500).json({ message: 'error' })
