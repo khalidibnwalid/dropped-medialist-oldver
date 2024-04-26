@@ -1,5 +1,3 @@
-'use client'
-
 import patchAPI from "@/utils/api/patchAPI";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
@@ -41,7 +39,7 @@ function EditDropDown({ data, list, item, children }: params) {
     }
 
     function editPage() {
-        router.push(`/${item ? 'Items' : 'lists'}/${(data as itemData).id}/edit`);
+        router.push(`/${item ? 'items' : 'lists'}/${(data as itemData).id}/edit`);
     }
 
     return (

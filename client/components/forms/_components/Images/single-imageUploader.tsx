@@ -1,5 +1,3 @@
-'use client'
-
 import { Button, Card } from "@nextui-org/react";
 import { Control, Controller } from 'react-hook-form';
 import { BiX } from "react-icons/bi";
@@ -17,7 +15,6 @@ type params = {
 export type UploadedImage = (File & { file: { name: string }, dataURL: string })[]
 
 function SingleImageUploader({ control, fieldName, className, content, required, defaultValue }: params) {
-    //add url input
 
     return (
         <div className={className}>
@@ -41,9 +38,8 @@ function SingleImageUploader({ control, fieldName, className, content, required,
                             isDragging,
                             dragProps
                         }) => (
-                            // type="button"
                             <div className="upload__image-wrapper h-full">
-                                {imageList.length == 0 && (
+                                {imageList.length == 0 ? (
                                     <Card
                                         isPressable
                                         className="flex items-center justify-center mb-5 h-full w-full 
@@ -53,9 +49,7 @@ function SingleImageUploader({ control, fieldName, className, content, required,
                                         onPress={onImageUpload}
                                         {...dragProps}>
                                         <p> Click or Drop <b>{content}</b> Here </p>
-                                    </Card>)}
-
-                                {imageList.length !== 0 && (
+                                    </Card>) : (
                                     <Card className="flex items-center justify-center mb-5 h-full w-full 
                                              shadow-lg object-cover overflow-hidden 
                                              border-5 border-accented">

@@ -1,25 +1,22 @@
-"use client"
-
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsSun } from "react-icons/bs";
 import { RiMoonClearLine } from "react-icons/ri";
 
-
-type navParms = {
-    onRight: boolean;
-    navButtons: navParmsBut[]
+type navProps = {
+    RightToLeft: boolean;
+    navButtons: navPropsBut[]
 }
 
-type navParmsBut = {
+type navPropsBut = {
     title: string;
     link: string;
     icon: React.ReactNode;
 }
 
-type navParmsClickBut = {
+type navPropsClickBut = {
     title: string
     onClick: Function;
     icon: React.ReactNode;
@@ -28,8 +25,8 @@ type navParmsClickBut = {
 
 let bOnRight: boolean | undefined = undefined
 
-function NavSideBar({ onRight = false, navButtons }: navParms) {
-    bOnRight = onRight;
+function NavSideBar({ RightToLeft = false, navButtons }: navProps) {
+    bOnRight = RightToLeft;
     // since homepage have margin left, there is a major bug on onRight, try it and you will see.
 
     const { theme, setTheme } = useTheme()
@@ -60,8 +57,9 @@ function NavSideBar({ onRight = false, navButtons }: navParms) {
 const buttonClassNames = " flex justify-center group p-2 my-3 rounded-lg text-3xl duration-200  hover:bg-foreground hover:text-background hover:py-3"
 const spanClassNames = (bOnRight ? 'right-12 pr-6 rounded-l-lg origin-right' : 'left-12 pl-6 rounded-r-lg origin-left') + " absolute justify-center  p-3 mt-[-11px]  bg-accented shadow-lg font-[400] text-lg text-foreground duration-200 scale-0 group-hover:scale-100 float-left z-[-1]"
 
-const NavBut = ({ link, title, icon }: navParmsBut) => {
-    const pathname = usePathname()
+const NavBut = ({ link, title, icon }: navPropsBut) => {
+    const router = useRouter()
+    const pathname = router.pathname
     return (
         <Link
             className={(pathname === link && 'bg-foreground text-background') + buttonClassNames} // active the button when we are inside its page: usePathname()
@@ -76,7 +74,7 @@ const NavBut = ({ link, title, icon }: navParmsBut) => {
     )
 }
 
-const ClickBut = ({ title, icon, onClick, activeIcon }: navParmsClickBut) => {
+const ClickBut = ({ title, icon, onClick, activeIcon }: navPropsClickBut) => {
     const [isActive, setIsActive] = useState(false)
     return (
         <button

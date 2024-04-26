@@ -10,6 +10,7 @@ import { LuDiamond } from "react-icons/lu";
 import { TbApiApp } from "react-icons/tb";
 import { TfiViewListAlt } from "react-icons/tfi";
 import { listBodyContext } from "./provider";
+import { queryClient } from "../../providers";
 
 function ListNavButtons() {
 
@@ -124,7 +125,7 @@ function ListNavButtons() {
             </EditDropDown>
             <Button
                 size="sm" className="bg-accented" variant="solid" type="button" isIconOnly
-                onPress={() => router.reload()}
+                onPress={() => queryClient.invalidateQueries({ queryKey: ['items', listData.id, { trash: false }] })}
             >
                 <BiRevision className="text-lg" />
             </Button>

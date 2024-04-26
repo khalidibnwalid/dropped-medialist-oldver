@@ -128,7 +128,6 @@ export default function ListBodyProvider({
                 && isItemUnderSearch(item)
                 && isItemUnderTagsFilter(item)
             )
-            console.log(searchInput)
             setDisplayedItems(filtered)
         } else if (favState || searchInput || tagsQuery) {
             const filtered = allItems.filter((item) =>
@@ -136,7 +135,6 @@ export default function ListBodyProvider({
                 && isItemUnderSearch(item)
                 && isItemUnderTagsFilter(item)
             )
-            console.log(searchInput)
             setDisplayedItems(filtered)
         } else {
             setDisplayedItems(allItems)

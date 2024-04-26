@@ -1,4 +1,4 @@
-import ItemBadges from "@/app old/Items/[id]/_components/itempage-badges";
+import ItemBadges from "@/components/pagesComponents/items/[id]/itempage-badges";
 import ListCard from "@/components/cards/list-cards";
 import { Card, CardFooter, Chip, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ function ListDisplayedItems() {
                             radius="lg"
                             className="group border-none duration-200 hover:scale-110 shadow-lg group aspect-[2/3] animate-fade-in"
                             key={item.title}
-                            isPressable onPress={() => router.push(`../Items/${item.id}`)}
+                            isPressable onPress={() => router.push(`../items/${item.id}`)}
                         >
                             {item.poster_path
                                 ? <Image
@@ -56,7 +56,7 @@ function ListDisplayedItems() {
                                 title={item.title}
                                 discrip={item.description}
                                 image={item.poster_path ? `${process.env.PUBLIC_IMG_PATH}/images/items/${item.poster_path}` : undefined}
-                                link={`../Items/${item.id}`}
+                                link={`../items/${item.id}`}
                                 underTitle={item.badges && <ItemBadges badgesArray={item.badges} />}
                             />
                         </div>
@@ -82,7 +82,7 @@ function ListDisplayedItems() {
                             <TableRow
                                 key={item.title}
                                 className="hover:cursor-pointer hover:bg-default duration-300 animate-fade-in"
-                                onClick={() => router.push(`../Items/${item.id}`, { scroll: false })}
+                                onClick={() => router.push(`../items/${item.id}`, { scroll: false })}
                             >
                                 <TableCell>
                                     {item.poster_path

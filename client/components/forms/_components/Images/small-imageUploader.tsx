@@ -1,12 +1,9 @@
-'use client'
-
 import { Button, Card } from "@nextui-org/react";
 import type { DefaultValues } from "react-hook-form";
 import { Control, Controller } from 'react-hook-form';
 import { BiX } from "react-icons/bi";
 import { LuImagePlus } from "react-icons/lu";
 import ImageUploading from "react-images-uploading";
-
 
 type params = {
     control: Control<any>;
@@ -39,7 +36,7 @@ function SmallImageUploader({ control, fieldName, className, disabled, key }: pa
                         }) => (
                             // type="button"
                             <div className="upload__image-wrapper h-full">
-                                {imageList.length == 0 && (
+                                {imageList.length == 0 ? (
                                     <Card
                                         isDisabled={disabled}
                                         isPressable
@@ -50,11 +47,9 @@ function SmallImageUploader({ control, fieldName, className, disabled, key }: pa
                                         onPress={onImageUpload}
                                         {...dragProps}>
                                         <LuImagePlus className="text-2xl" />
-                                    </Card>)}
-
-                                {imageList.length !== 0 && (
+                                    </Card>) : (
                                     <div className="h-full w-full">
-                                        {imageList.map((image, index) => (
+                                        {Array.isArray(imageList) && imageList?.map((image, index) => (
                                             <div key={index} className="image-item w-full h-full image-item__btn-wrapper">
                                                 <Button
                                                     type="button"

@@ -1,8 +1,6 @@
-'use client'
-
-import { tagsGroupsSorter } from "@/app/lists/[id]/tags/_helper-functions/tagsGroupsSorter";
+import { tagsGroupsSorter } from "@/utils/helperFunctions/tagsGroupsSorter"
 import type { itemTag } from "@/types/item";
-import sanitizeString from "@/utils/helper-functions/sanitizeString";
+import sanitizeString from "@/utils/helperFunctions/sanitizeString";
 import { Button, Checkbox, CheckboxGroup, Divider, Input, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import { useFieldArray } from 'react-hook-form';

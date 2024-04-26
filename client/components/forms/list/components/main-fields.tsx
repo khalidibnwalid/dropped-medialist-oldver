@@ -1,5 +1,3 @@
-'use client'
-
 import SortableFields from "@/components/forms/_components/sortableFields";
 import { Button, Checkbox, Divider, Input, Tooltip } from "@nextui-org/react";
 import { useContext } from "react";
@@ -8,7 +6,7 @@ import { BiPlus, BiX } from "react-icons/bi";
 import { ListFormContext } from "../provider";
 
 function ListMainFieldsForm() {
-    const { control, getValues, fieldTemplates } = useContext(ListFormContext)
+    const { control, fieldTemplates } = useContext(ListFormContext)
 
     return (
         <div id="upper fields">
@@ -56,46 +54,32 @@ function ListMainFieldsForm() {
 
                         <Divider orientation="vertical" className="h-5" />
 
-                        {getValues<any>(`templates.fieldTemplates.mainFields[${index}]`)?.bIsNumber ? //on resorting to presearve original values
-                            <Tooltip content={
-                                <div className="px-1 py-2">
-                                    <div className="text-small font-bold">Countable?</div>
-                                    <div className="text-xs w-48"> When checked, the field gains a (+) and (-) buttons </div>
-                                </div>
-                            }
-                                placement="right" color="foreground">
-                                <div>
-                                    <Controller
-                                        control={fieldControl}
-                                        name={`templates.fieldTemplates.mainFields[${index}].bIsNumber`}
-                                        render={({ field }) =>
-                                            <Checkbox
-                                                size="lg"
-                                                defaultSelected={getValues<any>(`templates.fieldTemplates.mainFields[${index}]`)?.bIsNumber}
-                                                className="flex-none"
-                                                {...field}
-                                            />
-                                        } />
-                                </div>
-                            </Tooltip>
-                            :
-                            <Tooltip content={
-                                <div className="px-1 py-2">
-                                    <div className="text-small font-bold">Countable?</div>
-                                    <div className="text-xs w-48"> When checked, the field gains a (+) and (-) buttons </div>
-                                </div>
-                            }
-                                placement="right" color="foreground">
-                                <div>
-                                    <Controller
-                                        control={fieldControl}
-                                        name={`templates.fieldTemplates.mainFields[${index}].bIsNumber`}
-                                        render={({ field }) =>
-                                            <Checkbox size="lg" className="flex-none" {...field} />
-                                        } />
-                                </div>
-                            </Tooltip>
-                        }
+                        <Controller
+                            control={fieldControl}
+                            name={`templates.fieldTemplates.mainFields[${index}].bIsNumber`}
+                            render={({ field }) => (
+                                <Tooltip
+                                    content={
+                                        <div className="px-1 py-2">
+                                            <div className="text-small font-bold">Countable?</div>
+                                            <div className="text-xs w-48"> When checked, the field gains a (+) and (-) buttons </div>
+                                        </div>
+                                    }
+                                    placement="right"
+                                    color="foreground"
+                                >
+                                    <div>
+                                        <Checkbox
+                                            size="lg"
+                                            className="flex-none"
+                                            defaultSelected={field.value}
+                                            {...field}
+                                        />
+                                    </div>
+                                </Tooltip>
+                            )}
+                        />
+                        
                     </div>
                 )}
             </SortableFields>

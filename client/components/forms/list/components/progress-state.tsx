@@ -1,5 +1,3 @@
-'use client'
-
 import SortableFields from "@/components/forms/_components/sortableFields";
 import type { itemProgressState } from "@/types/item";
 import { Autocomplete, AutocompleteItem, Button, Chip, Divider, Input } from "@nextui-org/react";
@@ -10,7 +8,7 @@ import { BiPlus, BiX } from "react-icons/bi";
 import { ListFormContext } from "../provider";
 
 function ListProgressStateForm() {
-    const { control, setValue, getValues, fieldTemplates } = useContext(ListFormContext)
+    const { control, fieldTemplates } = useContext(ListFormContext)
 
     const stateColors: itemProgressState[] = [
         { color: "primary", name: "Blue" },
@@ -59,30 +57,37 @@ function ListProgressStateForm() {
                         <Divider orientation="vertical" className="h-5" />
 
 
-                        <Autocomplete
-                            defaultItems={stateColors}
-                            label="Color"
-                            className="flex-grow"
-                            size="sm"
-                            //const x = 
-                            defaultSelectedKey={getValues<any>(`templates.fieldTemplates.states[${index}].color`)}
-                            onSelectionChange={(key: Key) => { setValue<any>(`templates.fieldTemplates.states[${index}].color`, key); }}
-                        >
-                            {(key) => (
-                                <AutocompleteItem
-                                    key={key.color ? key.color : ''}
-                                    endContent={
-                                        <Chip
-                                            radius="lg"
-                                            color={key.color}
-                                            className="w-5 h-5"
-                                        >
-                                        </Chip>
-                                    }>
-                                    {key.name}
-                                </AutocompleteItem>
+                        <Controller
+                            control={control}
+                            name={`templates.fieldTemplates.states[${index}].color`}
+                            defaultValue=""
+                            render={({ field }) => (
+                                <Autocomplete
+                                    defaultItems={stateColors}
+                                    label="Color"
+                                    className="flex-grow"
+                                    size="sm"
+                                    defaultSelectedKey={field.value as any}
+                                    onSelectionChange={(key: Key) => field.onChange(key)}
+                                >
+                                    {(key) => (
+                                        <AutocompleteItem
+                                            key={key.color ? key.color : ''}
+                                            endContent={
+                                                <Chip
+                                                    radius="lg"
+                                                    color={key.color}
+                                                    className="w-5 h-5"
+                                                >
+                                                </Chip>
+                                            }>
+                                            {key.name}
+                                        </AutocompleteItem>
+                                    )}
+                                </Autocomplete>
                             )}
-                        </Autocomplete>
+                        />
+
 
                     </div>
                 )}

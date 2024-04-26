@@ -2,7 +2,7 @@ import TitleBar from '@/components/bars/titlebar';
 import ErrorPage from '@/components/errorPage';
 import ListCards from '@/components/pagesComponents/lists/listsCards';
 import LoadingLists from '@/components/pagesComponents/lists/listsloading';
-import { allListsKey, listsFetchOptions } from '@/utils/query/listsOptions';
+import { allListsKey, listsFetchOptions } from '@/utils/query/queryOptions/listsOptions';
 import { Button, ButtonProps } from '@nextui-org/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';

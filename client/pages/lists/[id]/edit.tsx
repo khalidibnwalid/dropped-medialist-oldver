@@ -15,7 +15,7 @@ import patchAPI from "@/utils/api/patchAPI";
 import { dateStamped } from "@/utils/helperFunctions/dateStamped";
 import getFileExtension from "@/utils/helperFunctions/getFileExtinsion";
 import { mutateListCache } from "@/utils/query/cacheMutation";
-import { listFetchOptions } from "@/utils/query/listsOptions";
+import { listFetchOptions } from "@/utils/query/queryOptions/listsOptions";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from 'next/router';
@@ -93,10 +93,10 @@ export default function EditListPage() {
 
             //filter unchanged value to avoid unneeded changes
             Object.keys(data).forEach((key) => {
-                if (data[key] != listData[key as keyof typeof listData]) {
-                    finalData[key as keyof typeof listData] = data[key]
+                if (data[key] != listData[key as keyof listData]) {
+                    finalData[key as keyof listData] = data[key]
                 }
-            });
+            })
 
             mutation.mutate(finalData);
             // console.log("Final Data:", finalData)    

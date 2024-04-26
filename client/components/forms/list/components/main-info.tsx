@@ -1,5 +1,3 @@
-'use client'
-
 import { Input, Switch } from "@nextui-org/react";
 import { useContext, useState } from "react";
 import { Controller } from 'react-hook-form';
@@ -9,9 +7,6 @@ import { ListFormContext } from "../provider";
 
 function ListMainInfoForm() {
     const { control, listData: listData } = useContext(ListFormContext)
-    const [isVisible, setIsVisible] = useState(false);
-    const toggleVisibility = () => setIsVisible(!isVisible);
-
     const [isPinAllowed, setIsPinAllowed] = useState(() => {
         if (typeof (listData?.pincode) === 'string') { return true } else { return false }
     })
@@ -37,7 +32,7 @@ function ListMainInfoForm() {
                         />
                     } />
 
-                <div id="PinCode" className="flex gap-x-2 items-center justify-center">
+                {/* <div id="PinCode" className="flex gap-x-2 items-center justify-center">
                     <Controller
                         control={control}
                         name="pincode"
@@ -49,16 +44,7 @@ function ListMainInfoForm() {
                                 size="md"
                                 label="Pin Code"
                                 variant="bordered"
-                                endContent={
-                                    <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
-                                        {isVisible ? (
-                                            <FaEyeSlash className="text-2xl text-default-400 pointer-events-none" />
-                                        ) : (
-                                            <FaEye className="text-2xl text-default-400 pointer-events-none" />
-                                        )}
-                                    </button>
-                                }
-                                type={isVisible ? "text" : "password"}
+                                type="password"
                                 isDisabled={isPinAllowed ? false : true}
                                 {...field} />
                         } />
@@ -68,7 +54,7 @@ function ListMainInfoForm() {
                         startContent={<BiShieldAlt2 />}
                         endContent={<BiBlock />} >
                     </Switch>
-                </div>
+                </div> */}
 
             </div >
         </>

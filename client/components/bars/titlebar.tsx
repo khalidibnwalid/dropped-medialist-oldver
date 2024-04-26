@@ -1,12 +1,11 @@
-'use client'
-
 import { ButtonGroup } from "@nextui-org/react";
 
-type params = {
+type props = {
     title?: string;
     children?: React.ReactNode;
     className?: string;
-    icon?: React.ReactNode;
+    icon? : React.ReactNode;
+    startContent? : React.ReactNode;
     addAction?: void;
     starShowerBlack?: boolean;
     edgeOrange?: boolean;
@@ -21,13 +20,14 @@ function TitleBar({
     children,
     className,
     icon,
+    startContent,
     starShowerBlack,
     edgeOrange,
     edgeBlue,
     titleFlexNone,
     withButtons,
     noShadow
-}: params) {
+}: props) {
     return (
         <header
             className={`${className || 'p-5 my-5'} 
@@ -42,7 +42,7 @@ function TitleBar({
                         `}
         >
 
-            {icon}
+            {icon || startContent}
             <h1 className={`text-lg ${titleFlexNone ? 'flex-none' : 'flex-grow'} `}>{title}</h1>
 
             {withButtons
