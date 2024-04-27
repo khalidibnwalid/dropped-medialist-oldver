@@ -33,11 +33,9 @@ export interface apiDataAddItemPage {
     key: number
 }
 
-export default function AddItemPage() {
+function Page() {
     const router = useRouter();
     const listId = router.query.id as string
-
-    if (!uuidValidate(listId)) return <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<itemData>();
 
@@ -175,4 +173,10 @@ export default function AddItemPage() {
             </ItemApiLoaderProvider>
         </ItemFormContext.Provider >
     )
+}
+
+export default function AddItemPage() {
+    const router = useRouter();
+    const itemId = router.query.id as string
+    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 }

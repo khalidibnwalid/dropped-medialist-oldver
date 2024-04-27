@@ -19,10 +19,9 @@ import { BiInfoCircle, BiPlus, BiTrash } from 'react-icons/bi';
 import { TbApiApp } from 'react-icons/tb';
 import { validate as uuidValidate } from 'uuid';
 
-export default function EditAPIPage() {
+function Page() {
     const router = useRouter()
     const listId = router.query.id as string
-    if (!uuidValidate(listId)) return <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 
     const { handleSubmit, control, setValue, getValues, formState: { errors } } = useForm<listApiWithSearchType>();
     const { data: listData, isPending, isError, isSuccess } = useQuery(listFetchOptions(listId))
@@ -200,4 +199,10 @@ export default function EditAPIPage() {
 
         </ItemApiTemplateContext.Provider >
     )
+}
+
+export default function EditAPIPage() {
+    const router = useRouter();
+    const itemId = router.query.id as string
+    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 }

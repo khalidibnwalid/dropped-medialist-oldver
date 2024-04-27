@@ -22,11 +22,9 @@ interface context {
 
 export const itemViewContext = createContext({} as context);
 
-export default function ItemPage() {
+function Page() {
     const router = useRouter();
     const itemId = router.query.id as string;
-
-    if (!uuidValidate(itemId)) return <ErrorPage message="Bad Item ID, Page Doesn't Exist" MainMessage="404!" />
 
     const { userData } = useContext(authContext)
 
@@ -70,5 +68,11 @@ export default function ItemPage() {
             </itemViewContext.Provider>
         </div>
     )
+}
+
+export default function ItemPage() {
+    const router = useRouter();
+    const itemId = router.query.id as string
+    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad Item ID, Page Doesn't Exist" MainMessage="404!" />
 }
 

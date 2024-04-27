@@ -17,11 +17,10 @@ import { useForm } from 'react-hook-form';
 import { BiCheckDouble, BiInfoCircle, BiPlus } from 'react-icons/bi';
 import { validate as uuidValidate } from 'uuid';
 
-export default function AddAPIPage() {
+function Page() {
     const router = useRouter();
     const listId = router.query.id as string
-    if (!uuidValidate(listId)) return <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
-
+    
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
     const { data: listData, isPending, isError } = useQuery(listFetchOptions(listId))
 
@@ -120,4 +119,10 @@ export default function AddAPIPage() {
 
         </ItemApiTemplateContext.Provider>
     )
+}
+
+export default function AddAPIPage() {
+    const router = useRouter();
+    const itemId = router.query.id as string
+    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 }

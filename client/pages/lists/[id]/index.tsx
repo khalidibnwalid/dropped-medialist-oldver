@@ -14,10 +14,9 @@ import { useRouter } from 'next/router';
 import { BiCollection } from "react-icons/bi";
 import { validate as uuidValidate } from 'uuid';
 
-function Listpage() {
+function Page() {
   const router = useRouter()
   const listId = router.query.id as string
-  if (!uuidValidate(listId)) return <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 
   const list = useQuery(listFetchOptions(listId))
   const items = useQuery(itemsFetchOptions(listId))
@@ -50,4 +49,8 @@ function Listpage() {
   )
 }
 
-export default Listpage;
+export default function ListPage() {
+  const router = useRouter();
+  const itemId = router.query.id as string
+  return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
+}

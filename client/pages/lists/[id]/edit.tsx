@@ -28,10 +28,9 @@ import { validate as uuidValidate } from 'uuid';
 
 type form = listData & { rawCover?: UploadedImage }
 
-export default function EditListPage() {
+function Page() {
     const router = useRouter();
     const listId = router.query.id as string
-    if (!uuidValidate(listId)) return <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
     
     const { userData } = useContext(authContext)
 
@@ -174,4 +173,10 @@ export default function EditListPage() {
             </ListFormContext.Provider>
         </form >
     )
+}
+
+export default function EditListPage() {
+    const router = useRouter();
+    const itemId = router.query.id as string
+    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 }
