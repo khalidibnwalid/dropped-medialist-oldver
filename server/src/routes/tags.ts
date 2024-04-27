@@ -33,13 +33,15 @@ tagsRouter.post('/:list_id', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const toPostTags = body.map(tag => ({ list_id, user_id, ...tag }))
+    const tagNames = toPostTags.map(tag => tag.name)
 
     try {
         await prisma.items_tags.createMany({
             data: toPostTags
         })
-        console.log('[Tags] Inserted New Tags')
-        res.status(200).json(toPostTags);
+        
+        const tags = await prisma.items_tags.findMany({ where: { name: { in: tagNames } } })
+        res.status(200).json(tags);
     } catch (e) {
         console.log("[Tags]", e)
         res.status(500).json({ message: 'error' })
@@ -57,14 +59,10 @@ tagsRouter.delete('/', async (req, res) => {
 
     try {
         await prisma.items_tags.deleteMany({
-            where: {
-                user_id,
-                id: { in: body }
-            }
+            where: { user_id, id: { in: body } }
         })
         console.log('[Tags] Deleted:', body)
-
-        res.status(200).json({ message: 'Tags Deleted' });
+        res.status(200).json(body);
     } catch (e) {
         console.log("[Tags]", e)
         res.status(500).json({ message: 'error' })
@@ -81,11 +79,10 @@ tagsRouter.patch('/:id', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
-        await prisma.items_tags.update({
+        const tag = await prisma.items_tags.update({
             where: { id, user_id },
             data: changes
         })
-        const tag = await prisma.items_tags.findUnique({ where: { id, user_id } })
         console.log('[Tags] Edited:', id)
         res.status(200).json(tag);
     } catch (e) {

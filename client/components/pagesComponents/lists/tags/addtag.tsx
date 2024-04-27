@@ -1,50 +1,42 @@
-'use client'
-
 import type { itemTag } from "@/types/item";
 import postAPI from "@/utils/api/postAPI";
-import sanitizeObject from "@/utils/helper-functions/sanitizeObject";
+import sanitizeObject from "@/utils/helperFunctions/sanitizeObject";
+import { mutateTagCache } from "@/utils/query/cacheMutation";
 import { Autocomplete, AutocompleteItem, Button, Card, Input, Textarea } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiPlus } from "react-icons/bi";
-import { TagsPageContext } from "../provider";
+import { TagsPageContext } from "./provider";
+
+type NonEmptyArray<T> = [T, ...T[]];
 
 export const AddTag = () => {
     const { listData, sortedTags } = useContext(TagsPageContext)
-
-    const router = useRouter();
     const [showAdd, setShowAdd] = useState(false)
+    const { register, handleSubmit, setValue } = useForm<itemTag>()
 
-    const { register, handleSubmit, setValue, reset } = useForm<itemTag>()
+    const mutation = useMutation({
+        mutationFn: (data: object) => postAPI(`tags/${listData.id}`, data),
+        onSuccess: (data: NonEmptyArray<itemTag>) => {
+            mutateTagCache(data[0], "add")
+            //reset fields
+            setValue("name", "")
+            setValue("description", undefined)
+            setValue("group_name", undefined)
+        }
+    })
 
     const onSubmit: SubmitHandler<itemTag> = (data) => {
         sanitizeObject(data)
-        postAPI(`tags/${listData.id}`, { body: [data] })
+        mutation.mutate({ body: [data] })
         setShowAdd(false)
-
-        //reset fields
-        setValue("name", "")
-        setValue("description", undefined)
-        setValue("group_name", undefined)
-
-        router.refresh()
     }
 
     return (
-        <Card
-            className=" w-full
-                        flex justify-center
-                        shadow-sm 
-                        rounded-2xl
-                        duration-150 
-                        animate-fade-in"
-        >
+        <Card className=" w-full flex justify-center shadow-sm  rounded-2xl duration-150  animate-fade-in" >
             {showAdd ?
-                <form
-                    className="flex-grow grid grid-cols-1 gap-y-2 p-4 animate-fade-in duration-200 bg-accented"
-                >
-
+                <form className="flex-grow grid grid-cols-1 gap-y-2 p-4 animate-fade-in duration-200 bg-accented">
                     <div className="flex items-center">
                         <p className="text-sm flex-none mr-2">Name</p>
                         <Input

@@ -1,32 +1,42 @@
-'use client'
-
 import { TrashPopover } from "@/components/buttons/trashpop-button";
 import type { itemTag } from "@/types/item";
 import deleteAPI from "@/utils/api/deleteAPI";
 import patchAPI from "@/utils/api/patchAPI";
-import sanitizeObject from "@/utils/helper-functions/sanitizeObject";
+import sanitizeObject from "@/utils/helperFunctions/sanitizeObject";
+import { mutateTagCache } from "@/utils/query/cacheMutation";
 import { Autocomplete, AutocompleteItem, Button, Card, Input, Textarea } from "@nextui-org/react";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { createSerializer, parseAsArrayOf, parseAsString } from "nuqs";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiSolidPencil, BiTrashAlt } from "react-icons/bi";
 import { FaEye } from "react-icons/fa";
-import { GroupedTagType } from "../_helper-functions/tagsGroupsSorter";
+import { GroupedTagType } from "@/utils/helperFunctions/tagsGroupsSorter";
 
 export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: GroupedTagType[] }) => {
     const router = useRouter();
     const [editState, setEditState] = useState(false)
-
     const { register, handleSubmit } = useForm<itemTag>()
+
+    const editMutation = useMutation({
+        mutationFn: (data: itemTag) => patchAPI(`tags/${tag.id}`, data),
+        onSuccess: (data) => mutateTagCache(data, "edit")
+    })
+
+    const deleteMutation = useMutation({
+        mutationFn: () => deleteAPI('tags', { body: [tag.id] }),
+        onSuccess: () => mutateTagCache(tag, "delete")
+    })
+
     const onSubmit: SubmitHandler<itemTag> = (data) => {
         sanitizeObject(data)
-        patchAPI(`tags/${tag.id}`, data)
+        editMutation.mutate(data)
         setEditState(false)
+
         tag.name = data.name
         tag.description = data.description
-        if (tag.group_name != data.group_name) { router.refresh() }
-        //for smooth experiance and to avoid the needless refreshing of the page if the group was the same
+        tag.group_name = data?.group_name
     }
 
 
@@ -140,10 +150,7 @@ export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: Grouped
 
                     <TrashPopover
                         placement="bottom-end"
-                        onPress={() => {
-                            deleteAPI('tags', { body: [tag.id] });
-                            router.refresh()
-                        }}
+                        onPress={() => deleteMutation.mutate()}
                     >
                         {({ isTrashOpen }) =>
                             <Button

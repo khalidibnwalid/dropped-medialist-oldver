@@ -1,9 +1,7 @@
-'use client'
-
-import { Input } from "@nextui-org/react"
-import { KeyboardEvent, useContext, useRef } from "react"
-import { BiSearch } from "react-icons/bi"
-import { TagsPageContext } from "../provider"
+import { Input } from "@nextui-org/react";
+import { KeyboardEvent, useContext, useRef } from "react";
+import { BiSearch } from "react-icons/bi";
+import { TagsPageContext } from "./provider";
 
 function TagsSearchBar() {
 
@@ -48,7 +46,7 @@ function TagsSearchBar() {
                 ],
             }}
             placeholder="Search Tags..."
-            size="sm"
+            size="md"
             startContent={
                 <BiSearch size={30} />
             }

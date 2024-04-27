@@ -5,9 +5,8 @@ import fetchAPI from '../../api/fetchAPI'
 /** All Tags of A List 
  * @example Key: ['tags', listId]
 */
-export const tagsFetchOptions = (listId: string, enabled?: boolean) => queryOptions<itemTag[]>({
+export const tagsFetchOptions = (listId: string) => queryOptions<itemTag[]>({
     queryKey: ['tags', listId],
     queryFn: async () => await fetchAPI(`tags/${listId}`),
-    enabled
 })
 
