@@ -1,5 +1,3 @@
-'use client'
-
 import { itemData } from "@/types/item";
 import type { listData } from "@/types/list";
 import deleteAPI from "@/utils/api/deleteAPI";
@@ -12,7 +10,6 @@ import { useState } from "react";
 import { BiCheck, BiRevision, BiTrashAlt } from "react-icons/bi"; //BoxIcons
 import { FaEye } from "react-icons/fa";
 
-
 //item = false => list, and vice versa
 function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], item?: boolean }) {
     const options = dataArray.map((data) => data.id)
@@ -20,7 +17,7 @@ function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], it
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const [groupSelected, setGroupSelected] = useState([]);
+    const [groupSelected, setGroupSelected] = useState<string[]>([]);
     const router = useRouter();
 
     function clearTrash() {
@@ -87,7 +84,7 @@ function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], it
 
                 <CheckboxGroup
                     value={groupSelected}
-                    onChange={setGroupSelected}>
+                    onChange={(e: any) => setGroupSelected(e)}>
                     <div className="grid grid-cols-2 lg:grid-cols-1 gap-7 pl-4 animate-fade-in">
                         {dataArray?.map((data, index) =>
                             <CardCheckBox key={`${item ? 'item' : 'list'}-checkbox-${index}}`} data={data} item={item} />)

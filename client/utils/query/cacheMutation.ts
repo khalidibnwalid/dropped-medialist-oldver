@@ -1,6 +1,6 @@
 import { queryClient } from "@/components/pagesComponents/providers";
 import { listData } from "@/types/list";
-import { allListsKey } from "./queryOptions/listsOptions";
+import { allListsKey, trashListsKey } from "./queryOptions/listsOptions";
 import { itemData, itemImageType, itemTag } from "@/types/item";
 
 /** - Edit AllLists Cache
@@ -17,6 +17,7 @@ export const mutateListCache = (data: listData, type: "edit" | "add" | "delete")
                 ? allLists
                 : [...allLists, data].sort((a, b) => a.title.localeCompare(b.title)) //sort based on title
         })
+
     !isDelete
         ? queryClient.setQueryData(['list', data.id], data)
         : queryClient.removeQueries({ queryKey: ['list', data.id] })
@@ -68,5 +69,3 @@ export const mutateTagCache = (data: itemTag, type: "edit" | "add" | "delete") =
         return isDelete ? allTags : [...allTags, data]
     })
 }
-
-//on delete it should also check the trash and edit its cache (only for lists and items)

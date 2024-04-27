@@ -3,6 +3,7 @@ import { queryOptions } from '@tanstack/react-query'
 import fetchAPI from '../../api/fetchAPI'
 
 export const allListsKey = ['lists', { trash: false }]
+export const trashListsKey = ['lists', { trash: true }]
 
 /** All Lists 
  * @example Key: ['lists', { trash: false }]

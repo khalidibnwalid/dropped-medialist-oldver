@@ -13,7 +13,6 @@ export default async function deleteAPI(params: string, data?: object) {
       throw new Error('Failed to Add Data')
   }
 
-  console.log(res)
   return res.json()
 
   } catch (e) {

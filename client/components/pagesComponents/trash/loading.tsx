@@ -1,4 +1,3 @@
-'use client'
 import { Button, ButtonGroup, Skeleton } from "@nextui-org/react";
 import { BiCheck, BiRevision, BiTrashAlt } from "react-icons/bi"; //BoxIcons
 

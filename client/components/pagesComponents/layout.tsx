@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       { title: "lists", link: "/lists", icon: <BiCollection key="nav-BiHomeAlt2" /> },
       // { title: "Search", link: "/Search", icon: <BiSearch key="nav-BiHomeAlt2" /> },
       // { title: "Settings", link: "/Settings", icon: <BiSliderAlt key="nav-BiHomeAlt2" /> },
-      { title: "Trash", link: "/Trash", icon: <BiTrashAlt key="nav-BiHomeAlt2" /> },
+      { title: "Trash", link: "/trash", icon: <BiTrashAlt key="nav-BiHomeAlt2" /> },
       // { title: "RSS", link: "/RSS", icon: <BiRss key="nav-BiHomeAlt2" /> },
     ]
   

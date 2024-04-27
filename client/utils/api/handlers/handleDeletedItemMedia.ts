@@ -1,5 +1,3 @@
-"use server"
-
 import type { itemData, itemImageType } from "@/types/item";
 import type { listData } from "@/types/list";
 import deleteAPI from "../deleteAPI";
@@ -7,6 +5,8 @@ import fetchAPI from "../fetchAPI";
 import { handleEditingLogosFields } from "./handleEditingLogosFields";
 
 //SHOULD be called BEFORE an item is deleted
+//move to backend
+
 export default async function handleDeletedItemMedia(itemID: string) {
 
     let fileNames: string[] = []

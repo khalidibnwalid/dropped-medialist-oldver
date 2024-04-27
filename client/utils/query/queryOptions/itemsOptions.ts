@@ -2,6 +2,8 @@ import { itemData } from '@/types/item'
 import { queryOptions } from '@tanstack/react-query'
 import fetchAPI from '../../api/fetchAPI'
 
+export const trashItemsKey = ['items', { trash: true }]
+
 /** All Items,
  *  @example Key: ['items', listId, { trash: false }] */
 export const itemsFetchOptions = (listId: string) => queryOptions<itemData[]>({
