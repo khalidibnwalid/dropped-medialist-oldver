@@ -3,7 +3,7 @@
 import { Input } from "@nextui-org/react";
 import { useContext } from "react";
 import { Controller } from 'react-hook-form';
-import { ItemApiTemplateContext } from "../../provider";
+import { ItemApiTemplateContext } from "../provider";
 
 function ItemApiSearchMainInfo() {
     const { control, errors, pattern, searchIsAllowed, queryPattern } = useContext(ItemApiTemplateContext)

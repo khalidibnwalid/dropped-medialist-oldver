@@ -1,4 +1,3 @@
-
 import TitleBar from '@/components/bars/titlebar';
 import { Divider, Button } from '@nextui-org/react';
 import { BiInfoCircle } from 'react-icons/bi'; // Replace 'react-icons/bi' with the actual icon library you're using

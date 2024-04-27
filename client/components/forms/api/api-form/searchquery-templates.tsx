@@ -1,30 +1,28 @@
 'use client'
 
 import SortableFields from "@/components/forms/_components/sortableFields";
+import { listApiWithSearchType } from "@/types/list";
 import { Button, Input } from "@nextui-org/react";
 import { useContext } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
-import { ItemApiTemplateContext } from "../../provider";
-import { RxSlash } from "react-icons/rx";
+import { ItemApiTemplateContext } from "../provider";
 
-function ItemApiRoutes() {
-    const { control, errors, currentApiTemplate } = useContext(ItemApiTemplateContext)
-
-    /** Route Patter that desin't start or end with '/' */
-    const pattern = { value: /^(?!\/)[\w\d\/]+(?<!\/)$/, message: `Route shouldn't start or end with '/'` }
+function ItemApisearchQueries() {
+    const { control, errors, queryPattern, searchIsAllowed, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     return (
         <div>
 
             <SortableFields
-                fieldsNumber={currentApiTemplate?.routes?.length}
+                fieldsNumber={(currentApiTemplate as listApiWithSearchType)?.searchQueries?.length}
                 fieldControl={control}
-                fieldName='routes'
-                startContent={({ addField, fieldsState }) => (
+                fieldName='searchQueries'
+                startContent={({ addField }) => (
                     <div className="flex items-center justify-between">
-                        <p className="text-zinc-500">Routes (drag and drop)</p>
+                        <p className={searchIsAllowed ? "text-zinc-500" : "text-zinc-600"}>Search Queries (drag and drop)</p>
                         <Button
+                            isDisabled={!searchIsAllowed}
                             onPress={() => addField()}
                             className="hover:scale-105" isIconOnly
                         >
@@ -34,17 +32,23 @@ function ItemApiRoutes() {
                 )}>
 
                 {({ data, index, removeField, fieldControl }) => (
-                    <div className="sortableFieldContainer" key={'routeTemplate-' + index} >
-                        <Button onClick={() => removeField(index)} variant="light" isIconOnly>
+                    <div className="sortableFieldContainer" key={'searchQueryTemplate-' + index} >
+                        <Button
+                            isDisabled={!searchIsAllowed}
+                            onClick={() => removeField(index)}
+                            variant="light"
+                            isIconOnly
+                        >
                             <BiX className=" text-3xl" />
                         </Button>
-
                         <Controller
+                            disabled={!searchIsAllowed}
                             control={fieldControl}
-                            name={`routes[${index}].name`}
+                            name={`searchQueries[${index}].name`}
                             rules={{ required: true }}
                             render={({ field }) =>
                                 <Input
+                                    isDisabled={!searchIsAllowed}
                                     isRequired
                                     className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
@@ -58,21 +62,21 @@ function ItemApiRoutes() {
                         <span className="md:scale-0">:</span>
 
                         <Controller
+                            disabled={!searchIsAllowed}
                             control={fieldControl}
-                            name={`routes[${index}].route`}
-                            rules={{ required: true, pattern }}
+                            name={`searchQueries[${index}].query`}
+                            rules={{ required: true, pattern: queryPattern }}
                             render={({ field }) =>
                                 <Input
-                                    isInvalid={errors.routes?.[index]?.route && true}
-                                    color={errors.routes?.[index]?.route && "danger"}
-                                    errorMessage={errors.routes?.[index]?.route?.message}
-                                    startContent={<RxSlash className="text-zinc-500" />}
-                                    endContent={<RxSlash className="text-zinc-500" />}
+                                    isDisabled={!searchIsAllowed}
+                                    isInvalid={errors.searchQueries?.[index]?.query && true}
+                                    color={errors.searchQueries?.[index]?.query && "danger"}
+                                    errorMessage={errors.searchQueries?.[index]?.query?.message}
                                     isRequired
                                     className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
                                     type="text"
-                                    label="Route"
+                                    label="Query"
                                     size="sm"
                                     {...field}
                                 />
@@ -85,5 +89,5 @@ function ItemApiRoutes() {
 }
 
 
-export default ItemApiRoutes;
+export default ItemApisearchQueries;
 

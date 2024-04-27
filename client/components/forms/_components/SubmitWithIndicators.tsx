@@ -16,6 +16,7 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
     type = "button",
     variant = "solid",
     size,
+    isIconOnly,
 }: {
     mutation: UseMutationResult<any, TError, TData, unknown>,
     onClick?: MouseEventHandler<HTMLButtonElement>,
@@ -27,12 +28,14 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
     type?: 'button' | 'submit' | 'reset',
     variant?: "solid" | "bordered" | "light" | "flat" | "faded" | "shadow" | "ghost",
     size?: "sm" | "md" | "lg",
+    isIconOnly?: boolean
 }) {
 
     const buttonProps: ButtonProps = {
         variant,
         type,
         size,
+        isIconOnly,
     }
 
     if (mutation.isPending)

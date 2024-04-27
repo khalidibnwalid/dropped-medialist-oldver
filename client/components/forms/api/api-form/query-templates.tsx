@@ -5,7 +5,7 @@ import { Button, Input } from "@nextui-org/react";
 import { useContext } from "react";
 import { Controller } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
-import { ItemApiTemplateContext } from "../../provider";
+import { ItemApiTemplateContext } from "../provider";
 
 function ItemApiQueries() {
     const { control, errors, currentApiTemplate, queryPattern } = useContext(ItemApiTemplateContext)

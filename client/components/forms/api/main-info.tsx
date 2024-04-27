@@ -1,28 +1,39 @@
-'use client'
-
 import { Input } from "@nextui-org/react";
 import { useContext } from "react";
 import { Controller } from 'react-hook-form';
-import { ItemApiTemplateContext } from "../provider";
+import { ItemApiTemplateContext } from "./provider";
 
 function ItemApiMainInfo() {
-    const { control, errors, currentApiTemplate } = useContext(ItemApiTemplateContext)
+    const { control, errors, listData } = useContext(ItemApiTemplateContext)
+    const usedNames = listData?.templates?.apiTemplates?.map(api => api.name) || []
 
     return (
         <>
             <Controller
                 control={control}
                 name="name"
-                rules={{ required: true }}
+                rules={{
+                    required: true,
+                    validate: (name) => {
+                        if (usedNames.includes(name)) {
+                            return 'Name is already used, please choose another name';
+                        }
+                        return true;
+                    }
+                }}
                 render={({ field }) =>
                     <Input
                         isRequired
+                        isInvalid={errors.name && true}
+                        color={errors.name && "danger"}
+                        errorMessage={errors?.name?.message}
                         className="shadow-sm rounded-xl"
-                        type="text"
                         label="API Template's Name"
+                        type="text"
                         {...field}
                     />
                 } />
+
             <Controller
                 control={control}
                 name="baseURL"

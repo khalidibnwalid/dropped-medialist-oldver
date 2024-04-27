@@ -2,7 +2,7 @@
 
 import { Switch } from "@nextui-org/react";
 import { useContext } from "react";
-import { ItemApiTemplateContext } from "../../provider";
+import { ItemApiTemplateContext } from "../provider";
 import ItemApiSearchMainInfo from "./search-main-info";
 import ItemApisearchQueries from "./searchquery-templates";
 
