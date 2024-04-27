@@ -1,12 +1,14 @@
 import ItemBadges from "@/components/pagesComponents/items/[id]/itempage-badges";
 import ListCard from "@/components/cards/list-cards";
 import { Card, CardFooter, Chip, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useContext } from "react";
 import { listBodyContext } from "./provider";
+import { authContext } from "../../authProvider";
 
 function ListDisplayedItems() {
     const { viewMode, displayedItems } = useContext(listBodyContext)
+    const { userData } = useContext(authContext)
     const router = useRouter();
 
     return (
@@ -25,7 +27,7 @@ function ListDisplayedItems() {
                                 ? <Image
                                     alt={item.title}
                                     className="object-cover aspect-[2/3]"
-                                    src={`${process.env.PUBLIC_IMG_PATH}/images/items/${item.poster_path}`}
+                                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.poster_path}`}
                                 />
                                 : <Card className=" aspect-[2/3] h-full w-full p-2 bg-accented flex items-center justify-center capitalize text-xl" >
                                     {item.title}
@@ -55,7 +57,7 @@ function ListDisplayedItems() {
                             <ListCard
                                 title={item.title}
                                 discrip={item.description}
-                                image={item.poster_path ? `${process.env.PUBLIC_IMG_PATH}/images/items/${item.poster_path}` : undefined}
+                                image={item.poster_path ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.poster_path}` : undefined}
                                 link={`../items/${item.id}`}
                                 underTitle={item.badges && <ItemBadges badgesArray={item.badges} />}
                             />
@@ -82,14 +84,14 @@ function ListDisplayedItems() {
                             <TableRow
                                 key={item.title}
                                 className="hover:cursor-pointer hover:bg-default duration-300 animate-fade-in"
-                                onClick={() => router.push(`../items/${item.id}`, { scroll: false })}
+                                onClick={() => router.push(`../items/${item.id}`)}
                             >
                                 <TableCell>
                                     {item.poster_path
                                         ? <Image
                                             className="flex-shrink-0 max-h-10 aspect-1 object-cover"
                                             alt={item.title}
-                                            src={`${process.env.PUBLIC_IMG_PATH}/images/items/${item.poster_path}`}
+                                            src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.poster_path}`}
                                         />
                                         : <Card
                                             className="uppercase font-light text-xl 

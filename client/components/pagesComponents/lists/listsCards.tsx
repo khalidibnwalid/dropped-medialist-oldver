@@ -1,9 +1,12 @@
 import type { listData } from "@/types/list";
 import { Card, CardBody, Image } from "@nextui-org/react";
 import { useRouter } from 'next/router';
+import { useContext } from "react";
+import { authContext } from "../authProvider";
 
 function ListCards({ dataArray }: { dataArray: listData[] }) {
   const router = useRouter();
+  const { userData } = useContext(authContext)
 
   return (
     <div className=" grid grid-cols-sm-card gap-x-4 gap-y-4" >
@@ -23,7 +26,7 @@ function ListCards({ dataArray }: { dataArray: listData[] }) {
                 radius="lg"
                 alt={data.title}
                 className=" object-cover aspect-1 bg-accented shadow-lg"
-                src={`${process.env.PUBLIC_IMG_PATH}/images/lists/${data.cover_path}`}
+                src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/lists/${data.cover_path}`}
               />
               :
               <Card

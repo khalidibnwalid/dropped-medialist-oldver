@@ -1,13 +1,15 @@
 import type { itemBadgesType } from "@/types/item";
 import { Chip, Image } from "@nextui-org/react";
+import { useContext } from "react";
 import { FaStar } from "react-icons/fa";
+import { authContext } from "../../authProvider";
 
 type params = {
     badgesArray: itemBadgesType[];
 }
 
 function ItemBadges({ badgesArray }: params) {
-
+    const { userData } = useContext(authContext)
 
     return (
         <div className="flex items-center gap-1">
@@ -29,7 +31,7 @@ function ItemBadges({ badgesArray }: params) {
                                 <Image
                                     className=" rounded-full object-contain"
                                     alt={`avatar-${index}`}
-                                    src={`${process.env.PUBLIC_IMG_PATH}/images/logos/${data.logo_path}`}
+                                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/logos/${data.logo_path}`}
                                 />
                             )} >
                             {data.value}

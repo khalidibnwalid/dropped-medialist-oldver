@@ -4,9 +4,9 @@ import SingleImageUploaderDefault from '@/components/forms/_components/Images/si
 import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWithIndicators";
 import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/item/layouts";
 import { ItemFormContext } from "@/components/forms/item/provider";
+import { authContext } from "@/components/pagesComponents/authProvider";
 import ItemPageGallery from "@/components/pagesComponents/items/[id]/tabs/itempage-gallery";
-import type { itemData, itemImageType, itemTag } from '@/types/item';
-import type { listData } from '@/types/list';
+import type { itemData, itemTag } from '@/types/item';
 import deleteAPI from '@/utils/api/deleteAPI';
 import { handleEditingLogosFields } from '@/utils/api/handlers/handleEditingLogosFields';
 import handleImageUpload from '@/utils/api/handlers/handleImageUpload';
@@ -24,7 +24,7 @@ import { tagsFetchOptions } from "@/utils/query/queryOptions/tagsOptions";
 import { Button, Divider } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BiX } from 'react-icons/bi';
 import { FaSave } from 'react-icons/fa';
@@ -38,6 +38,8 @@ export default function EditItemPage() {
 
     const { handleSubmit, control, setValue, getValues, resetField, formState: { errors } } = useForm<itemData>();
     const [keyRefresher, setKeyRefresher] = useState(0)
+
+    const { userData } = useContext(authContext)
 
     //import tags of the list in useEffect (client side)
     const item = useQuery(itemFetchOptions(itemId)) //for related items
@@ -158,7 +160,7 @@ export default function EditItemPage() {
                         resetField={resetField}
                         setValue={setValue}
                         content="Item's Poster"
-                        imgSrc={item.data.poster_path ? `${process.env.PUBLIC_IMG_PATH}/images/items/${item.data.poster_path}` : undefined}
+                        imgSrc={item.data.poster_path ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.poster_path}` : undefined}
                     />
                     <Divider className="my-2" />
 
@@ -196,7 +198,7 @@ export default function EditItemPage() {
                         resetField={resetField}
                         setValue={setValue}
                         content="Item's Cover"
-                        imgSrc={item.data.cover_path ? `${process.env.PUBLIC_IMG_PATH}/images/items/${item.data.cover_path}` : undefined}
+                        imgSrc={item.data.cover_path ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.cover_path}` : undefined}
                     />
                     <Divider className="my-2" />
                     <ItemFormCoverColumn />

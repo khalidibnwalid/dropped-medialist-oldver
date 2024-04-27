@@ -6,6 +6,7 @@ import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWit
 import ListMainInfoForm from "@/components/forms/list/components/main-info";
 import { ListFormLowerLayout } from "@/components/forms/list/layouts";
 import { ListFormContext } from "@/components/forms/list/provider";
+import { authContext } from "@/components/pagesComponents/authProvider";
 import LoadingLists from "@/components/pagesComponents/lists/listsloading";
 import { listData } from "@/types/list";
 import deleteAPI from "@/utils/api/deleteAPI";
@@ -19,7 +20,7 @@ import { listFetchOptions } from "@/utils/query/queryOptions/listsOptions";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from 'next/router';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { BiInfoCircle, BiSolidPencil, BiX } from "react-icons/bi";
 import { IoGridOutline } from "react-icons/io5";
@@ -31,6 +32,8 @@ export default function EditListPage() {
     const router = useRouter();
     const listId = router.query.id as string
     if (!uuidValidate(listId)) return <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
+    
+    const { userData } = useContext(authContext)
 
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<form>()
 
@@ -138,7 +141,7 @@ export default function EditListPage() {
                             setValue={setValue}
                             content="Cover"
                             imgSrc={listData.cover_path
-                                ? `${process.env.PUBLIC_IMG_PATH}/images/lists/${listData.cover_path}`
+                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/lists/${listData.cover_path}`
                                 : undefined}
                         />
                         <ListMainInfoForm />

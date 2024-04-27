@@ -7,10 +7,12 @@ import { BiImages, BiSelectMultiple, BiSolidNote } from "react-icons/bi";
 import { itemViewContext } from "@/pages/items/[id]";
 import ItemBadges from "../itempage-badges";
 import ItemPageGallery from "./itempage-gallery";
+import { authContext } from "@/components/pagesComponents/authProvider";
 
 
 function ItemPageTabs({ className }: { className?: string }) {
     const { tagsData, itemData, imagesData, relatedItems } = useContext(itemViewContext)
+    const { userData } = useContext(authContext)
 
     const defaultSelected = () => {
         if (itemData.content_fields && itemData.content_fields?.length > 0) {
@@ -70,7 +72,7 @@ function ItemPageTabs({ className }: { className?: string }) {
                             <ListCard
                                 key={data.title}
                                 title={data.title}
-                                image={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.poster_path}`}
+                                image={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.poster_path}`}
                                 discrip={data.description} link={`../items/${data.id}`}
                                 underTitle={<div className="flex gap-x-1">
                                     {data.badges && <ItemBadges badgesArray={data.badges} />

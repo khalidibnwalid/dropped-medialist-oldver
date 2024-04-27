@@ -1,4 +1,5 @@
 import ErrorPage from '@/components/errorPage';
+import { authContext } from '@/components/pagesComponents/authProvider';
 import ItemLayout1 from "@/components/pagesComponents/items/[id]/layouts/layout1";
 import ItemLayout2 from "@/components/pagesComponents/items/[id]/layouts/layout2";
 import ItemLayout3 from "@/components/pagesComponents/items/[id]/layouts/layout3";
@@ -8,7 +9,7 @@ import { itemFetchOptions } from "@/utils/query/queryOptions/itemsOptions";
 import { tagsFetchOptions } from "@/utils/query/queryOptions/tagsOptions";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { validate as uuidValidate } from 'uuid';
 
 interface context {
@@ -26,6 +27,8 @@ export default function ItemPage() {
     const itemId = router.query.id as string;
 
     if (!uuidValidate(itemId)) return <ErrorPage message="Bad Item ID, Page Doesn't Exist" MainMessage="404!" />
+
+    const { userData } = useContext(authContext)
 
     const item = useQuery(itemFetchOptions(itemId)) //for related items
     const images = useQuery(imagesFetchOptions(itemId))
@@ -52,9 +55,9 @@ export default function ItemPage() {
     const relatedItemsData = relatedItems.map((item) => item.data).filter(Boolean) as itemData[]
 
     const coverPath = item.data.cover_path
-        ? `${process.env.PUBLIC_IMG_PATH}/images/items/${item.data.cover_path}`
+        ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.cover_path}`
         : item.data.poster_path
-            ? `${process.env.PUBLIC_IMG_PATH}/images/items/${item.data.poster_path}`
+            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.poster_path}`
             : undefined
 
 

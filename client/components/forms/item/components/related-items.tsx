@@ -1,5 +1,3 @@
-'use client'
-
 import { itemData } from "@/types/item";
 import { Autocomplete, AutocompleteItem, Button, Card, Chip, Image } from "@nextui-org/react";
 import type { Key } from "react";
@@ -7,8 +5,10 @@ import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import { useFieldArray } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
 import { ItemFormContext } from "../provider";
+import { authContext } from "@/components/pagesComponents/authProvider";
 
 function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
+    const { userData } = useContext(authContext)
     const { control, itemData, setValue } = useContext(ItemFormContext)
     const { append, remove } = useFieldArray({
         control,
@@ -103,7 +103,7 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                                     ? <Image
                                         className="flex-shrink-0 h-10 aspect-1 object-cover"
                                         alt={data.title}
-                                        src={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.poster_path}`}
+                                        src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.poster_path}`}
                                     />
                                     : <Card
                                         className="uppercase font-light text-xl 

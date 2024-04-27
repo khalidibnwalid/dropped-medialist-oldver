@@ -6,9 +6,10 @@ import handleDeletedListMedia from "@/utils/api/handlers/handleDeletedListMedia"
 import patchAPI from "@/utils/api/patchAPI";
 import { Button, ButtonGroup, Card, Checkbox, CheckboxGroup, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, cn, useDisclosure } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BiCheck, BiRevision, BiTrashAlt } from "react-icons/bi"; //BoxIcons
 import { FaEye } from "react-icons/fa";
+import { authContext } from "../authProvider";
 
 //item = false => list, and vice versa
 function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], item?: boolean }) {
@@ -126,6 +127,7 @@ export default TrashSide;
 
 function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolean }) {
     const router = useRouter()
+    const { userData } = useContext(authContext)
 
     return (
         <Checkbox
@@ -149,7 +151,7 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
                 {!item && data.cover_path || (data as itemData).poster_path ? <Image
                     className="flex-none aspect-1 object-cover h-14"
                     alt={data.title}
-                    src={`${process.env.PUBLIC_IMG_PATH}/images/${item ? 'items' : 'lists'}/${item ? (data as itemData).poster_path : data.cover_path}`}
+                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/${item ? 'items' : 'lists'}/${item ? (data as itemData).poster_path : data.cover_path}`}
                 /> :
                     <Card
                         className=" flex-none uppercase font-light text-xl aspect-1 items-center justify-center bg-[#2f2f2f] h-14"

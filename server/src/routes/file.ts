@@ -3,15 +3,28 @@ import fs from 'fs';
 
 import * as formidable from 'formidable';
 
-const router = express.Router();
+const filesRouter = express.Router();
 
 //upload file
 
-router.post('/', async (req, res) => {
-    const user = res.locals.user;
+filesRouter.post('/', async (req, res) => {
+    const user = res.locals?.user;
     if (!user || !res.locals.session) return res.status(401).json({ message: 'Unauthorized' })
 
+    const userMediaRoot = `public/users/${user.id}`
+
     try {
+
+        //create media folder for user if not exists
+        if (!fs.existsSync(`${userMediaRoot}/images/items`)
+            || !fs.existsSync(`${userMediaRoot}/images/lists`)
+            || !fs.existsSync(`${userMediaRoot}/images/logos`)
+        ) {
+            fs.mkdirSync(`${userMediaRoot}/images/items`, { recursive: true })
+            fs.mkdirSync(`${userMediaRoot}/images/lists`)
+            fs.mkdirSync(`${userMediaRoot}/images/logos`)
+        }
+
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
             if (!files.file) return res.status(400).json({ error: 'no file was provided' })
@@ -21,7 +34,7 @@ router.post('/', async (req, res) => {
 
             //setting a new place for the saved image instead of the appdata/temp
             const filepath = files.file[0].filepath;  // path to temp
-            const newPath = `public/${user.id}/${filename}`;
+            const newPath = `${userMediaRoot}/${filename}`;
 
             // Copy the file to newPath's location
             fs.copyFileSync(filepath, newPath);
@@ -40,7 +53,7 @@ router.post('/', async (req, res) => {
 
 
 //delete file
-router.delete('/', async (req, res) => {
+filesRouter.delete('/', async (req, res) => {
     const { fileNames } = req.body;
 
     if (!(fileNames.length > 0 || fileNames)) {
@@ -72,4 +85,4 @@ router.delete('/', async (req, res) => {
 })
 
 
-export default router;
+export default filesRouter;

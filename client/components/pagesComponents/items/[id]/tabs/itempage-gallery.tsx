@@ -1,17 +1,18 @@
-'use client'
-
 import { TrashPopover } from "@/components/buttons/trashpop-button";
 import type { itemData, itemImageType } from "@/types/item";
 import deleteAPI from "@/utils/api/deleteAPI";
 import { Button, Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { BiTrashAlt } from "react-icons/bi";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { AddImageGalleryButton } from "./addImage-button";
+import { authContext } from "@/components/pagesComponents/authProvider";
+import { useContext } from "react";
 
 
 function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], item: itemData }) {
     const router = useRouter()
+    const { userData } = useContext(authContext)
 
     return (
         <ResponsiveMasonry
@@ -41,7 +42,7 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                                 onPress={() => {
                                     deleteAPI('images', { body: [data.id] })
                                     deleteAPI('files', { fileNames: [`images/items/${data.image_path}`] })
-                                    router.refresh()
+                                    router.reload()
                                 }}
                             >
                                 {({ isTrashOpen }) =>
@@ -57,9 +58,9 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                             </TrashPopover>
                         </CardHeader>
 
-                        <a href={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.image_path}`} target="_blank">
+                        <a href={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.image_path}`} target="_blank">
                             <Image
-                                src={`${process.env.PUBLIC_IMG_PATH}/images/items/${data.image_path}`}
+                                src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.image_path}`}
                                 className="object-contain"
                                 alt={data.image_path}
                             />
