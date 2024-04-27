@@ -1,38 +1,28 @@
-'use client'
-
 import { userType } from "@/types/user";
 import postAPI from "@/utils/api/postAPI";
-import { Button, Input, Spinner } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { Controller, set, useForm } from "react-hook-form";
-import { useState } from "react";
+import { mutateUserCache } from "@/utils/query/cacheMutation";
+import { Input } from "@nextui-org/react";
+import { useMutation } from "@tanstack/react-query";
+import { Controller, useForm } from "react-hook-form";
+import SubmitButtonWithIndicators from "../_components/SubmitWithIndicators";
 
 type userLoginForm = userType & { password: string }
 
 function LoginForm() {
     const { handleSubmit, formState: { errors }, control } = useForm<userLoginForm>()
-    const router = useRouter()
 
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState('')
+    const mutation = useMutation({
+        mutationFn: (data: Partial<userLoginForm>) => postAPI('sessions', data),
+        onSuccess: (data) => mutateUserCache(data),
+    })
 
-    async function onSubmit(data: userLoginForm) {
-        setIsLoading(true)
-        try {
-            console.log(data);
-            // I trim the username, since a user can copy and paste their emails with spaces
-            await postAPI('sessions', { username: data.username.trim(), password: data.password })
-            if (error) setError('')
-            router.refresh()
-        } catch (e) {
-            console.log(e);
-            setError('Failed to login. Please try again')
-        }
-        setIsLoading(false)
+    function onSubmit(data: userLoginForm) {
+        const formData = { username: data.username.trim(), password: data.password }
+        mutation.mutate(formData)
     }
 
     return (
-        <form className=" flex justify-center flex-wrap gap-y-3">
+        <form className=" flex justify-center flex-wrap gap-y-3 max-w-[30rem]">
             <Controller
                 control={control}
                 name="username"
@@ -67,19 +57,17 @@ function LoginForm() {
                     />
                 } />
 
-            {error && <label className="text-red-500 w-full text-center">{error}</label>}
-            
-            <Button
+            {mutation.isError && <label className="text-red-500 w-full text-center">Failed to login. Please try again</label>}
+
+            <SubmitButtonWithIndicators
+                mutation={mutation}
                 onClick={handleSubmit(onSubmit)}
-                isDisabled={isLoading}
-                color={error && !isLoading ? "danger" : 'default'}
+                saveContent="Login"
+                savedContent="Logged In"
                 type="submit"
                 size="lg"
-            >
-                {isLoading && <Spinner size="sm" />}
-                {!isLoading && !error && "Login"}
-                {!isLoading && error && "Try Again"}
-            </Button>
+            />
+
         </form>
     )
 

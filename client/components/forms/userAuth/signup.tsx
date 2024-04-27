@@ -1,34 +1,26 @@
-'use client'
-
 import { userType } from "@/types/user";
 import postAPI from "@/utils/api/postAPI";
-import { Button, Input, Spinner } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Controller, set, useForm } from "react-hook-form";
+import { mutateUserCache } from "@/utils/query/cacheMutation";
+import { Input } from "@nextui-org/react";
+import { useMutation } from "@tanstack/react-query";
+import { Controller, useForm } from "react-hook-form";
+import SubmitButtonWithIndicators from "../_components/SubmitWithIndicators";
 
 type userSignupForm = userType & { password: string }
 
 function SignupForm() {
     const { handleSubmit, formState: { errors }, control } = useForm<userSignupForm>()
-    const router = useRouter()
 
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState('')
+    const mutation = useMutation({
+        mutationFn: (data: Partial<userSignupForm>) => postAPI('user', data),
+        onSuccess: (data) => mutateUserCache(data),
+    })
 
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-    async function onSubmit(data: userSignupForm) {
-        setIsLoading(true)
-        try {
-            await postAPI('users', { username: data.username.trim(), email: data.email.trim(), password: data.password })
-            if (error) setError('')
-            router.refresh()
-        } catch (e) {
-            console.log(e);
-            setError('Failed to Sign Up. Try again')
-        }
-        setIsLoading(false)
+    function onSubmit(data: userSignupForm) {
+        const formData = { username: data.username.trim(), email: data.email.trim(), password: data.password }
+        mutation.mutate(formData)
     }
 
     return (
@@ -88,22 +80,19 @@ function SignupForm() {
                     />
                 } />
 
-            {error && <label className="text-red-500 w-full text-center">{error}</label>}
-            
-            <Button
+            {mutation.isError && <label className="text-red-500 w-full text-center">Failed to Sign Up. Try again</label>}
+
+            <SubmitButtonWithIndicators
+                mutation={mutation}
                 onClick={handleSubmit(onSubmit)}
-                isDisabled={isLoading}
-                color={error && !isLoading ? "danger" : 'default'}
+                saveContent="Login"
+                savedContent="Logged In"
                 type="submit"
                 size="lg"
-            >
-                {isLoading && <Spinner size="sm" />}
-                {!isLoading && !error && "Sign Up"}
-                {!isLoading && error && "Try Again"}
-            </Button>
+            />
+
         </form>
     )
-
 }
 
 export default SignupForm;

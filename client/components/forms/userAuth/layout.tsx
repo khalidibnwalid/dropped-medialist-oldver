@@ -1,9 +1,6 @@
-'use client'
-
 import { Tab, Tabs } from "@nextui-org/react";
 import LoginForm from "./login";
 import SignupForm from "./signup";
-
 
 function UserAuthLayout() {
 

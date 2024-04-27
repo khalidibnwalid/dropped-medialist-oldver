@@ -2,6 +2,7 @@ import { queryClient } from "@/components/pagesComponents/providers";
 import { listData } from "@/types/list";
 import { allListsKey, trashListsKey } from "./queryOptions/listsOptions";
 import { itemData, itemImageType, itemTag } from "@/types/item";
+import { userType } from "@/types/user";
 
 /** - Edit AllLists Cache
  * - Edit/Add List Cache */
@@ -68,4 +69,9 @@ export const mutateTagCache = (data: itemTag, type: "edit" | "add" | "delete") =
             : oldData.filter((tag) => tag.id !== data.id) //remove the old image
         return isDelete ? allTags : [...allTags, data]
     })
+}
+
+/** Edit user Cache */
+export const mutateUserCache = (data: Partial<userType>) => {
+    queryClient.setQueryData(['user'], (oldData: userType) => ({ ...oldData, ...data }))
 }

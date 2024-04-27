@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
 import express from 'express';
 import { Argon2id } from "oslo/password";
 import { lucia } from '..';
@@ -63,23 +64,18 @@ usersRouter.post('/', async (req, res) => {
     }
 })
 
-// # GET - currently returns all users, just for testing 
-// it should: if (session) return full data; else return general data  
-//(or always return general data since the data isn't even that big)
-usersRouter.get('/:user_id?', async (req, res) => {
-    const id = req.params.user_id
+// # GET
+usersRouter.get('/', async (req, res) => {
+    const user_id = res.locals?.user?.id
+    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     try {
-        if (id) {
-            const user = await prisma.users.findUnique({
-                where: { id }
-            })
-            res.status(200).json(user);
-        } else {
-            const users = await prisma.users.findMany()
-            res.status(200).json(users);
-        }
+        const user = await prisma.users.findUnique({
+            where: { id: user_id }
+        })
 
+        const { hashed_password, ...userData } = user
+        res.status(200).json(userData)
     } catch (e) {
         console.log("[Users]", e)
         res.status(500).json({ message: 'error' })

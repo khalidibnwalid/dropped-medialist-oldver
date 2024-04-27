@@ -39,8 +39,8 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
     }
 
     if (mutation.isPending)
-        return <Button className={className} {...buttonProps}>
-            <Spinner size={size} />
+        return <Button className={className} disabled={true} {...buttonProps}>
+            <Spinner size={size === "sm" ? "sm" : "md"} />
         </Button>
 
     if (mutation.isError)
