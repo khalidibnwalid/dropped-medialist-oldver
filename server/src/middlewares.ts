@@ -16,16 +16,20 @@ declare global {
 export const verifyRequestOriginHeader = (req: Request, res: Response, next: NextFunction) => {
     if (process.env.NODE_ENV !== "production") return next() // skip origin check in development
 
-    if (req.method === "GET") {
-        return next()
-    }
+    const originWhiteList = process.env.ORIGIN_WHITELIST?.split(",") || []
+    if (originWhiteList.length === 0) return res.status(500).send("ORIGIN_WHITELIST is undefined or empty. Please set it in your .env/docker-compose.yml file.")
+
+    if (req.method === "GET") return next()
+
     const originHeader = req.headers.origin ?? null
     // NOTE: You may need to use `X-Forwarded-Host` instead
     const hostHeader = req.headers.host ?? null
 
-    if (!originHeader || !hostHeader || !verifyRequestOrigin(originHeader, [hostHeader])) {
+    if (!originHeader || !hostHeader || !verifyRequestOrigin(originHeader, [hostHeader, ...originWhiteList])) {
         return res.status(403).end()
     }
+
+    return next()
 }
 
 export const validateSession = async (req: Request, res: Response, next: NextFunction) => {
@@ -45,7 +49,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
     }
     res.locals.user = user;
     res.locals.session = session;
-    
+
     return next();
 }
 
