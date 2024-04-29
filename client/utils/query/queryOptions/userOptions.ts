@@ -8,5 +8,6 @@ import fetchAPI from '../../api/fetchAPI'
 export const userFetchOptions = () => queryOptions<userType>({
     queryKey: ['user'],
     queryFn: () => fetchAPI(`user`),
+    retry: 3,
 })
 

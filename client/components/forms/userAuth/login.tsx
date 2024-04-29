@@ -57,7 +57,7 @@ function LoginForm() {
                     />
                 } />
 
-            {mutation.isError && <label className="text-red-500 w-full text-center">Failed to login. Please try again</label>}
+            {mutation.isError && <label className="text-red-500 w-full text-center">{mutation.error.message}</label>}
 
             <SubmitButtonWithIndicators
                 mutation={mutation}
