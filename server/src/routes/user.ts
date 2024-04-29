@@ -29,11 +29,10 @@ usersRouter.post('/', async (req, res) => {
 
         // need protection against brute-force attacks and login throttling.
         if (userExist) {
-            if (userExist.email === email) {
+            if (userExist.email === email)
                 return res.status(400).json({ message: 'Email already in use' });
-            } else if (userExist.username === username) {
+            if (userExist.username === username)
                 return res.status(400).json({ message: 'Username already in use' });
-            }
         }
 
         const hashed_password = await new Argon2id().hash(password);
@@ -60,7 +59,7 @@ usersRouter.post('/', async (req, res) => {
 
     } catch (e) {
         console.log("[Users - POST] Error:", e)
-        res.status(500).json({ message: 'error' })
+        res.status(500).json({ message: 'Internal Server Error' })
     }
 })
 
@@ -78,7 +77,7 @@ usersRouter.get('/', async (req, res) => {
         res.status(200).json(userData)
     } catch (e) {
         console.log("[Users]", e)
-        res.status(500).json({ message: 'error' })
+        res.status(500).json({ message: 'Internal Server Error' })
     }
 })
 
@@ -96,7 +95,7 @@ usersRouter.get('/', async (req, res) => {
 //         res.status(200).json({});
 //     } catch (e) {
 //         console.log("[Users]", e)
-//         res.status(500).json({ message: 'error' })
+//         res.status(500).json({ message: 'Internal Server Error' })
 //     }
 // })
 
@@ -115,7 +114,7 @@ usersRouter.get('/', async (req, res) => {
 //         res.status(200).json({});
 //     } catch (e) {
 //         console.log("[Users]", e)
-//         res.status(500).json({ message: 'error' })
+//         res.status(500).json({ message: 'Internal Server Error' })
 //     }
 // })
 
