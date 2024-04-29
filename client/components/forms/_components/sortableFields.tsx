@@ -1,49 +1,43 @@
-'use client'
 import { useState } from "react";
-import { Control, useFieldArray } from 'react-hook-form';
+import { ArrayPath, Control, FieldValues, useFieldArray } from 'react-hook-form';
 import { ReactSortable } from "react-sortablejs";
-import { useEffect } from "react";
 
-interface fieldsParams {
+interface fieldsProps {
     id: number;
     [key: string]: string | number;
 }
 
-interface childProps {
+interface childProps<T extends FieldValues> {
     data: object | object[] | null
     index: number
     removeField: Function
     addField?: Function
-    fieldControl: Control
+    fieldControl: Control<T>
 }
-
-type children = (props: childProps) => JSX.Element;
 
 interface contentProps {
-    addField: Function ///////////////////////////////
-    fieldsState: fieldsParams[]
+    addField: Function
+    fieldsState: fieldsProps[]
 }
-type content = (props: contentProps) => JSX.Element;
 
-type params = {
-    fieldControl: Control<any>;
-    fieldName: string;
-    children: children;
-    endContent?: content
-    startContent?: content
+type props<T extends FieldValues> = {
+    fieldControl: Control<T>;
+    fieldName: ArrayPath<T>;
+    children: (props: childProps<T>) => JSX.Element
+    endContent?: (props: contentProps) => JSX.Element;
+    startContent?: (props: contentProps) => JSX.Element;
     fieldsNumber?: number
-    // defaultData?: fieldsParams[]
 }
 
 
-function SortableFields({ fieldControl, fieldName, children, endContent, startContent, fieldsNumber = 0 }: params) {
+function SortableFields<T extends FieldValues>({ fieldControl, fieldName, children, endContent, startContent, fieldsNumber = 0 }: props<T>) {
 
     const { fields, append, remove, update, move, swap } = useFieldArray({
         control: fieldControl,
         name: fieldName
     });
 
-    let fieldsNumberArray: fieldsParams[] = []
+    let fieldsNumberArray: fieldsProps[] = []
 
     for (let i = 1; i <= fieldsNumber; i++) {
         fieldsNumberArray.push({ id: i })
@@ -51,7 +45,7 @@ function SortableFields({ fieldControl, fieldName, children, endContent, startCo
 
 
     // for sortable and input fields
-    const [fieldsState, setFields] = useState<fieldsParams[]>(fieldsNumberArray)
+    const [fieldsState, setFields] = useState<fieldsProps[]>(fieldsNumberArray)
 
     function addField() {
         let id = 1;

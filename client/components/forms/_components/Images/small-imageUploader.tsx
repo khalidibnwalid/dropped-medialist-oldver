@@ -1,20 +1,18 @@
 import { Button, Card } from "@nextui-org/react";
-import type { DefaultValues } from "react-hook-form";
+import type { FieldValues, Path } from "react-hook-form";
 import { Control, Controller } from 'react-hook-form';
 import { BiX } from "react-icons/bi";
 import { LuImagePlus } from "react-icons/lu";
 import ImageUploading from "react-images-uploading";
 
-type params = {
-    control: Control<any>;
-    fieldName: string;
+type props<T extends FieldValues> = {
+    control: Control<T>;
+    fieldName: Path<T>;
     className?: string;
     disabled?: boolean
-    defaultValue?: DefaultValues<any>
-    key?: string
 }
 
-function SmallImageUploader({ control, fieldName, className, disabled, key }: params) {
+function SmallImageUploader<T extends FieldValues>({ control, fieldName, className, disabled }: props<T>) {
     return (
         <div className={className}>
             <Controller

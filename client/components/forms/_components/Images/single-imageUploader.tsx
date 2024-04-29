@@ -1,11 +1,11 @@
 import { Button, Card } from "@nextui-org/react";
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { BiX } from "react-icons/bi";
 import ImageUploading from "react-images-uploading";
 
-type params = {
-    control: Control<any>;
-    fieldName: string;
+type params<T extends FieldValues> = {
+    control: Control<T>;
+    fieldName: Path<T>;
     className?: string;
     content?: string;
     required?: boolean;
@@ -14,13 +14,13 @@ type params = {
 
 export type UploadedImage = (File & { file: { name: string }, dataURL: string })[]
 
-function SingleImageUploader({ control, fieldName, className, content, required, defaultValue }: params) {
+function SingleImageUploader<T extends FieldValues>({ control, fieldName, className, content, required, defaultValue }: params<T>) {
 
     return (
         <div className={className}>
             <Controller
                 name={fieldName}
-                defaultValue={defaultValue}
+                defaultValue={defaultValue as any}
                 control={control}
                 rules={{ required: required }}
                 render={({ field: { value, onChange } }) => (
