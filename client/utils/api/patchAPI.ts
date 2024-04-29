@@ -1,4 +1,4 @@
-export default async function patchAPI(params: string, data: object[] | object) {
+export default async function patchAPI(params: string, data: object[] | object, props?: RequestInit) {
     try {
         const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, {
             method: 'PATCH',
@@ -7,20 +7,18 @@ export default async function patchAPI(params: string, data: object[] | object) 
             },
             body: JSON.stringify(data),
             credentials: 'include',
+            ...props
         })
 
-        if (!res.ok) {
-            throw new Error('Failed to Add Data')
-        }
+        const jsonRes = await res.json();
 
-        return res.json()    
-    
+        if (!res.ok) {
+            throw new Error(jsonRes.message as string || 'Failed to Change Data')
+        }
+        return jsonRes
+
     } catch (e) {
         console.error(e)
-        throw new Error('Failed to Change Data')
-
+        throw new Error((e as Error).message || 'Failed to Change Data')
     }
-    // [async & await]
-    //don't forget to make the functions 'async' 
-    //don't forget the "await" when importing: const data = await ()
 }

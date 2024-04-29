@@ -1,4 +1,4 @@
-export default async function postAPI(params: string, data?: object) {
+export default async function postAPI(params: string, data?: object, props?: RequestInit) {
     try {
         const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, {
             method: 'POST',
@@ -7,17 +7,18 @@ export default async function postAPI(params: string, data?: object) {
             },
             body: data ? JSON.stringify(data) : undefined,
             credentials: 'include',
+            ...props
         })
 
-        if (!res.ok) {
-            throw new Error('Failed to Add Data')
-        }
+        const jsonRes = await res.json();
 
-        return res.json()
+        if (!res.ok) {
+            throw new Error(jsonRes.message as string || 'Failed to Add Data')
+        }
+        return jsonRes
 
     } catch (e) {
         console.error(e)
-        throw new Error('Failed to Add Data')
-
+        throw new Error((e as Error).message || 'Failed to Add Data')
     }
 }
