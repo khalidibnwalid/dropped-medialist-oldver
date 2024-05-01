@@ -1,14 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/src/index';
 import 'dotenv/config';
 import express from 'express';
+import fs from 'fs';
 import { Argon2id } from "oslo/password";
 import { lucia } from '..';
 import { emailRegex } from '../utils/regex';
+import userMediaFoldersPath from '../utils/userMediaFoldersPath';
 
-const prisma = new PrismaClient()
 const usersRouter = express.Router();
-
-//general info for user
 
 // # POST - Sign Up
 usersRouter.post('/', async (req, res) => {
@@ -25,7 +24,10 @@ usersRouter.post('/', async (req, res) => {
         return res.status(400).json({ message: 'wrong data' })
 
     try {
-        const userExist = await prisma.users.findFirst({ where: { OR: [{ email }, { username }] } });
+        const userExist = await prisma.users.findFirst({
+            where:
+                { OR: [{ email }, { username }] }
+        });
 
         // need protection against brute-force attacks and login throttling.
         if (userExist) {
@@ -36,26 +38,31 @@ usersRouter.post('/', async (req, res) => {
         }
 
         const hashed_password = await new Argon2id().hash(password);
-        const userId = crypto.randomUUID()
 
-        await prisma.users.create({
+        const user = await prisma.users.create({
             data: {
-                id: userId,
                 username,
                 email,
                 hashed_password,
             }
         })
 
-        const session = await lucia.createSession(userId, {})
+        const session = await lucia.createSession(user.id, {})
         const sessionCookie = lucia.createSessionCookie(session.id).serialize()
+
+        const mediaFolder = userMediaFoldersPath(user.id)
+
+        // create media folders for the user
+        fs.mkdirSync(mediaFolder.items, { recursive: true })
+        fs.mkdirSync(mediaFolder.lists)
+        fs.mkdirSync(mediaFolder.logos)
 
         res
             .appendHeader("Set-Cookie", sessionCookie)
             .status(201)
-            .json({ message: 'User Added' });
+            .json(user);
 
-        console.log(`[ID: ${userId}] [Users - POST] added `)
+        console.log(`[ID: ${user.id}] [Users - POST] added `)
 
     } catch (e) {
         console.log("[Users - POST] Error:", e)
@@ -63,7 +70,7 @@ usersRouter.post('/', async (req, res) => {
     }
 })
 
-// # GET
+// # GET - general info only
 usersRouter.get('/', async (req, res) => {
     const user_id = res.locals?.user?.id
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
