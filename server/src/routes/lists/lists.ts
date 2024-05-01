@@ -1,42 +1,30 @@
-import { PrismaClient, lists } from '@prisma/client';
+import { prisma } from '@/src/index';
+import { lists } from '@prisma/client';
 import express from 'express';
 import { validate as uuidValidate } from 'uuid';
-import objectBoolFilter from '../utils/helper-function/objectBoolFilter';
+import objectBoolFilter from '../../utils/helper-function/objectBoolFilter';
+import postListRoute from './postList';
 
-const prisma = new PrismaClient()
-const listsRouter = express.Router();
+export const listsRouter = express.Router();
+
+//post
+listsRouter.post('/', postListRoute);
 
 //get
 listsRouter.get('/:id?', async (req, res) => {
     const user_id = res.locals?.user?.id
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
-        
+
     const { id } = req.params
     const rules = objectBoolFilter(req.query)
 
     try {
         if (id && !uuidValidate(id)) return res.status(400).json({ message: 'Bad ID' })
-        let list = id
+        const list = id
             ? await prisma.lists.findUnique({ where: { ...rules, id, user_id } })
             : await prisma.lists.findMany({ where: { ...rules, user_id }, orderBy: { title: 'asc' } })
 
         res.status(200).json(list); //needs json
-    } catch (e) {
-        console.log("[lists]", e)
-        res.status(500).json({ message: 'Internal Server Error' })
-    }
-})
-
-listsRouter.post('/', async (req, res) => {
-    const user_id = res.locals?.user?.id
-    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
-
-    const data = req.body
-
-    try {
-        const list = await prisma.lists.create({ data: { ...data, user_id } })
-        res.status(200).json(list);
-        console.log("[lists] Inserted:", data.title)
     } catch (e) {
         console.log("[lists]", e)
         res.status(500).json({ message: 'Internal Server Error' })
@@ -109,6 +97,5 @@ listsRouter.patch('/group', async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' })
     }
 })
-
 
 export default listsRouter;

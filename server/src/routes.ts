@@ -1,5 +1,5 @@
 import express from 'express';
-import listsRouter from './routes/lists';
+import listsRouter from './routes/lists/lists';
 import filesRouter from './routes/file';
 import imagesRouter from './routes/images';
 import itemsRouter from './routes/items';
