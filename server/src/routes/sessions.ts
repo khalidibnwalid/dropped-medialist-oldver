@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/src/index';
 import express from 'express';
-import { lucia } from '../index';
 import { Argon2id } from 'oslo/password';
+import { lucia } from '../index';
 
-const prisma = new PrismaClient()
 const sessionsRoutes = express.Router();
 
 // # POST - LOGIN

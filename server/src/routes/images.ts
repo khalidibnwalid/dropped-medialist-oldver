@@ -1,7 +1,7 @@
 import { PrismaClient, items_images } from '@prisma/client';
 import express from 'express';
+import { prisma } from '@/src/index';
 
-const prisma = new PrismaClient()
 const router = express.Router();
 
 //need auth check

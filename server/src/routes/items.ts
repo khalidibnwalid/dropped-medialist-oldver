@@ -1,9 +1,9 @@
-import { PrismaClient, items } from '@prisma/client';
+import { prisma } from '@/src/index';
+import { items } from '@prisma/client';
 import express from 'express';
 import { validate as uuidValidate } from 'uuid';
 import objectBoolFilter from '../utils/helper-function/objectBoolFilter';
 
-const prisma = new PrismaClient()
 const itemsRouter = express.Router();
 
 // # POST

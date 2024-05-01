@@ -1,7 +1,7 @@
-import { PrismaClient, items_tags } from '@prisma/client';
+import { prisma } from '@/src/index';
+import { items_tags } from '@prisma/client';
 import express from 'express';
 
-const prisma = new PrismaClient()
 const tagsRouter = express.Router();
 
 // # GET

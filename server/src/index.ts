@@ -7,6 +7,8 @@ import { validateSession, verifyRequestOriginHeader } from "./middlewares";
 import routes from './routes';
 const cors = require('cors');
 
+export const prisma = new PrismaClient()
+
 declare module "lucia" {
     interface Register {
         Lucia: typeof lucia;
