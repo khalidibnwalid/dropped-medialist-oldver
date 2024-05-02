@@ -12,7 +12,7 @@ type params<T extends FieldValues> = {
     defaultValue?: { dataURL: string }[]
 }
 
-export type UploadedImage = (File & { file: { name: string }, dataURL: string })[]
+export type UploadedImage = (File & { file: Blob & { name: string }, dataURL: string })[]
 
 function SingleImageUploader<T extends FieldValues>({ control, fieldName, className, content, required, defaultValue }: params<T>) {
 

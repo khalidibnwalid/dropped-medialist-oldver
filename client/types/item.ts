@@ -59,13 +59,13 @@ interface ItemConfiguration {
 
 export interface itemlink {
     url?: string;
-    logo_path: string | UploadedImage;
+    logo_path: string;
     name: string
 }
 
 
 export interface itemBadgesType {
-    logo_path: string | UploadedImage;
+    logo_path: string;
     value: string;
 }
 
