@@ -18,12 +18,14 @@ export default async function putListRoute(req: Request, res: Response) {
     if (!uuidValidate(id)) return res.status(401).json({ message: 'Bad List ID' })
 
     try {
+        const originalList = await prisma.lists.findUnique({ where: { id, user_id } }) as listClientData
+        if (!originalList) return res.status(401).json({ message: `Bad List ID, List doesn't exist` })
+
         const form = formidable({ filter: formidableAllowImagesAndDummyBlobs });
         const [fields, files] = await form.parse(req); // don't forget to add fields
         if (!fields || !fields?.title?.[0] || !fields?.templates?.[0]) return res.status(400).json({ message: 'Bad Request' })
 
         let listData = {} as listClientData
-        const originalList = await prisma.lists.findUnique({ where: { id, user_id } }) as listClientData
 
         // unchanging fields
         listData.fav = originalList.fav;

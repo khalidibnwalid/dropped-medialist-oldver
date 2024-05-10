@@ -17,10 +17,11 @@ listsRouter.get('/:id?', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const { id } = req.params
-    const rules = objectBoolFilter(req.query)
+    if (id && !uuidValidate(id)) return res.status(400).json({ message: 'Bad ID' })
 
     try {
-        if (id && !uuidValidate(id)) return res.status(400).json({ message: 'Bad ID' })
+        const rules = objectBoolFilter(req.query)
+
         const list = id
             ? await prisma.lists.findUnique({ where: { ...rules, id, user_id } })
             : await prisma.lists.findMany({ where: { ...rules, user_id }, orderBy: { title: 'asc' } })
@@ -37,12 +38,10 @@ listsRouter.delete('/', async (req, res) => {
     const user_id = res.locals?.user?.id
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
-    const { body }: { body: string[] /* lists.id[] */ } = req.body;
-
     try {
+        const { body }: { body: lists['id'][] } = req.body;
         await prisma.lists.deleteMany({
-            where:
-                { user_id, id: { in: body } }
+            where: { id: { in: body }, user_id }
         })
         console.log('[lists] Deleted:', body)
         res.status(200).json({ message: 'Lists Deleted' });
@@ -59,13 +58,14 @@ listsRouter.patch('/:id', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const { id } = req.params;
-    const changes = req.body;
+    if (!uuidValidate(id)) return res.status(400).json({ message: 'Bad ID' })
 
     try {
-        if (!uuidValidate(id)) throw new Error("Bad ID")
+        const data = req.body;
+
         const list = await prisma.lists.update({
-            where: { user_id, id: id },
-            data: changes
+            where: { id, user_id },
+            data: { ...data, user_id }
         })
 
         console.log('[lists] Edited:', id)
@@ -83,13 +83,13 @@ listsRouter.patch('/group', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const data = req.body; //the json only contain what changed therfore it represents 'changes'
-    const { id, ...restData }: { id: string[], changes: lists } = data
-    const listIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
+    const { id, ...restData }: { id: lists['id'][], changes: lists } = data
+    const listIDs: { id: lists['id'] }[] = id.map(listId => ({ id: listId, user_id }))
 
     try {
         await prisma.lists.updateMany({
             data: restData,
-            where: { user_id, OR: listIDs }
+            where: { OR: listIDs }
         })
         console.log('[lists] Edited:', id)
         res.status(200).json({ message: 'Lists Edited' });
