@@ -3,12 +3,13 @@ import { lists } from '@prisma/client';
 import express from 'express';
 import { validate as uuidValidate } from 'uuid';
 import objectBoolFilter from '../../utils/helper-function/objectBoolFilter';
+import putListRoute from './putList';
 import postListRoute from './postList';
 
 export const listsRouter = express.Router();
 
-//post
 listsRouter.post('/', postListRoute);
+listsRouter.put('/:id', putListRoute)
 
 //get
 listsRouter.get('/:id?', async (req, res) => {

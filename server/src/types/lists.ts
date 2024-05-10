@@ -1,7 +1,7 @@
 import { lists } from "@prisma/client";
 import { itemlinkType, itemBadgeType } from "./items";
 
-export type listClientData = lists & {
+export type listClientData = Omit<lists, 'templates'> & {
     templates?: templates
     configurations?: object
 }

@@ -1,6 +1,5 @@
 import express from 'express';
 import fs from 'fs';
-
 import * as formidable from 'formidable';
 
 const filesRouter = express.Router();
