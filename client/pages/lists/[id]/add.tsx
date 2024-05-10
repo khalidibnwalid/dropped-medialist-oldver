@@ -5,14 +5,10 @@ import ItemApiLoaderDropDown from '@/components/forms/item/api-loader/dropdown';
 import ItemApiLoaderProvider from '@/components/forms/item/api-loader/provider';
 import { ItemFormCoverColumn, ItemFormPosterColumn } from '@/components/forms/item/layouts';
 import { ItemFormContext } from "@/components/forms/item/provider";
-import type { itemBadgesType, itemData, itemTag, itemlink } from '@/types/item';
-import handleImageUpload from '@/utils/api/handlers/handleImageUpload';
-import uploadImageFromURL from '@/utils/api/handlers/uploadImageFromURL';
+import type { itemData } from '@/types/item';
 import postAPI from '@/utils/api/postAPI';
-import { dateStamped } from '@/utils/helperFunctions/dateStamped';
-import getFileExtension from '@/utils/helperFunctions/getFileExtinsion';
-import sanitizeObject from '@/utils/helperFunctions/sanitizeObject';
-import sanitizeString from '@/utils/helperFunctions/sanitizeString';
+import appendObjKeysToFormData from '@/utils/helperFunctions/form/appendObjKeysToFormData';
+import handleAddLogosFieldsForm from '@/utils/helperFunctions/form/handleAddLogosFieldsForm';
 import { mutateItemCache } from '@/utils/query/cacheMutation';
 import { itemsFetchOptions } from '@/utils/query/queryOptions/itemsOptions';
 import { listFetchOptions } from '@/utils/query/queryOptions/listsOptions';
@@ -48,7 +44,7 @@ function Page() {
     const isError = (list.isError || items.isError || tags.isError)
 
     const mutation = useMutation({
-        mutationFn: (data: Partial<itemData>) => postAPI(`items/${listId}`, data),
+        mutationFn: (data: FormData) => postAPI(`items/${listId}`, data),
         onSuccess: (data) => {
             mutateItemCache(data, "add")
             router.push(`../../items/${data.id}`)
@@ -58,73 +54,27 @@ function Page() {
     if (isPending) return <h1>loading...</h1>
     if (isError || !list.data || !items.data || !tags.data) return <ErrorPage message="Failed to Fetch Items" />
 
-    let orderCounter = 0 //to give every image a unique value
-
     const fieldTemplates = list.data.templates?.fieldTemplates
 
-    async function handleTags(originalArray: string[]) {
-        let toPostAPI: itemTag[] = []
-        const newArray = originalArray.map((tag) => {
-            if (uuidValidate(tag)) {
-                return tag //if tag is uuid then it already exists in the database
-            } else {
-                //if tag isn't a uuid then it is a new tag 
-                if (!tag) return
-                const id = crypto.randomUUID();
-                sanitizeString(tag)
-                toPostAPI.push({ id, name: tag })
-                return id
-            }
-        })
-        if (toPostAPI.length > 0) postAPI(`tags/${listId}`, { body: toPostAPI })
-        return newArray
-    }
-
-    const handleImage = async (image?: UploadedImage) => {
-        if (!(image && image[0])) return null
-        orderCounter++
-        let imageName = ''
-        if (image[0].file) {
-            /** only manually uploaded images have image[0].file  */
-            imageName = dateStamped(`${orderCounter}.${getFileExtension(image[0].file.name)}`);
-            await handleImageUpload(image, "items", imageName);
-        } else {
-            imageName = dateStamped(`${orderCounter}.${getFileExtension(image[0].dataURL)}`);
-            await uploadImageFromURL(image[0].dataURL, "items", imageName);
-        }
-        return imageName;
-    }
-
-    const handleLogosFields = async (array: (itemBadgesType | itemlink)[]) => {
-        return array.map((e) => {
-            orderCounter++
-            if (typeof (e.logo_path) === 'string' || e.logo_path === undefined) {
-                return e
-            } else if (typeof (e.logo_path) === 'object') {
-                const logoName = dateStamped(`${orderCounter}.${getFileExtension(e.logo_path[0].file.name)}`)
-                handleImageUpload(e.logo_path, "logos", logoName);
-                e.logo_path = logoName
-                return e
-            }
-        })
-    }
-
     async function onSubmit(rawData: itemData) {
-        // console.log("rawData", rawData) //devmode
+        type omitData = Omit<itemData, 'cover_path' | 'poster_path' | 'links' | 'badges'>;
+
         // saperate the handling of submitted data
-        const { rawPoster, rawCover, tags, links, badges, ...data }: any = rawData
+        const { cover_path, poster_path, links: linksData, badges: badgesData, ...data } = rawData as itemData
 
-        if (tags.length > 0) data['tags'] = await handleTags(tags)
-        data['poster_path'] = await handleImage(rawPoster)
-        data['cover_path'] = await handleImage(rawCover)
+        const formData = new FormData();
+        appendObjKeysToFormData(formData, data as omitData)
 
-        // links and badges have logos that should be uploaded
-        data['links'] = await handleLogosFields(links)
-        data['badges'] = await handleLogosFields(badges)
-        sanitizeObject(data)
+        formData.append('cover_path', (cover_path as UploadedImage)?.[0]?.file ?? '')
+        formData.append('poster_path', (poster_path as UploadedImage)?.[0]?.file ?? '')
 
-        mutation.mutate(data)
-        // console.log("final data", data)//devmode
+        const badges = handleAddLogosFieldsForm(badgesData, formData, 'badges')
+        const links = handleAddLogosFieldsForm(linksData, formData, 'links')
+
+        formData.append('badges', JSON.stringify(badges))
+        formData.append('links', JSON.stringify(links))
+
+        mutation.mutate(formData)
     }
 
     return (
@@ -133,7 +83,7 @@ function Page() {
                 <form className="grid grid-cols-3 py-5 gap-x-7 items-start" key={apiData.key}>
 
                     <div className="col-span-1 grid gap-y-2">
-                        <SingleImageUploader control={control} fieldName='rawPoster' content="Item's Poster" className='h-44' />
+                        <SingleImageUploader control={control} fieldName='poster_path' content="Item's Poster" className='h-44' />
                         <Divider className="my-2" />
                         <div className='flex items-center gap-x-3'>
                             <ItemApiLoaderDropDown>
@@ -159,7 +109,7 @@ function Page() {
                     </div>
 
                     <div className="col-span-2 grid gap-y-2">
-                        <SingleImageUploader control={control} fieldName='rawCover' content="Item's Cover" className='h-44' />
+                        <SingleImageUploader control={control} fieldName='cover_path' content="Item's Cover" className='h-44' />
                         <Divider className="my-2" />
                         <ItemFormCoverColumn />
                         <Divider className="my-2" />

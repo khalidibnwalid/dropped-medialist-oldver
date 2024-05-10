@@ -13,13 +13,12 @@ export default function handleEditLogosFieldsForm<T extends { logo_path?: Upload
     const deleteImageBlob = dummyBlobFile(4)
 
     return fieldsArray?.map(field => {
-        const { logo_path, ...rest } = field;
-
-        const uploadedLogo = (field.logo_path as UploadedImage)?.[0]?.file
+        const { logo_path } = field;
+        const uploadedLogo = (logo_path as UploadedImage)?.[0]?.file
 
         formData.append(fieldName,
             uploadedLogo //if a new file is uploaded
-            || !field.logo_path && deleteImageBlob //if the old File is deleted
+            || !logo_path && deleteImageBlob //if the old File is deleted
             || preserveImageBlob //if the user didn't change the file
         )
         return field
