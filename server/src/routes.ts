@@ -2,7 +2,7 @@ import express from 'express';
 import listsRouter from './routes/lists/lists';
 import filesRouter from './routes/file';
 import imagesRouter from './routes/images';
-import itemsRouter from './routes/items';
+import itemsRouter from './routes/items/items';
 import tagsRouter from './routes/tags';
 import sessionsRoutes from './routes/sessions';
 import usersRouter from './routes/user';

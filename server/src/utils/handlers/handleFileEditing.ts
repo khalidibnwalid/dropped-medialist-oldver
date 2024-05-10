@@ -10,7 +10,7 @@ export default async function handleFileEditing(
     originalPath?: string,
     isTesting?: boolean
 ) {
-    if (!file) return undefined
+    if (!file) return null
 
     const isPreserveImageBlob = isDummyBlob(file, 5)
     const isDeleteImageBlob = isDummyBlob(file, 4)

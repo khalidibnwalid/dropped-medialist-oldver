@@ -17,9 +17,9 @@ export const handleLogosFieldsSaving = async <T extends { logo_path?: string }>(
 ): Promise<T[]> => await Promise.all(
     formFields.map(async (field, index) => ({
         ...field,
-        logo_path: await handleLogoCreating(formFiles[index], userMediaRoot, isTesting)
+        logo_path: field?.logo_path || await handleLogoCreating(formFiles?.[index], userMediaRoot, isTesting)
     }))
 ) as T[]
 
-const handleLogoCreating = async (file: File, userMediaRoot: { logos: string }, isTesting?: boolean) =>
-    isDummyBlob(file) ? undefined : await handleFileSaving(file, userMediaRoot.logos, isTesting) //returns the path
+const handleLogoCreating = async (file: File | undefined, userMediaRoot: { logos: string }, isTesting?: boolean) =>
+    file && !isDummyBlob(file) ? await handleFileSaving(file, userMediaRoot.logos, isTesting) : null

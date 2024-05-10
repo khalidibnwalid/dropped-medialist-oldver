@@ -2,33 +2,12 @@ import { prisma } from '@/src/index';
 import { items } from '@prisma/client';
 import express from 'express';
 import { validate as uuidValidate } from 'uuid';
-import objectBoolFilter from '../utils/helper-function/objectBoolFilter';
+import objectBoolFilter from '../../utils/helper-function/objectBoolFilter';
+import postItemRoute from './postItem';
 
 const itemsRouter = express.Router();
 
-// # POST
-
-itemsRouter.post('/:list_id', async (req, res) => {
-    const user_id = res.locals?.user?.id
-    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
-
-    const { list_id } = req.params;
-
-    try {
-        if (!uuidValidate(list_id)) throw new Error("Bad ID")
-        const data = req.body;
-
-        const item = await prisma.items.create({
-            data: { ...data, user_id, list_id }
-        })
-
-        console.log("[Items] Inserted:", data.title)
-        res.status(200).json(item);
-    } catch (e) {
-        console.log("[Items]", e)
-        res.status(500).json({ message: 'Internal Server Error' })
-    }
-})
+itemsRouter.post('/:list_id', postItemRoute)
 
 // # GET
 //get items of  a list
@@ -36,12 +15,12 @@ itemsRouter.get('/:list_id?', async (req, res) => {
     const user_id = res.locals?.user?.id
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
-    const rules = objectBoolFilter(req.query)
     const { list_id } = req.params
-    const where = list_id ? { ...rules, user_id, list_id } : { ...rules, user_id }
+    if (list_id && !uuidValidate(list_id)) return res.status(400).json({ message: `Bad Item ID, Item doesn't exist` })
 
     try {
-        if (list_id && !uuidValidate(list_id)) throw new Error("Bad ID")
+        const rules = objectBoolFilter(req.query)
+        const where = list_id ? { ...rules, user_id, list_id } : { ...rules, user_id } //not safe need more restrictions
         const items = await prisma.items.findMany({
             where,
             orderBy: { title: 'asc' }
@@ -59,8 +38,9 @@ itemsRouter.get('/id/:id', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const { id } = req.params
+    if (!uuidValidate(id)) return res.status(400).json({ message: `Bad Item ID, Item doesn't exist` })
+
     try {
-        if (!uuidValidate(id)) throw new Error("Bad ID")
         const item = await prisma.items.findUnique({
             where: { id, user_id }
         })
@@ -76,7 +56,7 @@ itemsRouter.delete('/', async (req, res) => {
     const user_id = res.locals?.user?.id
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
-    const { body }: { body: string[] /* items.id[] */ } = req.body;
+    const { body }: { body: items['id'][] } = req.body;  //not safe need more restrictions
     // should remove the deleted items from other items' related column varchar[]
     try {
         await prisma.items.deleteMany({
@@ -96,9 +76,10 @@ itemsRouter.patch('/:id', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const { id } = req.params;
-    const changes = req.body;
+    if (!uuidValidate(id)) return res.status(400).json({ message: `Bad Item ID, Item doesn't exist` })
+
     try {
-        if (!uuidValidate(id)) throw new Error("Bad ID")
+        const changes = req.body;
         const item = await prisma.items.update({
             where: { id, user_id },
             data: changes
@@ -116,14 +97,14 @@ itemsRouter.patch('/group', async (req, res) => {
     const user_id = res.locals?.user?.id
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
-    const data = req.body; //the json only contain what changed therfore it represents 'changes'
-    const { id, ...restData }: { id: string[], changes: items } = data
-    const itemsIDs: { id: string }[] = id.map(idvalue => ({ id: idvalue }))
+    const data = req.body; //not safe need more restrictions
+    const { id, ...restData }: { id: items['id'][], changes: items } = data
+    const itemsIDs: { id: items['id'] }[] = id.map(idvalue => ({ id: idvalue }))
 
     try {
         await prisma.items.updateMany({
             data: restData,
-            where: { user_id, OR: itemsIDs }
+            where: { OR: itemsIDs, user_id }
         })
         console.log('[Items] Edited:', id)
         res.status(200).json({ message: 'Items Edited' });
@@ -138,12 +119,12 @@ itemsRouter.get('/group/or?', async (req, res) => {
     const user_id = res.locals?.user?.id
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
-    const id = req.query.id as string | string[];
-    const itemsIDs: string[] = Array.isArray(id) ? id : [id];
-
     try {
+        const id = req.query.id as items['id'] | items['id'][];
+        const itemsIDs = [].concat(id);
+
         const items = await prisma.items.findMany({
-            where: { user_id, id: { in: itemsIDs } }
+            where: { id: { in: itemsIDs }, user_id }
         })
         res.status(200).json(items);
     } catch (e) {

@@ -19,14 +19,14 @@ export default async function handleEditLogosFields<T extends { logo_path?: stri
     /** is the function is called to edit a list or an item */
     type: 'list' | 'item',
     userMediaRoot: { logos: string; },
-    formFields: T[], // 
-    formFiles: File[],
+    formFields: T[] = [], // 
+    formFiles: File[] = [],
     /** all the logos paths from the logos fields of the list's items, to check if they are used or not */
-    itemsLogoPaths: { logo_path: string }[],
+    itemsLogoPaths: { logo_path: string }[] = [],
     /** pass the original pre-edit fieldTemplate of the field *(not the whole list's fieldTemplates)*,
      * in a list it will be used to compare old & new data,
      * in an item it is needed to check whether a logo is using a template, to avoid deleting a template's logo*/
-    fieldTemplate: T[],
+    fieldTemplate: T[] = [],
     /**to compare the new data with the original data, 
      *  in the case of an item it is the original fileds, 
      * in the lists it is the fieldTemplates  */
@@ -47,12 +47,12 @@ export default async function handleEditLogosFields<T extends { logo_path?: stri
         }
     }
 
-    const unusedLogos = originalFields?.map(
+    const unusedLogos = originalFields.map(
         original => !formFields?.some(f => f.logo_path === original.logo_path) && original.logo_path
     )
 
     // delete all unused logos
-    unusedLogos.forEach(async (logoPath) => {
+    unusedLogos?.forEach(async (logoPath) => {
         if (!logoPath) return
         if (logoPath === 'star') return
         const isUsedByAnItem = itemsLogoPaths.some(i => i.logo_path === logoPath)
