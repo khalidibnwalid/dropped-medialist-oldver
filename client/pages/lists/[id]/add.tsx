@@ -6,6 +6,7 @@ import ItemApiLoaderProvider from '@/components/forms/item/api-loader/provider';
 import { ItemFormCoverColumn, ItemFormPosterColumn } from '@/components/forms/item/layouts';
 import { ItemFormContext } from "@/components/forms/item/provider";
 import type { itemData } from '@/types/item';
+import fetchImageFromURL from '@/utils/api/handlers/fetchImageFromURL';
 import postAPI from '@/utils/api/postAPI';
 import appendObjKeysToFormData from '@/utils/helperFunctions/form/appendObjKeysToFormData';
 import handleAddLogosFieldsForm from '@/utils/helperFunctions/form/handleAddLogosFieldsForm';
@@ -65,10 +66,12 @@ function Page() {
         const formData = new FormData();
         appendObjKeysToFormData(formData, data as omitData)
 
-        formData.append('cover_path', (cover_path as UploadedImage)?.[0]?.file ?? '')
-        formData.append('poster_path', (poster_path as UploadedImage)?.[0]?.file ?? '')
+        formData.append('cover_path', (cover_path as UploadedImage)?.[0]?.file
+            || await fetchImageFromURL((cover_path as UploadedImage)?.[0]?.dataURL) || '')
+        formData.append('poster_path', (poster_path as UploadedImage)?.[0]?.file
+            || await fetchImageFromURL((poster_path as UploadedImage)?.[0]?.dataURL) || '')
 
-        const badges = handleAddLogosFieldsForm(badgesData, formData, 'badges')
+        const badges = handleAddLogosFieldsForm(badgesData, formData, ' badges')
         const links = handleAddLogosFieldsForm(linksData, formData, 'links')
 
         formData.append('badges', JSON.stringify(badges))
