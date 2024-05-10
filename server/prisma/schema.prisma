@@ -56,6 +56,8 @@ model items_images {
   title        String?   @db.VarChar
   description  String?
   date_created DateTime? @default(now()) @db.Timestamp(6)
+  user_id      String    @db.Uuid
+  users        users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "item_images_user_id_fkey")
   items        items?    @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -79,6 +81,7 @@ model users {
   created_at      DateTime?        @default(now()) @db.Timestamptz(6)
   last_login      DateTime?        @db.Timestamptz(6)
   items           items[]
+  items_images    items_images[]
   items_tags      items_tags[]
   lists           lists[]
   users_sessions  users_sessions[]
