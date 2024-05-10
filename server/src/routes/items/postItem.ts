@@ -4,7 +4,7 @@ import { formidableAllowImagesAndDummyBlobs } from '@/src/utils/formidableOption
 import handleFileSaving from '@/src/utils/handlers/handleFileSaving';
 import { handleLogosFieldsSaving } from '@/src/utils/handlers/handleLogosFieldsSaving';
 import userMediaFoldersPath from '@/src/utils/userMediaFoldersPath';
-import { items } from '@prisma/client';
+import { items, items_tags } from '@prisma/client';
 import { Request, Response } from 'express';
 import formidable from 'formidable';
 import { validate as uuidValidate } from 'uuid';
@@ -32,11 +32,11 @@ export default async function postItemRoute(req: Request, res: Response) {
         itemData.trash = false
 
         itemData.title = fields.title[0]
-        itemData.description = fields.description?.[0];
+        itemData.description = fields.description?.[0] ?? '';
 
         itemData.progress_state = JSON.parse(fields.progress_state?.[0] ?? '{}')
         itemData.configurations = JSON.parse(fields?.configurations?.[0] ?? '{}')
-        itemData.related = JSON.parse(fields?.related_items?.[0] ?? '[]')
+        itemData.related = JSON.parse(fields?.related?.[0] ?? '[]')
 
         //fields
         itemData.main_fields = JSON.parse(fields?.main_fields?.[0] ?? '[]')
@@ -55,7 +55,7 @@ export default async function postItemRoute(req: Request, res: Response) {
         itemData.links = await handleLogosFieldsSaving(links, files.links, userMediaRoot)
 
         // handling tags
-        const tagsData = JSON.parse(fields?.tags[0]) as string[]
+        const tagsData = JSON.parse(fields?.tags[0]) as items_tags['id'][]
 
         let unexistingTags = []
 

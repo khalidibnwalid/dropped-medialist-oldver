@@ -64,7 +64,6 @@ export default async function putListRoute(req: Request, res: Response) {
             || !fieldTemplates.links && fieldTemplates.links?.length !== files?.links?.length)
             return res.status(400).json({ message: 'Bad Request' })
 
-        console.log(files, fieldTemplates?.links)
         listData.templates.fieldTemplates.badges = await handleEditLogosFields(
             'list',
             userMediaRoot,
@@ -86,7 +85,7 @@ export default async function putListRoute(req: Request, res: Response) {
         )
 
         const list = await prisma.lists.update({
-            where: { user_id, id: id },
+            where: { user_id, id },
             data: listData as lists
         });
         console.log('[lists] Edited:', id);
