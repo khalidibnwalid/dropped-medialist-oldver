@@ -32,6 +32,7 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
 }) {
 
     const buttonProps: ButtonProps = {
+        className,
         variant,
         type,
         size,
@@ -39,18 +40,24 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
     }
 
     if (mutation.isPending)
-        return <Button className={className} disabled={true} {...buttonProps}>
+        return <Button
+            disabled={true}
+            {...buttonProps}
+        >
             <Spinner size={size === "sm" ? "sm" : "md"} />
         </Button>
 
     if (mutation.isError)
-        return <Button color="danger" onClick={onClick} {...buttonProps}>
+        return <Button
+            color="danger"
+            onClick={onClick}
+            {...buttonProps}
+        >
             {errorContent}
         </Button>
 
     if (mutation.isSuccess)
         return <Button
-            className="focus:outline-none"
             color='success'
             onClick={saveOnClick}
             {...buttonProps}
@@ -59,7 +66,6 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
         </Button>
 
     return <Button
-        className={className}
         onClick={onClick}
         {...buttonProps}
     >

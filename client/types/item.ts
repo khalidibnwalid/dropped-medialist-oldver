@@ -16,10 +16,6 @@ export interface itemData {
     poster_path?: string | null | UploadedImage
     /**if Null = deleting the image */
     cover_path?: string | null | UploadedImage
-    /**Only in Add/Edit page */
-    rawCover?: UploadedImage;
-    /**Only in Add/Edit page */
-    rawPoster?: UploadedImage;
     description?: string;
     fav?: boolean;
     trash?: boolean;

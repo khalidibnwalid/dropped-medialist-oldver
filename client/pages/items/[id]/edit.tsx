@@ -6,16 +6,11 @@ import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/it
 import { ItemFormContext } from "@/components/forms/item/provider";
 import { authContext } from "@/components/pagesComponents/authProvider";
 import ItemPageGallery from "@/components/pagesComponents/items/[id]/tabs/itempage-gallery";
-import type { itemData, itemTag } from '@/types/item';
-import deleteAPI from '@/utils/api/deleteAPI';
-import { handleEditingLogosFields } from '@/utils/api/handlers/handleEditingLogosFields';
-import handleImageUpload from '@/utils/api/handlers/handleImageUpload';
-import patchAPI from '@/utils/api/patchAPI';
-import postAPI from '@/utils/api/postAPI';
-import { dateStamped } from '@/utils/helperFunctions/dateStamped';
-import getFileExtension from '@/utils/helperFunctions/getFileExtinsion';
-import sanitizeObject from '@/utils/helperFunctions/sanitizeObject';
-import sanitizeString from '@/utils/helperFunctions/sanitizeString';
+import type { itemData } from '@/types/item';
+import putAPI from "@/utils/api/putAPI";
+import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
+import handleEditFileForm from "@/utils/helperFunctions/form/handleEditFileForm";
+import handleEditLogosFieldsForm from "@/utils/helperFunctions/form/handleEditLogosFieldsForm";
 import { mutateItemCache } from "@/utils/query/cacheMutation";
 import { imagesFetchOptions } from "@/utils/query/queryOptions/imagesOptions";
 import { itemFetchOptions, itemsFetchOptions } from "@/utils/query/queryOptions/itemsOptions";
@@ -54,7 +49,7 @@ function Page() {
     const isSuccess = item.isSuccess && list.isSuccess && tags.isSuccess && listItems.isSuccess && images.isSuccess
 
     const mutation = useMutation({
-        mutationFn: (data: Partial<itemData>) => patchAPI(`items/${itemId}`, data),
+        mutationFn: (data: FormData) => putAPI(`items/${itemId}`, data),
         onSuccess: (data) => {
             mutateItemCache(data, "edit")
             router.push(`../../items/${data.id}`)
@@ -78,72 +73,26 @@ function Page() {
 
     const listItemsData = listItems.data.filter((item) => item.id !== itemId) // for related items
     const fieldTemplates = list.data.templates?.fieldTemplates
-    let orderCounter = 0 //to give every image a unique value
-
-    async function handleTags(originalArray: string[]) {
-        let toPostAPI: itemTag[] = []
-        const newArray = originalArray.map((tag) => {
-            if (uuidValidate(tag)) {
-                return tag //if tag is uuid then it already exists in the database
-            } else {
-                //if tag isn't a uuid then it is a new tag 
-                if (!tag) return
-                const id = crypto.randomUUID();
-                sanitizeString(tag)
-                toPostAPI.push({ id, name: tag })
-                return id
-            }
-        })
-        // console.log("postAPI", toPostAPI) // devmode
-        if (toPostAPI.length > 0) postAPI(`tags/${listId}`, { body: toPostAPI })
-        return newArray
-    }
-
-    const handleImage = async (image?: UploadedImage, path?: string) => {
-        if (image && image[0]) {
-            orderCounter++
-            const imageName = dateStamped(`${orderCounter.toString()}.${getFileExtension(image[0].file.name)}`)
-            handleImageUpload(image, "items", imageName)
-            //remove the image after uploading the new one
-            if (path) deleteAPI('files', { fileNames: [`images/items/${path}`] })
-            return imageName;
-        } else if (image === null) {
-            //if null onle remove the cover
-            deleteAPI('files', { fileNames: [`images/items/${path}`] })
-            return null
-        }
-    }
 
     async function onSubmit(rawData: itemData) {
-        // console.log("rawData", rawData)
+        type omitData = Omit<itemData, 'cover_path' | 'poster_path' | 'links' | 'badges'>;
+
         // saperate the handling of submitted data
-        let finalData: Partial<itemData> = {}
-        if (!item.data) return
-        const { rawPoster, rawCover, tags, links, badges, ...data }: any = rawData
+        const { cover_path, poster_path, links: linksData, badges: badgesData, ...data } = rawData as itemData
 
-        try {
-            if (tags.length > 0) data['tags'] = await handleTags(tags)
+        const formData = new FormData();
+        appendObjKeysToFormData(formData, data as omitData)
 
-            data['poster_path'] = await handleImage(rawPoster, item.data.poster_path as string)
-            data['cover_path'] = await handleImage(rawCover, item.data.cover_path as string)
+        handleEditFileForm((cover_path as UploadedImage)?.[0]?.file, formData, 'cover_path')
+        handleEditFileForm((poster_path as UploadedImage)?.[0]?.file, formData, 'poster_path')
 
-            //handle links and badges cause they have logos that should be uploaded
-            data['links'] = await handleEditingLogosFields(links, item.data.links, orderCounter, item.data.list_id, fieldTemplates?.links)
-            data['badges'] = await handleEditingLogosFields(badges, item.data.badges, orderCounter, item.data.list_id, fieldTemplates?.badges)
+        const badges = handleEditLogosFieldsForm(badgesData, formData, 'badges')
+        const links = handleEditLogosFieldsForm(linksData, formData, 'links')
 
-            Object.keys(data).forEach((key) => {
-                if (data[key] != item.data[key as keyof itemData]) {
-                    finalData[key as keyof itemData] = data[key]
-                }
-            })
+        formData.append('badges', JSON.stringify(badges))
+        formData.append('links', JSON.stringify(links))
 
-            sanitizeObject(finalData)
-            // console.log("Final Data", finalData)
-            mutation.mutate(finalData)
-        } catch (e) {
-            console.log("(Item) Error:", "Failed to Edit Item", e)
-        }
-
+        mutation.mutate(formData)
     };
 
     return (
@@ -154,7 +103,7 @@ function Page() {
                     <SingleImageUploaderDefault
                         className='h-44'
                         control={control}
-                        fieldName="rawPoster"
+                        fieldName="poster_path"
                         resetField={resetField}
                         setValue={setValue}
                         content="Item's Poster"
@@ -192,7 +141,7 @@ function Page() {
                     <SingleImageUploaderDefault
                         className='h-44 aspect-none'
                         control={control}
-                        fieldName="rawCover"
+                        fieldName="cover_path"
                         resetField={resetField}
                         setValue={setValue}
                         content="Item's Cover"

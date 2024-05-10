@@ -10,7 +10,7 @@ function ItemApiCoverCol() {
         <div className="col-span-2 grid gap-y-2">
             <Controller
                 control={control}
-                name="template.rawCover"
+                name="template.cover_path"
                 rules={{ pattern }}
                 render={({ field }) =>
                     <Input

@@ -109,7 +109,7 @@ export default function ItemApiLoaderProvider({
 
             for (let key in data) {
                 if (!data[key] || data[key] === "") continue; //skip empty values
-                if (key === 'rawCover' || key === 'rawPoster') {
+                if (key === 'cover_path' || key === 'poster_path') {
                     const image = [{ dataURL: data[key] }]
                     setValue(key as keyof itemData, image as any)
                     continue
