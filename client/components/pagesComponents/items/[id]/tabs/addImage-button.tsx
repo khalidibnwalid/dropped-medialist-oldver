@@ -1,104 +1,103 @@
-'use client'
-
-import SingleImageUploader from "@/components/forms/_components/Images/single-imageUploader";
+import SingleImageUploader, { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
+import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWithIndicators";
 import type { itemImageType } from "@/types/item";
-import handleImageUpload from "@/utils/api/handlers/handleImageUpload";
 import postAPI from "@/utils/api/postAPI";
-import { dateStamped } from "@/utils/helperFunctions/dateStamped";
-import getFileExtension from "@/utils/helperFunctions/getFileExtinsion";
-import sanitizeObject from "@/utils/helperFunctions/sanitizeObject";
+import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
+import { mutateImageCache } from "@/utils/query/cacheMutation";
 import { Button, Card, Input } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from 'react';
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { BiX } from "react-icons/bi";
 import { LuImagePlus } from "react-icons/lu";
 
 export const AddImageGalleryButton = ({ itemID }: { itemID: string }) => {
     const [editMode, setEditMode] = useState(false)
-    const router = useRouter();
-
     const { register, handleSubmit, control, setValue } = useForm<itemImageType>()
 
-    const onSubmit: SubmitHandler<itemImageType> = (rawData) => {
-        const { rawImage, ...data }: any = rawData
-        sanitizeObject(data)
-        setEditMode(false)
-        
-        const imageName = dateStamped(`.${getFileExtension(rawImage[0].file.name)}`)
-        handleImageUpload(rawImage, "items", imageName); //remove true
-        data['image_path'] = imageName;
+    const mutation = useMutation({
+        mutationFn: (formData: FormData) => postAPI(`images/${itemID}`, formData),
+        onSuccess: (data) => {
+            mutateImageCache(data, "add")
 
-        postAPI(`images/${itemID}`, { body: [data] })
+            //reset fields
+            setValue('title', undefined)
+            setValue('description', undefined)
+            setValue('image_path', undefined as any)
+            mutation.reset()
+            setEditMode(false)
+        },
+    })
 
-        //reset fields
-        setValue('title', undefined)
-        setValue('description', undefined)
+    const onSubmit = (rawData: itemImageType) => {
+        if (!(rawData.image_path as UploadedImage)?.[0]?.file) return
 
-        router.refresh()
+        type omitData = Omit<itemImageType, 'image_path'>;
+        const { image_path, ...data }: itemImageType = rawData
+
+        const formData = new FormData();
+        appendObjKeysToFormData(formData, data as omitData)
+        formData.append('image_path', ((image_path as UploadedImage)[0].file))
+
+        mutation.mutate(formData)
     }
-    return (
-        <>
-            {editMode ?
-                <Card className=" bg-accented p-3 duration-200 animate-fade-in">
-                    <form
-                        className="flex-grow grid grid-cols-1 gap-y-2 animate-fade-in duration-200"
+
+    return editMode ? (
+        <Card className=" bg-accented p-3 duration-200 animate-fade-in">
+            <form className="flex-grow grid grid-cols-1 gap-y-2 animate-fade-in duration-200">
+                <div className=" flex items-center justify-between gap-x-1">
+                    <SubmitButtonWithIndicators
+                        mutation={mutation}
+                        onClick={handleSubmit(onSubmit)}
+                        saveContent={<><LuImagePlus className=" text-xl" /> Save Image </>}
+                        className="p-1 flex-grow"
+                        size="sm"
+                    />
+                    <Button
+                        type="button"
+                        size="sm"
+                        className=" text-2xl"
+                        onPress={() => setEditMode(false)}
+                        isIconOnly
                     >
-                        <div className=" flex items-center justify-between gap-x-1">
-                            <Button
-                                type="button"
-                                onClick={handleSubmit(onSubmit)}
-                                size="sm"
-                                className="p-1 flex-grow">
-                                <LuImagePlus className=" text-xl" /> Save Image
-                            </Button>
-                            <Button
-                                type="button"
-                                size="sm"
-                                className=" text-2xl"
-                                onPress={() => setEditMode(false)}
-                                isIconOnly
-                            >
-                                <BiX />
-                            </Button>
-                        </div>
+                        <BiX />
+                    </Button>
+                </div>
 
-                        <SingleImageUploader className="h-24" control={control} fieldName="rawImage" content="Image" required />
+                <SingleImageUploader className="h-24" control={control} fieldName="image_path" content="Image" required />
 
-                        <div className="flex gap-x-2 items-center">
-                            <p className="text-gray-400 font-semibold text-sm flex-grow">Title (optional)</p>
-                            <Input
-                                variant="bordered"
-                                className="flex-grow"
-                                size="sm"
-                                aria-label="Tag's Name"
-                                label=""
-                                labelPlacement="outside"
-                                {...register("title")}
-                            />
-                        </div>
+                <div className="flex gap-x-2 items-center">
+                    <label className="text-gray-400 font-semibold text-sm flex-grow">Title (optional)</label>
+                    <Input
+                        variant="bordered"
+                        className="flex-grow"
+                        size="sm"
+                        aria-label="Tag's Name"
+                        label=""
+                        labelPlacement="outside"
+                        {...register("title")}
+                    />
+                </div>
 
-                        <Input
-                            variant="bordered"
-                            className="flex-grow"
-                            aria-label="Tag's Name"
-                            label=""
-                            labelPlacement="outside"
-                            placeholder="Enter Description"
-                            {...register("description")}
-                        />
+                <Input
+                    variant="bordered"
+                    className="flex-grow"
+                    aria-label="Tag's Name"
+                    label=""
+                    labelPlacement="outside"
+                    placeholder="Enter Description"
+                    {...register("description")}
+                />
 
-                    </form>
-                </Card>
-                :
-                <Button
-                    radius="lg"
-                    onPress={() => setEditMode(true)}
-                    className="border-none m-2 shadow-lg duration-200 rounded-2xl overflow-hidden animate-fade-in"
-                >
-                    <LuImagePlus className=" text-xl" /> Add Image
-                </Button>
-            }
-        </>
+            </form>
+        </Card>
+    ) : (
+        <Button
+            radius="lg"
+            onPress={() => setEditMode(true)}
+            className="border-none m-2 shadow-lg duration-200 rounded-2xl overflow-hidden animate-fade-in"
+        >
+            <LuImagePlus className=" text-xl" /> Add Image
+        </Button>
     )
 }

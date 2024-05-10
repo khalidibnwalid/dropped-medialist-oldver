@@ -8,11 +8,16 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { AddImageGalleryButton } from "./addImage-button";
 import { authContext } from "@/components/pagesComponents/authProvider";
 import { useContext } from "react";
-
+import { useMutation } from "@tanstack/react-query";
+import { mutateImageCache } from "@/utils/query/cacheMutation";
 
 function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], item: itemData }) {
-    const router = useRouter()
     const { userData } = useContext(authContext)
+
+    const deleteMutation = useMutation({
+        mutationFn: (imageID: itemImageType['id']) => deleteAPI(`images/${imageID}`),
+        onSuccess: (data) => mutateImageCache(data, "delete")
+    })
 
     return (
         <ResponsiveMasonry
@@ -39,11 +44,7 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                                        scale-x-0 group-hover:scale-x-100 duration-150 origin-right"
                         >
                             <TrashPopover
-                                onPress={() => {
-                                    deleteAPI('images', { body: [data.id] })
-                                    deleteAPI('files', { fileNames: [`images/items/${data.image_path}`] })
-                                    router.reload()
-                                }}
+                                onPress={() => deleteMutation.mutate(data.id)}
                             >
                                 {({ isTrashOpen }) =>
                                     <Button
@@ -62,7 +63,7 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                             <Image
                                 src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.image_path}`}
                                 className="object-contain"
-                                alt={data.image_path}
+                                alt={data.image_path as string}
                             />
                         </a>
 
@@ -84,6 +85,5 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
         </ResponsiveMasonry>
     )
 }
-
 
 export default ItemPageGallery;

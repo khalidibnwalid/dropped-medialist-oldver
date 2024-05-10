@@ -1,8 +1,8 @@
 import { queryClient } from "@/components/pagesComponents/providers";
-import { listData } from "@/types/list";
-import { allListsKey, trashListsKey } from "./queryOptions/listsOptions";
 import { itemData, itemImageType, itemTag } from "@/types/item";
+import { listData } from "@/types/list";
 import { userType } from "@/types/user";
+import { allListsKey } from "./queryOptions/listsOptions";
 
 /** - Edit AllLists Cache
  * - Edit/Add List Cache */

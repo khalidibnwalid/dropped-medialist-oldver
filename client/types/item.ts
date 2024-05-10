@@ -2,7 +2,7 @@ import { UploadedImage } from "@/components/forms/_components/Images/single-imag
 
 export interface itemImageType {
     id: string
-    image_path: string;
+    image_path: string | UploadedImage;
     title?: string;
     description?: string;
     item_id: string
