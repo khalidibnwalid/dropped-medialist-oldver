@@ -4,10 +4,12 @@ import express from 'express';
 import { validate as uuidValidate } from 'uuid';
 import objectBoolFilter from '../../utils/helper-function/objectBoolFilter';
 import postItemRoute from './postItem';
+import putItemRoute from './putItem';
 
 const itemsRouter = express.Router();
 
 itemsRouter.post('/:list_id', postItemRoute)
+itemsRouter.put('/:id', putItemRoute)
 
 // # GET
 //get items of  a list
