@@ -5,7 +5,6 @@ import deleteAPI from "../deleteAPI";
 import fetchAPI from "../fetchAPI";
 import handleImageUpload from "./handleImageUpload";
 
-
 export const handleEditingLogosFields = async (
     newData: (itemBadgesType | itemlink)[],
     originalData: (itemBadgesType | itemlink)[] = [], //for comparing

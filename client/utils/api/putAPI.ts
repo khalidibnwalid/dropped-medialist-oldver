@@ -1,12 +1,19 @@
-/** Only Accepts JSON */
-export default async function patchAPI(params: string, data: object[] | object, props?: RequestInit) {
+/** Accepts JSON and FormData */
+export default async function putAPI(
+    params: string,
+    data: object | FormData,
+    props?: RequestInit
+) {
+    const isFormData = typeof data === 'object' && data instanceof FormData
+    const body = isFormData ? data : JSON.stringify(data)
+
     try {
         const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
+            method: 'PUT',
+            headers: !isFormData ? {
+                'Content-Type': 'application/json'
+            } : undefined,
+            body,
             credentials: 'include',
             ...props
         })

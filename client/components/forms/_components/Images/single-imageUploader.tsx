@@ -12,7 +12,7 @@ type params<T extends FieldValues> = {
     defaultValue?: { dataURL: string }[]
 }
 
-export type UploadedImage = (File & { file: Blob & { name: string }, dataURL: string })[]
+export type UploadedImage = (File & { file: File & { name: string }, dataURL: string })[]
 
 function SingleImageUploader<T extends FieldValues>({ control, fieldName, className, content, required, defaultValue }: params<T>) {
 
@@ -47,21 +47,34 @@ function SingleImageUploader<T extends FieldValues>({ control, fieldName, classN
                                        duration-100 hover:bg-default"
                                         style={isDragging ? { backgroundColor: "#005BC4" } : undefined}
                                         onPress={onImageUpload}
-                                        {...dragProps}>
+                                        {...dragProps}
+                                    >
                                         <p> Click or Drop <b>{content}</b> Here </p>
-                                    </Card>) : (
+                                    </Card>
+                                ) : (
                                     <Card className="flex items-center justify-center mb-5 h-full w-full 
                                              shadow-lg object-cover overflow-hidden 
                                              border-5 border-accented">
                                         {imageList.map((image, index) => (
                                             <div key={index} className="image-item w-full h-full">
-                                                <img src={image.dataURL} className="-z-10 w-full object-cover filter object-center" alt="poster-uploadimage" />
+                                                <img
+                                                    src={image.dataURL}
+                                                    className="-z-10 w-full object-cover filter object-center"
+                                                    alt="poster-uploadimage"
+                                                />
                                                 <div className="image-item__btn-wrapper absolute bottom-0 flex justify-end gap-x-2 p-2 w-full">
-                                                    <Button type="button" onClick={() => onImageRemove(index)} isIconOnly><BiX className="text-3xl" /></Button>
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() => onImageRemove(index)}
+                                                        isIconOnly
+                                                    >
+                                                        <BiX className="text-3xl" />
+                                                    </Button>
                                                 </div>
                                             </div>
                                         ))}
-                                    </Card>)}
+                                    </Card>
+                                )}
                             </div>
                         )}
                     </ImageUploading>

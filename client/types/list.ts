@@ -27,8 +27,8 @@ export interface fieldTemplates {
   states?: itemProgressState[]
   mainFields?: { name: string, bIsNumber: boolean }[]
   extraFields?: { name: string }[]
-  links?: { name: string, logo_path?: string }[]
-  badges?: { value: string, logo_path?: string }[]
+  links?: { name: string, logo_path?: string | UploadedImage }[]
+  badges?: { value: string, logo_path?: string | UploadedImage}[]
 }
 
 interface listApi {

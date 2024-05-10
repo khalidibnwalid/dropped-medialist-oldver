@@ -10,12 +10,14 @@ export default async function postAPI(
         ? (isFormData ? data : JSON.stringify(data))
         : undefined
 
+    const headers = !isFormData ?
+        { 'Content-Type': 'application/json' }
+        : undefined
+
     try {
         const res = await fetch(`${process.env.PUBLIC_API_URL}/${params}`, {
             method: 'POST',
-            headers: !isFormData ? {
-                'Content-Type': 'application/json'
-            } : undefined,
+            headers,
             body,
             credentials: 'include',
             ...props

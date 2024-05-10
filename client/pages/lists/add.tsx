@@ -4,10 +4,10 @@ import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWit
 import ListMainInfoForm from "@/components/forms/list/components/main-info";
 import { ListFormLowerLayout } from "@/components/forms/list/layouts";
 import { ListFormContext } from "@/components/forms/list/provider";
-import type { fieldTemplates, listData } from "@/types/list";
+import type { fieldTemplates, listData, templates } from "@/types/list";
 import postAPI from "@/utils/api/postAPI";
-import appendObjKeysToFormData from "@/utils/helperFunctions/appendObjKeysToFormData";
-import handleLogosFieldsForm from "@/utils/helperFunctions/handleLogosFieldsForm";
+import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
+import handleAddLogosFieldsForm from "@/utils/helperFunctions/form/handleAddLogosFieldsForm";
 import { mutateListCache } from "@/utils/query/cacheMutation";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
@@ -31,21 +31,21 @@ export default function AddListPage() {
     async function onSubmit(rawData: listData) {
         type omitData = Omit<listData, 'cover_path' | 'templates' | 'id'>;
         const { cover_path, templates, ...data } = rawData
-        const templatesData = { ...templates }
-        const { fieldTemplates: fieldTemplatesData, ...restTemplates } = templatesData
-        const { badges: badgesData, links: linksData, ...restFieldTemplates }: any & fieldTemplates = fieldTemplatesData;
+        if (!templates || !templates?.fieldTemplates) return
+
+        const { fieldTemplates: fieldTemplatesData, ...restTemplates } = templates as templates
+        const { badges: badgesData, links: linksData, ...restFieldTemplates } = fieldTemplatesData as fieldTemplates
 
         const formData = new FormData();
         appendObjKeysToFormData(formData, data as omitData)
 
         formData.append('cover_path', ((cover_path as UploadedImage)?.[0]?.file ?? ''))
 
-        //error on removing an added logo - need fix
-        const badges = handleLogosFieldsForm(badgesData, formData, 'badges')
-        const links = handleLogosFieldsForm(linksData, formData, 'links')
+        const badges = handleAddLogosFieldsForm(badgesData, formData, 'badges')
+        const links = handleAddLogosFieldsForm(linksData, formData, 'links')
 
         const fieldTemplates = { ...restFieldTemplates, badges, links }
-        formData.append('templates', JSON.stringify({ fieldTemplates, ...restTemplates }))
+        formData.append('templates', JSON.stringify({ ...restTemplates, fieldTemplates }))
 
         mutation.mutate(formData)
     }

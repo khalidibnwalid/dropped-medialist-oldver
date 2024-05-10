@@ -8,13 +8,11 @@ import { ListFormLowerLayout } from "@/components/forms/list/layouts";
 import { ListFormContext } from "@/components/forms/list/provider";
 import { authContext } from "@/components/pagesComponents/authProvider";
 import LoadingLists from "@/components/pagesComponents/lists/listsloading";
-import { listData } from "@/types/list";
-import deleteAPI from "@/utils/api/deleteAPI";
-import { handleEditingLogosFields } from "@/utils/api/handlers/handleEditingLogosFields";
-import handleImageUpload from "@/utils/api/handlers/handleImageUpload";
-import patchAPI from "@/utils/api/patchAPI";
-import { dateStamped } from "@/utils/helperFunctions/dateStamped";
-import getFileExtension from "@/utils/helperFunctions/getFileExtinsion";
+import { fieldTemplates, listData, templates } from "@/types/list";
+import putAPI from "@/utils/api/putAPI";
+import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
+import handleEditFileForm from "@/utils/helperFunctions/form/handleEditFileForm";
+import handleEditLogosFieldsForm from "@/utils/helperFunctions/form/handleEditLogosFieldsForm";
 import { mutateListCache } from "@/utils/query/cacheMutation";
 import { listFetchOptions } from "@/utils/query/queryOptions/listsOptions";
 import { Button, Tooltip } from "@nextui-org/react";
@@ -26,15 +24,13 @@ import { BiInfoCircle, BiSolidPencil, BiX } from "react-icons/bi";
 import { IoGridOutline } from "react-icons/io5";
 import { validate as uuidValidate } from 'uuid';
 
-type form = listData & { rawCover?: UploadedImage }
-
 function Page() {
     const router = useRouter();
     const listId = router.query.id as string
-    
+
     const { userData } = useContext(authContext)
 
-    const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<form>()
+    const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listData>()
 
     const { data: listData, isSuccess, isPending, isError } = useQuery(listFetchOptions(listId))
     const [keyRefresher, setKeyRefresher] = useState(0)
@@ -48,7 +44,7 @@ function Page() {
     }, [isSuccess, listData])
 
     const mutation = useMutation({
-        mutationFn: (data: Partial<listData>) => patchAPI(`lists/${listId}`, data),
+        mutationFn: (formData: FormData) => putAPI(`lists/${listId}`, formData),
         onSuccess: (data) => {
             mutateListCache(data, "edit")
             router.push(`/lists/${data.id}`)
@@ -56,55 +52,29 @@ function Page() {
     })
 
     if (isPending) return <LoadingLists />
-    if (isError || !listData) return <ErrorPage message="Failed to Fetch List Data" />
+    if (isError) return <ErrorPage message="Failed to Fetch List Data" />
 
     const fieldTemplates = listData.templates?.fieldTemplates
-    let orderCounter = 0 //used for naming images bassed on their uploaded Order
 
-    async function onSubmit(rawData: form) {
-        // console.log("raw Data:", rawData) 
-        if (!listData) return
-        let finalData: Partial<listData> = {}
-        const { templates, rawCover, ...data }: any = rawData
-        try {
-            if (templates && Object.keys(templates).length > 0) {
-                const { fieldTemplates: { badges, links, ...fieldTemplates }, ...main } = templates
-                data['templates'] = { fieldTemplates } //returns the rest of 'fieldTemplates' objects
+    async function onSubmit(rawData: listData) {
+        const { templates, cover_path, ...data } = rawData
+        if (!templates || !templates.fieldTemplates) return
 
-                badges && (
-                    data['templates']['fieldTemplates']['badges'] = await handleEditingLogosFields(badges, listData.templates?.fieldTemplates?.badges, orderCounter, listData.id, undefined)
-                )
+        const { fieldTemplates: fieldTemplatesData, ...restTemplates } = templates as templates
+        const { badges: badgesData, links: linksData, ...restFieldTemplates } = fieldTemplatesData as fieldTemplates
 
-                links && (
-                    data['templates']['fieldTemplates']['links'] = await handleEditingLogosFields(links, listData.templates?.fieldTemplates?.links, orderCounter, listData.id, undefined)
-                )
-            }
+        const formData = new FormData();
+        appendObjKeysToFormData(formData, data)
 
-            if (rawCover && rawCover[0]) {
-                orderCounter++
-                const coverName = dateStamped(`${orderCounter.toString()}.${getFileExtension(rawCover[0].file.name)}`)
-                handleImageUpload(rawCover, "lists", coverName);
-                finalData['cover_path'] = coverName;
-                //remove the image after uploading the new one
-                if (listData.cover_path) deleteAPI('files', { fileNames: [`images/lists/${listData.cover_path}`] })
-            } else if (rawCover === null) {
-                //if null onle remove the cover
-                deleteAPI('files', { fileNames: [`images/lists/${listData.cover_path}`] })
-                finalData['cover_path'] = null
-            }
+        handleEditFileForm((cover_path as UploadedImage)?.[0]?.file, formData, 'cover_path')
 
-            //filter unchanged value to avoid unneeded changes
-            Object.keys(data).forEach((key) => {
-                if (data[key] != listData[key as keyof listData]) {
-                    finalData[key as keyof listData] = data[key]
-                }
-            })
+        const badges = handleEditLogosFieldsForm(badgesData, formData, 'badges')
+        const links = handleEditLogosFieldsForm(linksData, formData, 'links')
 
-            mutation.mutate(finalData);
-            // console.log("Final Data:", finalData)    
-        } catch (e) {
-            console.log("(list) Error:", "Failed to Edit Lists", e)
-        }
+        const fieldTemplates = { ...restFieldTemplates, badges, links }
+        formData.append('templates', JSON.stringify({ ...restTemplates, fieldTemplates }))
+
+        mutation.mutate(formData);
     }
 
     return isSuccess && (
@@ -131,45 +101,43 @@ function Page() {
 
                 </TitleBar>
 
-                <>
-                    <div className="grid grid-cols-4 gap-x-5 lg:grid-cols-3 animate-fade-in">
-                        <SingleImageUploaderDefault
-                            control={control}
-                            fieldName="rawCover"
-                            resetField={resetField}
-                            setValue={setValue}
-                            content="Cover"
-                            imgSrc={listData.cover_path
-                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/lists/${listData.cover_path}`
-                                : undefined}
-                        />
-                        <ListMainInfoForm />
-                    </div >
+                <div className="grid grid-cols-4 gap-x-5 lg:grid-cols-3 animate-fade-in">
+                    <SingleImageUploaderDefault
+                        control={control}
+                        fieldName="cover_path"
+                        resetField={resetField}
+                        setValue={setValue}
+                        content="Cover"
+                        imgSrc={listData.cover_path
+                            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/lists/${listData.cover_path}`
+                            : undefined}
+                    />
+                    <ListMainInfoForm />
+                </div >
 
-                    <TitleBar
-                        title="Fields Templates"
-                        className="bg-accented p-5 my-5"
-                        startContent={<IoGridOutline className="text-[30px] mr-3 flex-none" />}
+                <TitleBar
+                    title="Fields Templates"
+                    className="bg-accented p-5 my-5"
+                    startContent={<IoGridOutline className="text-[30px] mr-3 flex-none" />}
+                >
+                    <Tooltip
+                        placement="left"
+                        color="foreground"
+                        content="Changing/Removing templates won't change/remove them inside any item. Items will remain untouched."
                     >
-                        <Tooltip
-                            placement="left"
-                            color="foreground"
-                            content="Changing/Removing templates won't change/remove them inside any item. Items will remain untouched."
+                        <Button
+                            isIconOnly
+                            size="sm"
+                            variant="light"
+                            className="shadow-none"
                         >
-                            <Button
-                                isIconOnly
-                                size="sm"
-                                variant="light"
-                                className="shadow-none"
-                            >
-                                <BiInfoCircle className=" text-2xl" />
-                            </Button>
-                        </Tooltip>
-                    </TitleBar>
+                            <BiInfoCircle className=" text-2xl" />
+                        </Button>
+                    </Tooltip>
+                </TitleBar>
 
-                    <ListFormLowerLayout />
-
-                </>
+                <ListFormLowerLayout />
+                
             </ListFormContext.Provider>
         </form >
     )
