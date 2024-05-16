@@ -3,10 +3,11 @@ import { listClientData } from '@/src/types/lists';
 import { formidableAllowImagesAndDummyBlobs } from '@/src/utils/formidableOptions';
 import handleFileSaving from '@/src/utils/handlers/handleFileSaving';
 import { handleLogosFieldsSaving } from '@/src/utils/handlers/handleLogosFieldsSaving';
-import userMediaFoldersPath from '@/src/utils/userMediaFoldersPath';
+import userMediaRoot from '@/src/utils/userMediaRoot';
 import { lists } from '@prisma/client';
 import { Request, Response } from 'express';
 import formidable from 'formidable';
+import fs from 'fs';
 
 export default async function postListRoute(req: Request, res: Response) {
     const user_id = res.locals?.user?.id;
@@ -19,23 +20,36 @@ export default async function postListRoute(req: Request, res: Response) {
 
         let listData = {} as listClientData
 
+        listData.id = crypto.randomUUID();
         listData.title = fields.title[0];
         listData.templates = JSON.parse(fields.templates[0]);
-        // listData.configurations = JSON.parse(fields?.configurations);
+        // listData.configurations = JSON.parse(fields?.configurations?.[0] | '{}');
         listData.fav = false;
         listData.trash = false;
 
+        const listMediaRoot = userMediaRoot(user_id, listData.id);
+        // create the list media folder
+        await fs.promises.mkdir(listMediaRoot);
+
         // images uploading
-        const userMediaRoot = userMediaFoldersPath(user_id);
+        listData.cover_path = await handleFileSaving(files?.cover_path?.[0], listMediaRoot);
 
-        listData.cover_path = await handleFileSaving(files?.cover_path?.[0], userMediaRoot.lists);
-
+        // only add a listID prefix to list logos
         listData.templates.fieldTemplates.badges =
-            await handleLogosFieldsSaving(listData.templates.fieldTemplates?.badges, files.badges, userMediaRoot)
-        listData.templates.fieldTemplates.links =
-            await handleLogosFieldsSaving(listData.templates.fieldTemplates?.links, files.links, userMediaRoot)
+            await handleLogosFieldsSaving(
+                listData.templates.fieldTemplates?.badges,
+                files.badges,
+                listMediaRoot,
+                'template'
+            )
 
-        // listData.configurations = fields.configurations;
+        listData.templates.fieldTemplates.links =
+            await handleLogosFieldsSaving(
+                listData.templates.fieldTemplates?.links,
+                files.links,
+                listMediaRoot,
+                'template'
+            )
 
         const list = await prisma.lists.create({ data: { ...listData as lists, user_id } });
         res.status(200).json(list);

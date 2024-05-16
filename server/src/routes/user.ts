@@ -5,7 +5,7 @@ import fs from 'fs';
 import { Argon2id } from "oslo/password";
 import { lucia } from '..';
 import { emailRegex } from '../utils/regex';
-import userMediaFoldersPath from '../utils/userMediaFoldersPath';
+import userMediaRoot from '../utils/userMediaRoot';
 
 const usersRouter = express.Router();
 
@@ -50,12 +50,9 @@ usersRouter.post('/', async (req, res) => {
         const session = await lucia.createSession(user.id, {})
         const sessionCookie = lucia.createSessionCookie(session.id).serialize()
 
-        const mediaFolder = userMediaFoldersPath(user.id)
-
-        // create media folders for the user
-        fs.mkdirSync(mediaFolder.items, { recursive: true })
-        fs.mkdirSync(mediaFolder.lists)
-        fs.mkdirSync(mediaFolder.logos)
+        // create media folder for the user
+        const rootFolder = userMediaRoot(user.id)
+        await fs.promises.mkdir(rootFolder, { recursive: true })
 
         res
             .appendHeader("Set-Cookie", sessionCookie)

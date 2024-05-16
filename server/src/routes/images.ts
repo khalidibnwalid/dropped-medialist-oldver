@@ -4,10 +4,9 @@ import { items_images } from '@prisma/client';
 import express from 'express';
 import formidable from 'formidable';
 import { validate as uuidValidate } from 'uuid';
+import deleteImage from '../utils/handlers/deleteImageFn';
 import handleFileSaving from '../utils/handlers/handleFileSaving';
-import userMediaFoldersPath from '../utils/userMediaFoldersPath';
-import path from 'path';
-import fs from 'fs';
+import userMediaRoot from '../utils/userMediaRoot';
 
 const imagesRouter = express.Router();
 
@@ -29,10 +28,10 @@ imagesRouter.post('/:item_id', async (req, res) => {
 
         if (!files?.image_path?.[0]) return res.status(400).json({ message: 'Bad Request: No Image Provided' })
 
-        const userMediaRoot = userMediaFoldersPath(user_id);
+        const ItemMediaRoot = userMediaRoot(user_id, item.list_id, item.id);
         let data = {} as items_images;
 
-        data.image_path = await handleFileSaving(files.image_path[0], userMediaRoot.items);
+        data.image_path = await handleFileSaving(files.image_path[0], ItemMediaRoot);
         data.user_id = user_id
         data.item_id = item.id
         data.title = fields?.title?.[0] ?? null
@@ -81,10 +80,11 @@ imagesRouter.delete('/:id', async (req, res) => {
         const image = await prisma.items_images.findUnique({ where: { id, user_id } })
         if (!image) return res.status(404).json({ message: `Bad Image ID, Image doesn't exist` })
 
-        const userMediaRoot = userMediaFoldersPath(user_id);
-        
-        const filePath = path.join(userMediaRoot.items, image.image_path)
-        await fs.promises.unlink(filePath)
+        const item = await prisma.items.findUnique({ where: { id: image.item_id, user_id } })
+        if (!item) return res.status(404).json({ message: `Bad Item ID, Item doesn't exist` })
+
+        const ItemMediaRoot = userMediaRoot(user_id, item.list_id, item.id);
+        await deleteImage(ItemMediaRoot, image.image_path)
 
         await prisma.items_images.delete({
             where: { id, user_id }

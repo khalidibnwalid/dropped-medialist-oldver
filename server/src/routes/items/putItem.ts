@@ -3,10 +3,8 @@ import { itemClientData } from '@/src/types/items';
 import { listClientData } from '@/src/types/lists';
 import { formidableAllowImagesAndDummyBlobs } from '@/src/utils/formidableOptions';
 import handleFileEditing from '@/src/utils/handlers/handleFileEditing';
-import handleFileSaving from '@/src/utils/handlers/handleFileSaving';
 import handleEditLogosFields from '@/src/utils/handlers/handleLogosFieldsEditing';
-import { handleLogosFieldsSaving } from '@/src/utils/handlers/handleLogosFieldsSaving';
-import userMediaFoldersPath from '@/src/utils/userMediaFoldersPath';
+import userMediaRoot from '@/src/utils/userMediaRoot';
 import { items, items_tags } from '@prisma/client';
 import { Request, Response } from 'express';
 import formidable from 'formidable';
@@ -30,8 +28,6 @@ export default async function putItemRoute(req: Request, res: Response) {
         const [fields, files] = await form.parse(req);
         if (!fields || !fields?.title?.[0]) return res.status(400).json({ message: 'Bad Request' })
 
-        const userMediaRoot = userMediaFoldersPath(user_id);
-
         let itemData = {} as itemClientData
 
         itemData.fav = originalItem.fav
@@ -52,55 +48,36 @@ export default async function putItemRoute(req: Request, res: Response) {
         itemData.content_fields = JSON.parse(fields?.content_fields?.[0] ?? '[]')
 
         // images uploading
+        const itemMediaRoot = userMediaRoot(user_id, list.id, originalItem.id);
+
         itemData.cover_path = await handleFileEditing(
-            files.cover_path?.[0],
-            userMediaRoot.lists,
+            files?.cover_path?.[0],
+            itemMediaRoot,
             originalItem?.cover_path,
-            // true
         )
 
         itemData.poster_path = await handleFileEditing(
-            files.poster_path?.[0],
-            userMediaRoot.lists,
+            files?.poster_path?.[0],
+            itemMediaRoot,
             originalItem?.poster_path,
-            // true
         )
 
         // logos fields (fields with images)
-        const badges = JSON.parse(fields?.badges?.[0] ?? '[]') as itemClientData['badges']
-        const links = JSON.parse(fields?.links?.[0] ?? '[]') as itemClientData['links']
-
-        //all the logos paths from the logos fields of the list's items, to check if they are used or not
-        type logoPath = { logo_path: string }
-
-        const badgesLogosPaths = (await prisma.$queryRaw`SELECT DISTINCT unnest(badges) ->> 'logo_path' AS logo_path
-        FROM items WHERE list_id = ${list.id}::uuid 
-        AND id NOT IN (${originalItem.id}::uuid)`) as logoPath[] // shouldn't include the item itself
-
-        const linksLogosPaths = (await prisma.$queryRaw`SELECT DISTINCT unnest(links) ->> 'logo_path' AS logo_path
-        FROM items WHERE list_id = ${list.id}::uuid 
-        AND id NOT IN (${originalItem.id}::uuid)`) as logoPath[] // shouldn't include the item itself
+        const formBadges = JSON.parse(fields?.badges?.[0] ?? '[]') as itemClientData['badges']
+        const formLinks = JSON.parse(fields?.links?.[0] ?? '[]') as itemClientData['links']
 
         itemData.badges = await handleEditLogosFields(
-            'item',
-            userMediaRoot,
-            badges,
+            itemMediaRoot,
+            formBadges,
             files?.badges,
-            badgesLogosPaths,
-            list.templates?.fieldTemplates?.badges,
             originalItem.badges,
-            // true
         )
 
         itemData.links = await handleEditLogosFields(
-            'item',
-            userMediaRoot,
-            links,
+            itemMediaRoot,
+            formLinks,
             files?.links,
-            linksLogosPaths,
-            list.templates?.fieldTemplates?.links,
             originalItem.links,
-            // true
         )
         // handling tags
         const tagsData = JSON.parse(fields?.tags[0]) as items_tags['id'][]

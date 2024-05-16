@@ -1,33 +1,23 @@
 import { File } from 'formidable';
-import fs from 'fs';
-import path from 'path';
+import deleteFile from './deleteFileFn';
 import handleFileSaving from './handleFileSaving';
 import { isDummyBlob } from './isDummyBlob';
 
 export default async function handleFileEditing(
-    file: File /**files.file[0]*/,
-    userMediaRoot: string,
-    originalPath?: string,
+    file: File | undefined /**files.file[0]*/,
+    distPath: string,
+    originalImagePath: string,
+    prefix?: string,
     isTesting?: boolean
 ) {
-    if (!file) return null
-
     const isPreserveImageBlob = isDummyBlob(file, 5)
-    const isDeleteImageBlob = isDummyBlob(file, 4)
+    if (isPreserveImageBlob) return originalImagePath
 
-    if (isPreserveImageBlob) return originalPath
-    if (isDeleteImageBlob) {
-        // if it doesn't have a logo, it shouldn't delete an unexisting file
-        if (originalPath && !isTesting) {
-            try {
-                const filePath = path.join(userMediaRoot, originalPath)
-                await fs.promises.unlink(filePath)
-            } catch (e) {
-                console.log('[Error] deleting file: ', e)
-            }
-        }
-        return null
-    }
+    // isDeleteImageBlob still exist but is only used to preserve index order sync of formFields and formFiles
 
-    return await handleFileSaving(file, userMediaRoot, isTesting)
+    //if the image is not preserved, then it is a new image or image deletion, in both cases, it should delete the original image
+    // if it doesn't have an originalImage, it shouldn't delete an unexisting file
+    if (originalImagePath && !isTesting) await deleteFile(distPath, originalImagePath)
+
+    return await handleFileSaving(file, distPath, prefix, isTesting) // will return null if no file is provided
 } 

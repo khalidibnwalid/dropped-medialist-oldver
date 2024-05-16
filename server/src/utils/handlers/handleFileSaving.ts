@@ -6,13 +6,17 @@ import { generateRandomString, alphabet } from "oslo/crypto";
 export default async function handleFileSaving(
     file: File | undefined /**files.file[0]*/,
     distPath: string,
+    /** prefix_filename.extension */
+    prefix?: string,
     isTesting?: boolean
 ) {
     if (!file) return null
     const fileExtension = path.extname(file.originalFilename);
     const generatedName = generateRandomString(15, alphabet("a-z", "A-Z", "0-9"));
 
-    const fileName = generatedName + fileExtension
+    const fileName = prefix
+        ? prefix + '_' + generatedName + fileExtension
+        : generatedName + fileExtension
     const oldPath = file.filepath;
     const newPath = path.join(distPath, fileName)
 

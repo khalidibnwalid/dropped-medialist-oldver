@@ -3,10 +3,11 @@ import { itemClientData } from '@/src/types/items';
 import { formidableAllowImagesAndDummyBlobs } from '@/src/utils/formidableOptions';
 import handleFileSaving from '@/src/utils/handlers/handleFileSaving';
 import { handleLogosFieldsSaving } from '@/src/utils/handlers/handleLogosFieldsSaving';
-import userMediaFoldersPath from '@/src/utils/userMediaFoldersPath';
+import userMediaRoot from '@/src/utils/userMediaRoot';
 import { items, items_tags } from '@prisma/client';
 import { Request, Response } from 'express';
 import formidable from 'formidable';
+import fs from 'fs';
 import { validate as uuidValidate } from 'uuid';
 
 export default async function postItemRoute(req: Request, res: Response) {
@@ -24,13 +25,12 @@ export default async function postItemRoute(req: Request, res: Response) {
         const [fields, files] = await form.parse(req);
         if (!fields || !fields?.title?.[0]) return res.status(400).json({ message: 'Bad Request' })
 
-        const userMediaRoot = userMediaFoldersPath(user_id);
-
         let itemData = {} as itemClientData
 
         itemData.fav = false
         itemData.trash = false
 
+        itemData.id = crypto.randomUUID()
         itemData.title = fields.title[0]
         itemData.description = fields.description?.[0] ?? '';
 
@@ -44,15 +44,19 @@ export default async function postItemRoute(req: Request, res: Response) {
         itemData.content_fields = JSON.parse(fields?.content_fields?.[0] ?? '[]')
 
         // images uploading
-        itemData.cover_path = await handleFileSaving(files?.cover_path?.[0], userMediaRoot.items)
-        itemData.poster_path = await handleFileSaving(files?.poster_path?.[0], userMediaRoot.items)
+        // to create folder for the item
+        const itemMediaRoot = userMediaRoot(user_id, list.id, itemData.id);
+        await fs.promises.mkdir(itemMediaRoot);
+
+        itemData.cover_path = await handleFileSaving(files?.cover_path?.[0], itemMediaRoot)
+        itemData.poster_path = await handleFileSaving(files?.poster_path?.[0], itemMediaRoot)
 
         // logos fields (fields with images)
         const badges = JSON.parse(fields?.badges?.[0] ?? '[]') as itemClientData['badges']
         const links = JSON.parse(fields?.links?.[0] ?? '[]') as itemClientData['links']
 
-        itemData.badges = await handleLogosFieldsSaving(badges, files.badges, userMediaRoot)
-        itemData.links = await handleLogosFieldsSaving(links, files.links, userMediaRoot)
+        itemData.badges = await handleLogosFieldsSaving(badges, files.badges, itemMediaRoot)
+        itemData.links = await handleLogosFieldsSaving(links, files.links, itemMediaRoot)
 
         // handling tags
         const tagsData = JSON.parse(fields?.tags[0]) as items_tags['id'][]

@@ -1,63 +1,42 @@
 import { File } from "formidable";
-import fs from 'fs';
-import path from "path";
+import deleteFile from "./deleteFileFn";
 import handleFileSaving from "./handleFileSaving";
 import { isDummyBlob } from "./isDummyBlob";
 
 /** On PUT / PATCH Requests,
  * the default dummyBLob will be mean that the field's logo is unchanged, so it will use the original path.
- * a dummy blob with the size of (4) will mean that the field's logo is removed, so it will be deleted.
- * any other file will be considered as a new logo, so it will be saved and the path will be returned.
+ * otherwise, it will upload a new logo, or delete the old one.
  * 
- * ### Request Structure:
+ * ### Request Structure:O
  * on PUT / PATCH, logosFields formFields WILL include the origial logo_path,
  *  while formFiles will contain instructions about what to do with them, (i.e preserve, delete, or upload a new one)
  * @param
- * all params are for the field it self, not for the whole list
- * */
+ * all params are for the field it self, not for the whole list/item */
 export default async function handleEditLogosFields<T extends { logo_path?: string; }>(
-    /** is the function is called to edit a list or an item */
-    type: 'list' | 'item',
-    userMediaRoot: { logos: string; },
+    dist: string,
     formFields: T[] = [], // 
     formFiles: File[] = [],
-    /** all the logos paths from the logos fields of the list's items, to check if they are used or not */
-    itemsLogoPaths: { logo_path: string }[] = [],
-    /** pass the original pre-edit fieldTemplate of the field *(not the whole list's fieldTemplates)*,
-     * in a list it will be used to compare old & new data,
-     * in an item it is needed to check whether a logo is using a template, to avoid deleting a template's logo*/
-    fieldTemplate: T[] = [],
     /**to compare the new data with the original data, 
      *  in the case of an item it is the original fileds, 
-     * in the lists it is the fieldTemplates  */
-    originalFields: T[] = fieldTemplate,
+     * in the lists it is  field templates  */
+    originalFields: T[] = [],
+    /** all the logos paths from the logos fields of the list's items, to check if they are used or not,
+     * only pass it if the type is list */
+    itemsLogoPaths?: { logo_path: string }[],
+    prefix?: string,
     isTesting?: boolean
 ): Promise<T[]> {
-
-    async function deleteLogo(logoPath?: string, isUsedByAnItem?: boolean, isUsedByTemplate?: boolean) {
-        // it shouldn't delete an unexisting logo nor a used one
-        if (logoPath === 'star') return
-        if (logoPath && !isUsedByAnItem && !(isUsedByTemplate && type === 'item') && !isTesting) {
-            try {
-                const filePath = path.join(userMediaRoot.logos, logoPath)
-                await fs.promises.unlink(filePath)
-            } catch (e) {
-                console.log('[Error] deleting ' + logoPath, e)
-            }
-        }
-    }
-
     const unusedLogos = originalFields.map(
         original => !formFields?.some(f => f.logo_path === original.logo_path) && original.logo_path
     )
 
     // delete all unused logos
     unusedLogos?.forEach(async (logoPath) => {
-        if (!logoPath) return
-        if (logoPath === 'star') return
-        const isUsedByAnItem = itemsLogoPaths.some(i => i.logo_path === logoPath)
-        const isUsedByTemplate = fieldTemplate.some(f => f.logo_path === logoPath)
-        await deleteLogo(logoPath, isUsedByAnItem, isUsedByTemplate)
+        if (!logoPath || logoPath === 'star') return
+        const isUsedByAnItem = itemsLogoPaths?.some(i => i.logo_path === logoPath)
+        const isUsedByTemplate = !itemsLogoPaths && logoPath.startsWith('template_')
+        if (logoPath && !isUsedByAnItem && !isUsedByTemplate && !isTesting)
+            await deleteFile(dist, logoPath)
     })
 
     return await Promise.all(
@@ -66,18 +45,16 @@ export default async function handleEditLogosFields<T extends { logo_path?: stri
 
             const logoFile = formFiles[index]
             const isPreserveImageBlob = isDummyBlob(logoFile, 5)
-            const isDeleteImageBlob = isDummyBlob(logoFile, 4)
+            // isDeleteImageBlob still exist but is only used to preserve index order sync of formFields and formFiles
+
             // The request formFields form will include the original path
             const originalLogoPath = formFields[index]?.logo_path
                 ? String(formFields[index]?.logo_path) //for security reasons
                 : null
 
-            if (isPreserveImageBlob) logo_path = originalLogoPath
-            if (isDeleteImageBlob) logo_path = null
-
-            // if the logo is not preserved or deleted, then it is a new logo,
-            if (!isPreserveImageBlob && !isDeleteImageBlob)
-                logo_path = await handleFileSaving(formFiles[index], userMediaRoot.logos, isTesting)
+            logo_path = isPreserveImageBlob
+                ? originalLogoPath
+                : await handleFileSaving(formFiles[index], dist, prefix, isTesting)
 
             return { ...field, logo_path }
         })

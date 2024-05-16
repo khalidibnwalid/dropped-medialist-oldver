@@ -3,7 +3,7 @@ import { fieldTemplates, listClientData, templates } from "@/src/types/lists";
 import { formidableAllowImagesAndDummyBlobs } from "@/src/utils/formidableOptions";
 import handleFileEditing from "@/src/utils/handlers/handleFileEditing";
 import handleEditLogosFields from "@/src/utils/handlers/handleLogosFieldsEditing";
-import userMediaFoldersPath from "@/src/utils/userMediaFoldersPath";
+import userMediaRoot from "@/src/utils/userMediaRoot";
 import { lists } from "@prisma/client";
 import { Request, Response } from "express";
 import formidable from "formidable";
@@ -39,13 +39,12 @@ export default async function putListRoute(req: Request, res: Response) {
         listData.templates = JSON.parse(fields.templates[0]) as templates
 
         // images uploading
-        const userMediaRoot = userMediaFoldersPath(user_id);
+        const listMediaRoot = userMediaRoot(user_id, listData.id);
 
         listData.cover_path = await handleFileEditing(
-            files.cover_path?.[0],
-            userMediaRoot.lists,
+            files?.cover_path?.[0],
+            listMediaRoot,
             originalList?.cover_path,
-            // true
         )
 
         //all the logos paths from the logos fields of the list's items, to check if they are used or not
@@ -58,29 +57,29 @@ export default async function putListRoute(req: Request, res: Response) {
         FROM items WHERE list_id = ${originalList.id}::uuid`) as logoPath[]
 
         const originalFieldTemplates = originalList.templates?.fieldTemplates as fieldTemplates
-        const fieldTemplates = listData.templates.fieldTemplates as fieldTemplates
+        const formFieldTemplates = listData.templates.fieldTemplates as fieldTemplates
 
-        if (!fieldTemplates.badges && fieldTemplates.badges?.length !== files?.badges?.length
-            || !fieldTemplates.links && fieldTemplates.links?.length !== files?.links?.length)
+        if (!formFieldTemplates.badges && formFieldTemplates.badges?.length !== files?.badges?.length
+            || !formFieldTemplates.links && formFieldTemplates.links?.length !== files?.links?.length)
             return res.status(400).json({ message: 'Bad Request' })
 
         listData.templates.fieldTemplates.badges = await handleEditLogosFields(
-            'list',
-            userMediaRoot,
-            fieldTemplates?.badges,
+            listMediaRoot,
+            formFieldTemplates?.badges,
             files?.badges,
-            badgesLogosPaths,
             originalFieldTemplates.badges,
+            badgesLogosPaths,
+            'template'
             // true
         )
 
         listData.templates.fieldTemplates.links = await handleEditLogosFields(
-            'list',
-            userMediaRoot,
-            fieldTemplates?.links,
+            listMediaRoot,
+            formFieldTemplates?.links,
             files?.links,
-            linksLogosPaths,
             originalFieldTemplates.links,
+            linksLogosPaths,
+            'template'
             // true
         )
 
