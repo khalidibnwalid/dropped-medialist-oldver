@@ -4,7 +4,7 @@ import { items_images } from '@prisma/client';
 import express from 'express';
 import formidable from 'formidable';
 import { validate as uuidValidate } from 'uuid';
-import deleteImage from '../utils/handlers/deleteImageFn';
+import deleteFile from '../utils/handlers/deleteFileFn';
 import handleFileSaving from '../utils/handlers/handleFileSaving';
 import userMediaRoot from '../utils/userMediaRoot';
 
@@ -84,7 +84,7 @@ imagesRouter.delete('/:id', async (req, res) => {
         if (!item) return res.status(404).json({ message: `Bad Item ID, Item doesn't exist` })
 
         const ItemMediaRoot = userMediaRoot(user_id, item.list_id, item.id);
-        await deleteImage(ItemMediaRoot, image.image_path)
+        await deleteFile(ItemMediaRoot, image.image_path)
 
         await prisma.items_images.delete({
             where: { id, user_id }

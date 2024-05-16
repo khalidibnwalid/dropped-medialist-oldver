@@ -2,14 +2,16 @@ import { prisma } from '@/src/index';
 import { items } from '@prisma/client';
 import express from 'express';
 import { validate as uuidValidate } from 'uuid';
-import objectBoolFilter from '../../utils/helper-function/objectBoolFilter';
+import objectBoolFilter from '../../utils/helperFunction/objectBoolFilter';
 import postItemRoute from './postItem';
 import putItemRoute from './putItem';
+import deleteItemsRoute from './deleteItem';
 
 const itemsRouter = express.Router();
 
 itemsRouter.post('/:list_id', postItemRoute)
 itemsRouter.put('/:id', putItemRoute)
+itemsRouter.delete('/', deleteItemsRoute)
 
 // # GET
 //get items of  a list
@@ -53,25 +55,6 @@ itemsRouter.get('/id/:id', async (req, res) => {
     }
 })
 
-// # DELETE
-itemsRouter.delete('/', async (req, res) => {
-    const user_id = res.locals?.user?.id
-    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
-
-    const { body }: { body: items['id'][] } = req.body;  //not safe need more restrictions
-    // should remove the deleted items from other items' related column varchar[]
-    try {
-        await prisma.items.deleteMany({
-            where: { id: { in: body }, user_id }
-        })
-        console.log('[Items] Deleted:', body)
-        res.status(200).json({ message: 'Items Deleted' });
-    } catch (e) {
-        console.log("[Items]", e)
-        res.status(500).json({ message: 'Internal Server Error' })
-    }
-})
-
 // # Patch
 itemsRouter.patch('/:id', async (req, res) => {
     const user_id = res.locals?.user?.id
@@ -84,7 +67,7 @@ itemsRouter.patch('/:id', async (req, res) => {
         const changes = req.body;
         const item = await prisma.items.update({
             where: { id, user_id },
-            data: changes
+            data: { ...changes, user_id, id }
         })
         console.log('[Items] Edited:', id)
         res.status(200).json(item);

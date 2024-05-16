@@ -2,14 +2,16 @@ import { prisma } from '@/src/index';
 import { lists } from '@prisma/client';
 import express from 'express';
 import { validate as uuidValidate } from 'uuid';
-import objectBoolFilter from '../../utils/helper-function/objectBoolFilter';
+import objectBoolFilter from '../../utils/helperFunction/objectBoolFilter';
 import putListRoute from './putList';
 import postListRoute from './postList';
+import deleteListsRoute from './deleteList';
 
 export const listsRouter = express.Router();
 
 listsRouter.post('/', postListRoute);
 listsRouter.put('/:id', putListRoute)
+listsRouter.delete('/', deleteListsRoute)
 
 //get
 listsRouter.get('/:id?', async (req, res) => {
@@ -33,25 +35,6 @@ listsRouter.get('/:id?', async (req, res) => {
     }
 })
 
-// DELETE
-listsRouter.delete('/', async (req, res) => {
-    const user_id = res.locals?.user?.id
-    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
-
-    try {
-        const { body }: { body: lists['id'][] } = req.body;
-        await prisma.lists.deleteMany({
-            where: { id: { in: body }, user_id }
-        })
-        console.log('[lists] Deleted:', body)
-        res.status(200).json({ message: 'Lists Deleted' });
-    } catch (e) {
-        console.log("[lists]", e)
-        res.status(500).json({ message: 'Internal Server Error' })
-    }
-})
-
-
 //patch
 listsRouter.patch('/:id', async (req, res) => {
     const user_id = res.locals?.user?.id
@@ -65,7 +48,7 @@ listsRouter.patch('/:id', async (req, res) => {
 
         const list = await prisma.lists.update({
             where: { id, user_id },
-            data: { ...data, user_id }
+            data: { ...data, id, user_id }
         })
 
         console.log('[lists] Edited:', id)
