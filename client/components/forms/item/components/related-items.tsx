@@ -96,14 +96,14 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                         selectedKey={autoCompleteValue}
                         onSelectionChange={addItem}
                     >
-                        {(data: itemData) =>
+                        {(item: itemData) =>
                             <AutocompleteItem
-                                key={data.title}
-                                startContent={data.poster_path
+                                key={item.title}
+                                startContent={item.poster_path
                                     ? <Image
                                         className="flex-shrink-0 h-10 aspect-1 object-cover"
-                                        alt={data.title}
-                                        src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.poster_path}`}
+                                        alt={item.title}
+                                        src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
                                     />
                                     : <Card
                                         className="uppercase font-light text-xl 
@@ -113,11 +113,11 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
 
                                         radius="lg"
                                     >
-                                        {data.title[0]}
+                                        {item.title[0]}
                                     </Card>
                                 }
                             >
-                                {data.title}
+                                {item.title}
                             </AutocompleteItem>
                         }
                     </Autocomplete>

@@ -68,14 +68,14 @@ function ItemPageTabs({ className }: { className?: string }) {
                     </div>}>
 
                     <div className="grid grid-cols-1 gap-y-3 p-2">
-                        {relatedItems?.map((data) =>
+                        {relatedItems?.map((item) =>
                             <ListCard
-                                key={data.title}
-                                title={data.title}
-                                image={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.poster_path}`}
-                                discrip={data.description} link={`../items/${data.id}`}
+                                key={item.title}
+                                title={item.title}
+                                image={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
+                                discrip={item.description} link={`../items/${item.id}`}
                                 underTitle={<div className="flex gap-x-1">
-                                    {data.badges && <ItemBadges badgesArray={data.badges} />
+                                    {item.badges && <ItemBadges badgesArray={item.badges} />
                                     }
                                 </div>}
 

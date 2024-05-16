@@ -12,7 +12,7 @@ import { useRouter } from "next/router"
 import { BiPurchaseTag } from "react-icons/bi"
 import { validate as uuidValidate } from 'uuid'
 
-function Page() {
+function ListPageTags() {
     const router = useRouter()
     const listId = router.query.id as string
 
@@ -45,8 +45,8 @@ function Page() {
     )
 }
 
-export default function ListPageTags() {
+export default function ListPageTagsHOC() {
     const router = useRouter();
     const itemId = router.query.id as string
-    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
+    return uuidValidate(itemId) ? <ListPageTags /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
   }

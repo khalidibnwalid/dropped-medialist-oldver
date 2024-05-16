@@ -27,9 +27,9 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
             <AddImageGalleryButton itemID={item.id} />
             <Masonry>
 
-                {imageArray?.map((data) =>
+                {imageArray?.map((image) =>
                     <Card
-                        key={`card of the image ${data.image_path}`}
+                        key={`card of the image ${image.image_path}`}
                         isFooterBlurred
                         radius="lg"
                         className="group border-none m-2 shadow-lg duration-200 rounded-2xl overflow-hidden hover:scale-105"
@@ -44,7 +44,7 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                                        scale-x-0 group-hover:scale-x-100 duration-150 origin-right"
                         >
                             <TrashPopover
-                                onPress={() => deleteMutation.mutate(data.id)}
+                                onPress={() => deleteMutation.mutate(image.id)}
                             >
                                 {({ isTrashOpen }) =>
                                     <Button
@@ -59,15 +59,15 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                             </TrashPopover>
                         </CardHeader>
 
-                        <a href={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.image_path}`} target="_blank">
+                        <a href={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`} target="_blank">
                             <Image
-                                src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${data.image_path}`}
+                                src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`}
                                 className="object-contain"
-                                alt={data.image_path as string}
+                                alt={image.image_path as string}
                             />
                         </a>
 
-                        {data.title &&
+                        {image.title &&
                             <CardFooter
                                 className="absolute w-fit z-10 bottom-1 overflow-hidden  
                                        flex gap-x-2
@@ -76,7 +76,7 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                                        rounded-large before:rounded-xl 
                                        shadow-small "
                             >
-                                <p className="text-center text-tiny text-white/80">{data.title}</p>
+                                <p className="text-center text-tiny text-white/80">{image.title}</p>
                             </CardFooter>
                         }
                     </Card>

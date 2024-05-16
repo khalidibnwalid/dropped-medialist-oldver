@@ -151,7 +151,11 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
                 {!item && data.cover_path || (data as itemData).poster_path ? <Image
                     className="flex-none aspect-1 object-cover h-14"
                     alt={data.title}
-                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/${item ? 'items' : 'lists'}/${item ? (data as itemData).poster_path : data.cover_path}`}
+                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item
+                        ? `${(data as itemData).list_id}/${(data as itemData).id}`
+                        : `${(data as listData).id}`}/${item
+                            ? (data as itemData).poster_path
+                            : data.cover_path}`}
                 /> :
                     <Card
                         className=" flex-none uppercase font-light text-xl aspect-1 items-center justify-center bg-[#2f2f2f] h-14"

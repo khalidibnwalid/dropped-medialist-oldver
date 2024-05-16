@@ -17,7 +17,7 @@ import { useForm } from 'react-hook-form';
 import { BiCheckDouble, BiInfoCircle, BiPlus } from 'react-icons/bi';
 import { validate as uuidValidate } from 'uuid';
 
-function Page() {
+function AddAPIPage() {
     const router = useRouter();
     const listId = router.query.id as string
     
@@ -121,8 +121,8 @@ function Page() {
     )
 }
 
-export default function AddAPIPage() {
+export default function AddAPIPageHOC() {
     const router = useRouter();
     const itemId = router.query.id as string
-    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
+    return uuidValidate(itemId) ? <AddAPIPage /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 }

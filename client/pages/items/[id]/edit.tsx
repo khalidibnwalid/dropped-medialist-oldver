@@ -25,7 +25,7 @@ import { BiX } from 'react-icons/bi';
 import { FaSave } from 'react-icons/fa';
 import { validate as uuidValidate } from 'uuid';
 
-function Page() {
+function EditItemPage() {
     const router = useRouter();
     const itemId = router.query.id as string
 
@@ -107,7 +107,9 @@ function Page() {
                         resetField={resetField}
                         setValue={setValue}
                         content="Item's Poster"
-                        imgSrc={item.data.poster_path ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.poster_path}` : undefined}
+                        imgSrc={item.data.poster_path
+                            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.poster_path}`
+                            : undefined}
                     />
                     <Divider className="my-2" />
 
@@ -145,7 +147,9 @@ function Page() {
                         resetField={resetField}
                         setValue={setValue}
                         content="Item's Cover"
-                        imgSrc={item.data.cover_path ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.cover_path}` : undefined}
+                        imgSrc={item.data.cover_path
+                            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.cover_path}`
+                            : undefined}
                     />
                     <Divider className="my-2" />
                     <ItemFormCoverColumn />
@@ -158,8 +162,8 @@ function Page() {
     )
 }
 
-export default function EditItemPage() {
+export default function EditItemPageHOC() {
     const router = useRouter();
     const itemId = router.query.id as string
-    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad Item ID, Page Doesn't Exist" MainMessage="404!" />
+    return uuidValidate(itemId) ? <EditItemPage /> : <ErrorPage message="Bad Item ID, Page Doesn't Exist" MainMessage="404!" />
 }

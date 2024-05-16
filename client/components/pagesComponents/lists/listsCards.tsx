@@ -26,7 +26,7 @@ function ListCards({ dataArray }: { dataArray: listData[] }) {
                 radius="lg"
                 alt={data.title}
                 className=" object-cover aspect-1 bg-accented shadow-lg"
-                src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/lists/${data.cover_path}`}
+                src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${data.id}/${data.cover_path}`}
               />
               :
               <Card

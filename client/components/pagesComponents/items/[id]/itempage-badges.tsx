@@ -3,6 +3,7 @@ import { Chip, Image } from "@nextui-org/react";
 import { useContext } from "react";
 import { FaStar } from "react-icons/fa";
 import { authContext } from "../../authProvider";
+import { itemViewContext } from "@/pages/items/[id]";
 
 type params = {
     badgesArray: itemBadgesType[];
@@ -10,40 +11,44 @@ type params = {
 
 function ItemBadges({ badgesArray }: params) {
     const { userData } = useContext(authContext)
+    const { itemData } = useContext(itemViewContext)
 
     return (
         <div className="flex items-center gap-1">
-            {badgesArray.map((data, index) => {
-                if (data.logo_path === 'star') {
+            {badgesArray.map((badge, index) => {
+                const dir = badge.logo_path?.startsWith('template_')
+                    ? `${itemData.list_id}`
+                    : `${itemData.list_id}/${itemData.id}`
+                if (badge.logo_path === 'star') {
                     return (
                         <Chip
                             className=" opacity-90" variant="flat" key={`rating-${index}`}
                             avatar={<FaStar />} >
-                            {data.value}
-                            {data.value.length <= 1 && <> </> /* chips don't well with a single character */}
+                            {badge.value}
+                            {badge.value.length <= 1 && <> </> /* chips don't work well with a single character */}
                         </Chip>
                     )
-                } else if (data.logo_path) {
+                } else if (badge.logo_path) {
                     return (
                         <Chip
                             className=" opacity-90" variant="flat" key={`rating-${index}`}
-                            avatar={data.logo_path && (
+                            avatar={badge.logo_path && (
                                 <Image
                                     className=" rounded-full object-contain"
                                     alt={`avatar-${index}`}
-                                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/logos/${data.logo_path}`}
+                                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${dir}/${badge.logo_path}`}
                                 />
                             )} >
-                            {data.value}
-                            {data.value.length <= 1 && <> </> /* chips don't well with a single character */}
+                            {badge.value}
+                            {badge.value.length <= 1 && <> </> /* chips don't well with a single character */}
                         </Chip>
                     )
                 } else {
                     return (
                         <Chip
                             className=" opacity-90" variant="flat" key={`rating-${index}`}>
-                            {data.value}
-                            {data.value.length <= 1 && <> </> /* chips don't well with a single character */}
+                            {badge.value}
+                            {badge.value.length <= 1 && <> </> /* chips don't well with a single character */}
                         </Chip>
                     )
                 }

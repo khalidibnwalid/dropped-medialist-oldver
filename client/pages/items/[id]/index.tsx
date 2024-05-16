@@ -22,7 +22,7 @@ interface context {
 
 export const itemViewContext = createContext({} as context);
 
-function Page() {
+function ItemPage() {
     const router = useRouter();
     const itemId = router.query.id as string;
 
@@ -53,9 +53,9 @@ function Page() {
     const relatedItemsData = relatedItems.map((item) => item.data).filter(Boolean) as itemData[]
 
     const coverPath = item.data.cover_path
-        ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.cover_path}`
+        ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.cover_path}`
         : item.data.poster_path
-            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/images/items/${item.data.poster_path}`
+            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.poster_path}`
             : undefined
 
 
@@ -70,9 +70,9 @@ function Page() {
     )
 }
 
-export default function ItemPage() {
+export default function ItemPageHOC() {
     const router = useRouter();
     const itemId = router.query.id as string
-    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad Item ID, Page Doesn't Exist" MainMessage="404!" />
+    return uuidValidate(itemId) ? <ItemPage /> : <ErrorPage message="Bad Item ID, Page Doesn't Exist" MainMessage="404!" />
 }
 

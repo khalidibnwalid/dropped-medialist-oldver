@@ -30,7 +30,7 @@ export interface apiDataAddItemPage {
     key: number
 }
 
-function Page() {
+function AddItemPage() {
     const router = useRouter();
     const listId = router.query.id as string
 
@@ -128,8 +128,8 @@ function Page() {
     )
 }
 
-export default function AddItemPage() {
+export default function AddItemPageHOC() {
     const router = useRouter();
     const itemId = router.query.id as string
-    return uuidValidate(itemId) ? <Page /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
+    return uuidValidate(itemId) ? <AddItemPage /> : <ErrorPage message="Bad List ID, Page Doesn't Exist" MainMessage="404!" />
 }
