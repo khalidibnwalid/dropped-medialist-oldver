@@ -9,14 +9,14 @@ import { AddImageGalleryButton } from "./addImage-button";
 import { authContext } from "@/components/pagesComponents/authProvider";
 import { useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { mutateImageCache } from "@/utils/query/cacheMutation";
+import { mutateImagesCache } from "@/utils/query/imagesQueries";
 
 function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], item: itemData }) {
     const { userData } = useContext(authContext)
 
     const deleteMutation = useMutation({
         mutationFn: (imageID: itemImageType['id']) => deleteAPI(`images/${imageID}`),
-        onSuccess: (data) => mutateImageCache(data, "delete")
+        onSuccess: (data) => mutateImagesCache(data, "delete")
     })
 
     return (

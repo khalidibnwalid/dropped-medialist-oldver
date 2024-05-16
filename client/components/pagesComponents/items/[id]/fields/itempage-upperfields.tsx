@@ -1,7 +1,7 @@
 import { itemViewContext } from "@/pages/items/[id]"
 import type { itemData, main_fields } from "@/types/item"
 import patchAPI from "@/utils/api/patchAPI"
-import { mutateItemCache } from "@/utils/query/cacheMutation"
+import { mutateItemCache } from "@/utils/query/itemsQueries"
 import { Button, ButtonGroup } from "@nextui-org/react"
 import { useMutation } from "@tanstack/react-query"
 import { useContext, useState } from "react"

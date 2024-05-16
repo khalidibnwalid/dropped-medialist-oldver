@@ -1,6 +1,6 @@
 import { userType } from "@/types/user";
 import postAPI from "@/utils/api/postAPI";
-import { mutateUserCache } from "@/utils/query/cacheMutation";
+import { mutateUserCache } from "@/utils/query/userQueries";
 import { Input } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";

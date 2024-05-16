@@ -1,4 +1,4 @@
-import { userFetchOptions } from "@/utils/query/queryOptions/userOptions"
+import { userFetchOptions } from "@/utils/query/userQueries"
 import { useQuery } from "@tanstack/react-query"
 import { createContext } from "react"
 import UserAuthLayout from "../forms/userAuth/layout"

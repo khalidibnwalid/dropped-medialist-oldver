@@ -8,7 +8,7 @@ import type { fieldTemplates, listData, templates } from "@/types/list";
 import postAPI from "@/utils/api/postAPI";
 import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
 import handleAddLogosFieldsForm from "@/utils/helperFunctions/form/handleAddLogosFieldsForm";
-import { mutateListCache } from "@/utils/query/cacheMutation";
+import { mutateListCache } from "@/utils/query/listsQueries";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from 'next/navigation';

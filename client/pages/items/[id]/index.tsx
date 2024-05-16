@@ -4,9 +4,9 @@ import ItemLayout1 from "@/components/pagesComponents/items/[id]/layouts/layout1
 import ItemLayout2 from "@/components/pagesComponents/items/[id]/layouts/layout2";
 import ItemLayout3 from "@/components/pagesComponents/items/[id]/layouts/layout3";
 import type { itemData, itemImageType, itemTag } from "@/types/item";
-import { imagesFetchOptions } from "@/utils/query/queryOptions/imagesOptions";
-import { itemFetchOptions } from "@/utils/query/queryOptions/itemsOptions";
-import { tagsFetchOptions } from "@/utils/query/queryOptions/tagsOptions";
+import { imagesFetchOptions } from "@/utils/query/imagesQueries";
+import { itemFetchOptions } from "@/utils/query/itemsQueries";
+import { tagsFetchOptions } from "@/utils/query/tagsQueries";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { createContext, useContext } from "react";

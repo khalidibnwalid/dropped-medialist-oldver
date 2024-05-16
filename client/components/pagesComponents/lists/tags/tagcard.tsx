@@ -3,7 +3,7 @@ import type { itemTag } from "@/types/item";
 import deleteAPI from "@/utils/api/deleteAPI";
 import patchAPI from "@/utils/api/patchAPI";
 import sanitizeObject from "@/utils/helperFunctions/sanitizeObject";
-import { mutateTagCache } from "@/utils/query/cacheMutation";
+import { mutateTagCache } from "@/utils/query/tagsQueries";
 import { Autocomplete, AutocompleteItem, Button, Card, Input, Textarea } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";

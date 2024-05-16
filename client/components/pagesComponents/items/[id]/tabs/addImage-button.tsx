@@ -3,7 +3,7 @@ import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWit
 import type { itemImageType } from "@/types/item";
 import postAPI from "@/utils/api/postAPI";
 import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
-import { mutateImageCache } from "@/utils/query/cacheMutation";
+import { mutateImagesCache } from "@/utils/query/imagesQueries";
 import { Button, Card, Input } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from 'react';
@@ -18,7 +18,7 @@ export const AddImageGalleryButton = ({ itemID }: { itemID: string }) => {
     const mutation = useMutation({
         mutationFn: (formData: FormData) => postAPI(`images/${itemID}`, formData),
         onSuccess: (data) => {
-            mutateImageCache(data, "add")
+            mutateImagesCache(data, "add")
 
             //reset fields
             setValue('title', undefined)

@@ -1,7 +1,7 @@
 import type { itemTag } from "@/types/item";
 import postAPI from "@/utils/api/postAPI";
 import sanitizeObject from "@/utils/helperFunctions/sanitizeObject";
-import { mutateTagCache } from "@/utils/query/cacheMutation";
+import { mutateTagCache } from "@/utils/query/tagsQueries";
 import { Autocomplete, AutocompleteItem, Button, Card, Input, Textarea } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { useContext, useState } from "react";
