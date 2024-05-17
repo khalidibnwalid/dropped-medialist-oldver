@@ -1,10 +1,8 @@
+import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWithIndicators";
 import { itemData } from "@/types/item";
 import type { listData } from "@/types/list";
-import deleteAPI from "@/utils/api/deleteAPI";
-import handleDeletedItemMedia from "@/utils/api/handlers/handleDeletedItemMedia";
-import handleDeletedListMedia from "@/utils/api/handlers/handleDeletedListMedia";
-import patchAPI from "@/utils/api/patchAPI";
 import { Button, ButtonGroup, Card, Checkbox, CheckboxGroup, Image, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, cn, useDisclosure } from "@nextui-org/react";
+import { UseMutationResult } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { BiCheck, BiRevision, BiTrashAlt } from "react-icons/bi"; //BoxIcons
@@ -12,28 +10,32 @@ import { FaEye } from "react-icons/fa";
 import { authContext } from "../authProvider";
 
 //item = false => list, and vice versa
-function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], item?: boolean }) {
+function TrashSide({
+    dataArray,
+    clearTrashMt,
+    restoreTrashMt,
+    item,
+}: {
+    dataArray: listData[] | listData[],
+    clearTrashMt: UseMutationResult<any, Error, string[], unknown>
+    restoreTrashMt: UseMutationResult<any, Error, string[], unknown>,
+    item?: boolean
+}) {
     const options = dataArray.map((data) => data.id)
     const [selectAll, setSelectAll] = useState(false)
-
+    const [groupSelected, setGroupSelected] = useState<string[]>([]);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const [groupSelected, setGroupSelected] = useState<string[]>([]);
-    const router = useRouter();
-
     function clearTrash() {
-        groupSelected.map((id) => item ? handleDeletedItemMedia(id) : handleDeletedListMedia(id))
-        deleteAPI(item ? 'items' : 'lists', { body: groupSelected })
+        clearTrashMt.mutate(groupSelected)
         setGroupSelected([])
         setSelectAll(false);
-        router.refresh();
     }
 
     function restoreTrash() {
-        patchAPI(item ? 'items/group' : 'lists/group', { id: groupSelected, trash: false })
+        restoreTrashMt.mutate(groupSelected)
         setGroupSelected([])
         setSelectAll(false);
-        router.refresh();
     }
 
     function handleSelectAll() {
@@ -45,9 +47,7 @@ function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], it
             return newState;
         })
     }
-
     // screen companility / responsivability isn't good, need fixing.
-
 
     return (
         <>
@@ -68,18 +68,21 @@ function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], it
                         >
                             <BiCheck className="text-xl" /> Select All
                         </Button>
-                        <Button
-                            onPress={restoreTrash}
+                        <SubmitButtonWithIndicators
+                            mutation={restoreTrashMt}
+                            onClick={restoreTrash}
+                            savedContent={<><BiCheck className="text-lg" /> Restored</>}
                             isDisabled={groupSelected.length === 0 ? true : false}
-                        >
-                            <BiRevision className="text-lg" /> Restore
-                        </Button>
-                        <Button
-                            onPress={onOpen}
+                            saveContent={<><BiRevision className="text-lg" /> Restore</>}
+                        />
+
+                        <SubmitButtonWithIndicators
+                            mutation={clearTrashMt}
+                            onClick={onOpen}
+                            savedContent={<><BiCheck className="text-lg" /> Cleared</>}
                             isDisabled={groupSelected.length === 0 ? true : false}
-                        >
-                            <BiTrashAlt className=" text-lg" /> Delete
-                        </Button>
+                            saveContent={<><BiTrashAlt className="text-lg" /> Delete</>}
+                        />
                     </ButtonGroup>
                 </div>
 
@@ -94,7 +97,6 @@ function TrashSide({ dataArray, item }: { dataArray: listData[] | listData[], it
 
                 </CheckboxGroup>
             </div>
-
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
                 <ModalContent>
@@ -170,7 +172,7 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
                 </div>
                 <Button size="sm" radius="full"
                     className="bg-transparent hover:bg-[#3e3e3e]"
-                    onPress={() => router.push(`${item ? 'Items' : 'lists'}/${data.id}`)}
+                    onPress={() => router.push(`${item ? 'items' : 'lists'}/${data.id}`)}
                     isIconOnly>
                     <FaEye className="text-lg" />
                 </Button>

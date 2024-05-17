@@ -1,7 +1,7 @@
+import { queryClient } from '@/components/pagesComponents/providers'
 import { itemData } from '@/types/item'
 import { queryOptions } from '@tanstack/react-query'
 import fetchAPI from '../api/fetchAPI'
-import { queryClient } from '@/components/pagesComponents/providers'
 
 export const trashItemsKey = ['items', { trash: true }]
 
@@ -34,7 +34,8 @@ export const mutateItemCache = (data: itemData, type: "edit" | "add" | "delete")
                 : [...allItems, data].sort((a, b) => a.title.localeCompare(b.title)); //sort based on title
         });
 
-    !isDelete
-        ? queryClient.setQueryData(['item', data.id], data)
-        : queryClient.removeQueries({ queryKey: ['item', data.id] });
-};
+    if (queryClient.getQueryData(trashItemsKey)) // for trash page
+        queryClient.invalidateQueries({ queryKey: trashItemsKey })
+
+    queryClient.setQueryData(['item', data.id], data)
+}

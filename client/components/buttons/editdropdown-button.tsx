@@ -1,42 +1,55 @@
-import patchAPI from "@/utils/api/patchAPI";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { BiSolidPencil, BiSolidStar, BiSolidTrashAlt, BiStar } from "react-icons/bi";
 import type { itemData } from "@/types/item";
 import type { listData } from "@/types/list";
+import patchAPI from "@/utils/api/patchAPI";
+import { mutateItemCache } from "@/utils/query/itemsQueries";
+import { mutateListCache } from "@/utils/query/listsQueries";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { BiSolidPencil, BiSolidStar, BiSolidTrashAlt, BiStar } from "react-icons/bi";
 
-type params = {
+type props = {
     data: itemData | listData;
     item?: boolean;
-    list?: boolean;
     children: React.ReactNode;
 }
 
-function EditDropDown({ data, list, item, children }: params) {
+function EditDropDown({ data, item, children }: props) {
     const router = useRouter()
 
-    const [isStared, setIsStared] = useState(data.fav);
     const isTrashed = data.trash;
-
-    function toggleStarState() {
-        setIsStared(!isStared);
-        patchAPI(`${item ? 'items' : 'lists'}/${data.id}`, { "fav": !isStared });
-        router.refresh();
-    }
-
+    const [isStared, setIsStared] = useState(data.fav);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    function deleteFunction() {
-        router.push(`/lists/${item && (data as itemData).list_id}`);
-        patchAPI(`${item ? 'items' : 'lists'}/${(data as itemData).id}`, { "trash": true });
+    const toggelStar = useMutation({
+        mutationFn: () => patchAPI(`${item ? 'items' : 'lists'}/${data.id}`, { "fav": !isStared }),
+        onSuccess: () => {
+            data = { ...data, fav: !isStared }
+            item
+                ? mutateItemCache(data as itemData, 'edit')
+                : mutateListCache(data as listData, 'edit')
+            setIsStared(!isStared)
+        },
+    })
 
-    }
-
-    function unTrashFunction() {
-        router.push(`/lists/${item && (data as itemData).list_id}`);
-        patchAPI(`${item ? 'items' : 'lists'}/${(data as itemData).id}`, { "trash": false });
-    }
+    const toggleTrash = useMutation({
+        mutationFn: () => patchAPI(`${item ? 'items' : 'lists'}/${data.id}`, { "trash": !isTrashed }),
+        onSuccess: () => {
+            data = { ...data, trash: !isTrashed }
+            if (item) {
+                if (!isTrashed) router.push(`/lists/${(data as itemData).list_id}`)
+                isTrashed
+                    ? mutateItemCache(data as itemData, 'add')
+                    : mutateItemCache(data as itemData, 'delete')
+            } else {
+                if (!isTrashed) router.push('/trash')
+                isTrashed
+                    ? mutateListCache(data as listData, 'add')
+                    : mutateListCache(data as listData, 'delete')
+            }
+        }
+    })
 
     function editPage() {
         router.push(`/${item ? 'items' : 'lists'}/${(data as itemData).id}/edit`);
@@ -50,23 +63,26 @@ function EditDropDown({ data, list, item, children }: params) {
                 </DropdownTrigger>
 
                 <DropdownMenu aria-label="Edit DropDown">
-                    {isStared ?
-                        <DropdownItem
+                    {isStared
+                        ? <DropdownItem
                             color="warning"
                             key="star-button"
                             className="text-warning"
-                            onAction={toggleStarState}
-                            startContent={< BiSolidStar className=" text-lg" />}>
+                            onAction={() => toggelStar.mutate()}
+                            startContent={< BiSolidStar className=" text-lg" />}
+                        >
                             Unstar
-                        </DropdownItem> :
-                        <DropdownItem
+                        </DropdownItem>
+                        : <DropdownItem
                             color="warning"
                             key="star-button"
                             className="text-warning"
-                            onAction={toggleStarState}
-                            startContent={< BiStar className=" text-lg" />}>
+                            onAction={() => toggelStar.mutate()}
+                            startContent={< BiStar className=" text-lg" />}
+                        >
                             Star
-                        </DropdownItem>}
+                        </DropdownItem>
+                    }
 
                     {/* Edit */}
                     <DropdownItem
@@ -78,19 +94,17 @@ function EditDropDown({ data, list, item, children }: params) {
                     </DropdownItem>
 
                     {/* Move to Trash */}
-
-                    {isTrashed ?
-                        <DropdownItem
+                    {isTrashed
+                        ? <DropdownItem
                             key="delete"
                             className="text-primary"
-                            onPress={unTrashFunction}
+                            onPress={() => toggleTrash.mutate()}
                             color="primary"
                             startContent={< BiSolidTrashAlt className=" text-lg" />}
                         >
                             Restore
                         </DropdownItem>
-                        :
-                        <DropdownItem
+                        : <DropdownItem
                             key="delete"
                             className="text-danger"
                             onPress={onOpen}
@@ -116,7 +130,7 @@ function EditDropDown({ data, list, item, children }: params) {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="bordered" onPress={deleteFunction}>
+                                <Button color="danger" variant="bordered" onPress={() => toggleTrash.mutate()}>
                                     Move to Trash
                                 </Button>
                                 <Button color="primary" onPress={onClose}>
@@ -127,7 +141,6 @@ function EditDropDown({ data, list, item, children }: params) {
                     )}
                 </ModalContent>
             </Modal>
-
         </>
 
     )

@@ -12,11 +12,12 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
     saveContent = <><FaSave className="text-xl" /> Save</>,
     savedContent = <><BiCheckDouble className="text-xl" /> Saved</>,
     errorContent = <><BiRevision className="text-xl" />Try Again</>,
-    className = "bg-accented",
+    className,
     type = "button",
     variant = "solid",
     size,
     isIconOnly,
+    isDisabled,
 }: {
     mutation: UseMutationResult<any, TError, TData, unknown>,
     onClick?: MouseEventHandler<HTMLButtonElement>,
@@ -29,8 +30,8 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
     variant?: "solid" | "bordered" | "light" | "flat" | "faded" | "shadow" | "ghost",
     size?: "sm" | "md" | "lg",
     isIconOnly?: boolean
+    isDisabled?: boolean
 }) {
-
     const buttonProps: ButtonProps = {
         className,
         variant,
@@ -39,18 +40,11 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
         isIconOnly,
     }
 
-    if (mutation.isPending)
-        return <Button
-            disabled={true}
-            {...buttonProps}
-        >
-            <Spinner size={size === "sm" ? "sm" : "md"} />
-        </Button>
-
     if (mutation.isError)
         return <Button
             color="danger"
             onClick={onClick}
+            isDisabled={isDisabled}
             {...buttonProps}
         >
             {errorContent}
@@ -60,13 +54,23 @@ export default function SubmitButtonWithIndicators<TData = unknown, TError = unk
         return <Button
             color='success'
             onClick={saveOnClick}
+            isDisabled={isDisabled}
             {...buttonProps}
         >
             {savedContent}
         </Button>
 
+    if (mutation.isPending)
+        return <Button
+            disabled={true}
+            {...buttonProps}
+        >
+            <Spinner size={size === "sm" ? "sm" : "md"} />
+        </Button>
+
     return <Button
         onClick={onClick}
+        isDisabled={isDisabled}
         {...buttonProps}
     >
         {saveContent}

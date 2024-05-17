@@ -13,15 +13,17 @@ import { listBodyContext } from "./provider";
 import { queryClient } from "../../providers";
 
 function ListNavButtons() {
-
     const { viewMode, setViewMode, stateFilter, toggledState, favFilter, favState, listData } = useContext(listBodyContext)
-
     const router = useRouter();
 
     return (
         <ul className=" flex items-center gap-2 mt-2 mb-5 animate-fade-in">
-            {listData.pincode && <Button isIconOnly size="sm" className="flex-none"><BiLockOpenAlt className=" text-xl" /></Button>}
-            {listData.fav && <Button size="sm" color="default" isIconOnly ><BiSolidStar className="text-lg" /></Button>}
+            {listData.pincode && <Button isIconOnly size="sm" className="flex-none">
+                <BiLockOpenAlt className=" text-xl" />
+            </Button>}
+            {listData.fav && <Button size="sm" color="default" isIconOnly >
+                <BiSolidStar className="text-lg" />
+            </Button>}
 
             {(listData.fav || listData.pincode) && <Divider orientation="vertical" className="h-5" />}
 
@@ -77,13 +79,15 @@ function ListNavButtons() {
                         color={toggledState === state.name ? state.color : 'default'}
                         variant="solid"
                         type="button"
-                        startContent={toggledState === state.name ? <FaDiamond className="text-md" /> : <LuDiamond className="text-md" />}
+                        startContent={toggledState === state.name
+                            ? <FaDiamond className="text-md" />
+                            : <LuDiamond className="text-md" />
+                        }
                     >
                         {state.name}
                     </Button>
                 )}
             </div>
-
 
             <Divider orientation="vertical" className="h-5 ml-auto" />
 
@@ -118,11 +122,12 @@ function ListNavButtons() {
             <Divider orientation="vertical" className="h-5" />
 
             {/* Droplist - should be chaneged to a radio */}
-            <EditDropDown data={listData} list>
+            <EditDropDown data={listData}>
                 <Button size="sm" className="bg-accented " variant="solid" type="button" isIconOnly >
                     <BiDotsVerticalRounded className="text-lg" />
                 </Button>
             </EditDropDown>
+            
             <Button
                 size="sm" className="bg-accented" variant="solid" type="button" isIconOnly
                 onPress={() => queryClient.invalidateQueries({ queryKey: ['items', listData.id, { trash: false }] })}
