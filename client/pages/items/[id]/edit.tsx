@@ -1,5 +1,4 @@
 import ErrorPage from "@/components/errorPage";
-import { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
 import SingleImageUploaderDefault from '@/components/forms/_components/Images/single-imageUploader-defaultValue';
 import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWithIndicators";
 import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/item/layouts";
@@ -11,9 +10,8 @@ import putAPI from "@/utils/api/putAPI";
 import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
 import handleEditFileForm from "@/utils/helperFunctions/form/handleEditFileForm";
 import handleEditLogosFieldsForm from "@/utils/helperFunctions/form/handleEditLogosFieldsForm";
-import { mutateItemCache } from "@/utils/query/itemsQueries";
 import { imagesFetchOptions } from "@/utils/query/imagesQueries";
-import { itemFetchOptions, itemsFetchOptions } from "@/utils/query/itemsQueries";
+import { itemFetchOptions, itemsFetchOptions, mutateItemCache } from "@/utils/query/itemsQueries";
 import { listFetchOptions } from "@/utils/query/listsQueries";
 import { tagsFetchOptions } from "@/utils/query/tagsQueries";
 import { Button, Divider } from "@nextui-org/react";
@@ -83,8 +81,8 @@ function EditItemPage() {
         const formData = new FormData();
         appendObjKeysToFormData(formData, data as omitData)
 
-        handleEditFileForm((cover_path as UploadedImage)?.[0]?.file, formData, 'cover_path')
-        handleEditFileForm((poster_path as UploadedImage)?.[0]?.file, formData, 'poster_path')
+        handleEditFileForm(cover_path, formData, 'cover_path')
+        handleEditFileForm(poster_path, formData, 'poster_path')
 
         const badges = handleEditLogosFieldsForm(badgesData, formData, 'badges')
         const links = handleEditLogosFieldsForm(linksData, formData, 'links')

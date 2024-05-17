@@ -1,6 +1,5 @@
 import TitleBar from "@/components/bars/titlebar";
 import ErrorPage from "@/components/errorPage";
-import { UploadedImage } from "@/components/forms/_components/Images/single-imageUploader";
 import SingleImageUploaderDefault from "@/components/forms/_components/Images/single-imageUploader-defaultValue";
 import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWithIndicators";
 import ListMainInfoForm from "@/components/forms/list/components/main-info";
@@ -13,8 +12,7 @@ import putAPI from "@/utils/api/putAPI";
 import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
 import handleEditFileForm from "@/utils/helperFunctions/form/handleEditFileForm";
 import handleEditLogosFieldsForm from "@/utils/helperFunctions/form/handleEditLogosFieldsForm";
-import { mutateListCache } from "@/utils/query/listsQueries";
-import { listFetchOptions } from "@/utils/query/listsQueries";
+import { listFetchOptions, mutateListCache } from "@/utils/query/listsQueries";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from 'next/router';
@@ -39,6 +37,7 @@ function EditListPage() {
     useEffect(() => {
         if (isSuccess) {
             setValue(`templates`, listData.templates)
+            setValue(`cover_path`, listData.cover_path)
             setKeyRefresher(n => n + 1)
         }
     }, [isSuccess, listData])
@@ -66,7 +65,7 @@ function EditListPage() {
         const formData = new FormData();
         appendObjKeysToFormData(formData, data)
 
-        handleEditFileForm((cover_path as UploadedImage)?.[0]?.file, formData, 'cover_path')
+        handleEditFileForm(cover_path, formData, 'cover_path')
 
         const badges = handleEditLogosFieldsForm(badgesData, formData, 'badges')
         const links = handleEditLogosFieldsForm(linksData, formData, 'links')
