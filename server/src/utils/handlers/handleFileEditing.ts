@@ -1,7 +1,7 @@
 import { File } from 'formidable';
 import deleteFile from './deleteFileFn';
 import handleFileSaving from './handleFileSaving';
-import { isDummyBlob } from './isDummyBlob';
+import { isDummyBlob } from '../helperFunction/isDummyBlob';
 
 export default async function handleFileEditing(
     file: File | undefined /**files.file[0]*/,

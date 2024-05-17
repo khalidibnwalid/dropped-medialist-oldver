@@ -1,6 +1,6 @@
 import { File } from "formidable";
 import handleFileSaving from "./handleFileSaving";
-import { isDummyBlob } from "./isDummyBlob";
+import { isDummyBlob } from "../helperFunction/isDummyBlob";
 
 /** On POST Requests, 
  * use the default dummyBLob with the size of 5 to preserve the order of the sended files,

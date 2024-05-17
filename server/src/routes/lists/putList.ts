@@ -39,7 +39,7 @@ export default async function putListRoute(req: Request, res: Response) {
         listData.templates = JSON.parse(fields.templates[0]) as templates
 
         // images uploading
-        const listMediaRoot = userMediaRoot(user_id, listData.id);
+        const listMediaRoot = userMediaRoot(user_id, originalList.id);
 
         listData.cover_path = await handleFileEditing(
             files?.cover_path?.[0],

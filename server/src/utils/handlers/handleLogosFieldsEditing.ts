@@ -1,7 +1,7 @@
 import { File } from "formidable";
 import deleteFile from "./deleteFileFn";
 import handleFileSaving from "./handleFileSaving";
-import { isDummyBlob } from "./isDummyBlob";
+import { isDummyBlob } from "../helperFunction/isDummyBlob";
 
 /** On PUT / PATCH Requests,
  * the default dummyBLob will be mean that the field's logo is unchanged, so it will use the original path.
