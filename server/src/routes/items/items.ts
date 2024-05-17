@@ -83,16 +83,25 @@ itemsRouter.patch('/group', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const data = req.body; //not safe need more restrictions
-    const { id, ...restData }: { id: items['id'][], changes: items } = data
-    const itemsIDs: { id: items['id'] }[] = id.map(idvalue => ({ id: idvalue }))
+    const { id, ...restData }: { id: items['id'][] | items['id'], changes: items } = data
+
+    if (typeof id === 'boolean' || (Array.isArray(id) && id.length === 0))
+        return res.status(400).json({ message: "Bad Request" });
+
+    const itemsIDs = typeof id === 'string' ? [id] : id;
+
+    if (itemsIDs.some(id => !uuidValidate(id)))
+        return res.status(404).json({ message: "Bad Item ID, Item Doesn't exist" });
 
     try {
         await prisma.items.updateMany({
-            data: restData,
-            where: { OR: itemsIDs, user_id }
+            data: { ...restData, user_id },
+            where: { id: { in: itemsIDs }, user_id }
         })
-        console.log('[Items] Edited:', id)
-        res.status(200).json({ message: 'Items Edited' });
+
+        const items = await prisma.items.findMany({ where: { id: { in: itemsIDs }, user_id } })
+        console.log('[Items] Edited:', itemsIDs)
+        res.status(200).json(items);
     } catch (e) {
         console.log("[Items]", e)
         res.status(500).json({ message: 'Internal Server Error' })

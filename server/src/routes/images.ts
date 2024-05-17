@@ -24,7 +24,6 @@ imagesRouter.post('/:item_id', async (req, res) => {
 
         const form = formidable({ filter: formidableAllowImages });
         const [fields, files] = await form.parse(req);
-        console.log(files.image_path[0])
 
         if (!files?.image_path?.[0]) return res.status(400).json({ message: 'Bad Request: No Image Provided' })
 

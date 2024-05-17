@@ -66,16 +66,25 @@ listsRouter.patch('/group', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const data = req.body; //the json only contain what changed therfore it represents 'changes'
-    const { id, ...restData }: { id: lists['id'][], changes: lists } = data
-    const listIDs: { id: lists['id'] }[] = id.map(listId => ({ id: listId, user_id }))
+    const { id, ...restData }: { id: lists['id'][] | lists['id'], changes: lists } = data
+
+    if (typeof id === 'boolean' || (Array.isArray(id) && id.length === 0))
+        return res.status(400).json({ message: "Bad Request" });
+
+    const listIDs = typeof id === 'string' ? [id] : id;
+
+    if (listIDs.some(id => !uuidValidate(id)))
+        return res.status(404).json({ message: "Bad List ID, List Doesn't exist" });
 
     try {
         await prisma.lists.updateMany({
-            data: restData,
-            where: { OR: listIDs }
+            data: { ...restData, user_id },
+            where: { id: { in: listIDs }, user_id }
         })
-        console.log('[lists] Edited:', id)
-        res.status(200).json({ message: 'Lists Edited' });
+
+        const lists = await prisma.lists.findMany({ where: { id: { in: listIDs }, user_id } })
+        console.log('[lists] Edited:', listIDs)
+        res.status(200).json(lists);
     } catch (e) {
         console.log("[lists]", e)
         res.status(500).json({ message: 'Internal Server Error' })
