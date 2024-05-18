@@ -2,6 +2,7 @@ import { File } from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { generateRandomString, alphabet } from "oslo/crypto";
+import { isDummyBlob } from '../helperFunction/isDummyBlob';
 
 export default async function handleFileSaving(
     file: File | undefined /**files.file[0]*/,
@@ -11,6 +12,9 @@ export default async function handleFileSaving(
     isTesting?: boolean
 ) {
     if (!file) return null
+    const isDeleteImageBlob = isDummyBlob(file, 4)
+    if (isDeleteImageBlob) return null
+
     const fileExtension = path.extname(file.originalFilename);
     const generatedName = generateRandomString(15, alphabet("a-z", "A-Z", "0-9"));
 

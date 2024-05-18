@@ -6,7 +6,7 @@ import { isDummyBlob } from '../helperFunction/isDummyBlob';
 export default async function handleFileEditing(
     file: File | undefined /**files.file[0]*/,
     distPath: string,
-    originalImagePath: string,
+    originalImagePath?: string,
     prefix?: string,
     isTesting?: boolean
 ) {
