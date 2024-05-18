@@ -32,7 +32,6 @@ function EditItemPage() {
 
     const { userData } = useContext(authContext)
 
-    //import tags of the list in useEffect (client side)
     const item = useQuery(itemFetchOptions(itemId)) //for related items
     const images = useQuery(imagesFetchOptions(itemId))
 
@@ -62,6 +61,8 @@ function EditItemPage() {
             setValue("extra_fields", item.data.extra_fields)
             setValue("tags", item.data.tags)
             setValue("content_fields", item.data.content_fields)
+            if (item.data?.poster_path) setValue(`poster_path`, item.data.poster_path)
+            if (item.data?.cover_path) setValue(`cover_path`, item.data.cover_path)
             setKeyRefresher(n => n + 1)
         }
     }, [isSuccess])

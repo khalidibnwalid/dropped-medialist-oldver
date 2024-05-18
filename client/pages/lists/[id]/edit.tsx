@@ -37,7 +37,7 @@ function EditListPage() {
     useEffect(() => {
         if (isSuccess) {
             setValue(`templates`, listData.templates)
-            setValue(`cover_path`, listData.cover_path)
+            if (listData?.cover_path) setValue(`cover_path`, listData.cover_path)
             setKeyRefresher(n => n + 1)
         }
     }, [isSuccess, listData])
@@ -136,7 +136,7 @@ function EditListPage() {
                 </TitleBar>
 
                 <ListFormLowerLayout />
-                
+
             </ListFormContext.Provider>
         </form >
     )
