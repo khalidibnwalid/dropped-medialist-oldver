@@ -1,1 +1,0 @@
-export const dateStamped = (originalname: string) => Date.now() + "_" + originalname;
