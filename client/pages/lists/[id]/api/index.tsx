@@ -8,10 +8,10 @@ import LoadingLists from '@/components/pagesComponents/lists/listsloading';
 import type { listApiType, listApiWithSearchType, listData } from '@/types/list';
 import patchAPI from '@/utils/api/patchAPI';
 import sanitizeObject from '@/utils/helperFunctions/sanitizeObject';
-import { mutateListCache } from "@/utils/query/listsQueries";
-import { listFetchOptions } from '@/utils/query/listsQueries';
+import { listFetchOptions, mutateListCache } from "@/utils/query/listsQueries";
 import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
 import { useMutation, useQuery } from '@tanstack/react-query';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -121,83 +121,89 @@ function EditAPIPage() {
     }
 
     return (
-        <ItemApiTemplateContext.Provider value={{ listData, searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, currentApiTemplate, queryPattern }}>
-            <form key={currentApiTemplate.name}>
-                <TitleBar
-                    starShowerBlack
-                    title=""
-                    startContent={
-                        <div className='flex gap-x-2 items-center'>
-                            <TbApiApp className="text-5xl" />
-                            <Autocomplete
-                                isClearable={false}
-                                variant='bordered'
-                                size='sm'
-                                label="Select an Api Template"
-                                className="max-w-xs flex-grow"
-                                selectedKey={SelectedAutocompleteKey}
-                                onSelectionChange={(e: any) => setSelectedAutocompleteKey(e)}
-                                defaultItems={listData.templates?.apiTemplates}
-                            >
-                                {(template) => (
-                                    <AutocompleteItem onClick={() => loadApiTemplate(template)} key={template.name} value={template.name}>
-                                        {template.name}
-                                    </AutocompleteItem>
-                                )}
-                            </Autocomplete>
+        <>
+            <Head>
+                <title>MediaList - {listData.title} Edit API Templates</title>
+            </Head>
 
-                            <TrashPopover
-                                onPress={deleteApiTemplate}
-                                placement='bottom'
-                            >
-                                {({ isTrashOpen }) => (
-                                    <Button
-                                        variant='bordered'
-                                        size='lg'
-                                        isIconOnly
-                                        className={isTrashOpen ? 'bg-danger' : ''}
-                                    >
-                                        <BiTrash className=" text-xl" />
-                                    </Button>
-                                )}
-                            </TrashPopover>
+            <ItemApiTemplateContext.Provider value={{ listData, searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, currentApiTemplate, queryPattern }}>
+                <form key={currentApiTemplate.name}>
+                    <TitleBar
+                        starShowerBlack
+                        title=""
+                        startContent={
+                            <div className='flex gap-x-2 items-center'>
+                                <TbApiApp className="text-5xl" />
+                                <Autocomplete
+                                    isClearable={false}
+                                    variant='bordered'
+                                    size='sm'
+                                    label="Select an Api Template"
+                                    className="max-w-xs flex-grow"
+                                    selectedKey={SelectedAutocompleteKey}
+                                    onSelectionChange={(e: any) => setSelectedAutocompleteKey(e)}
+                                    defaultItems={listData.templates?.apiTemplates}
+                                >
+                                    {(template) => (
+                                        <AutocompleteItem onClick={() => loadApiTemplate(template)} key={template.name} value={template.name}>
+                                            {template.name}
+                                        </AutocompleteItem>
+                                    )}
+                                </Autocomplete>
 
-                            <Button
-                                variant='bordered'
-                                size='lg'
-                                onClick={() => router.push(`/lists/${listData.id}/api/add`)}
-                                isIconOnly
-                            >
-                                <BiPlus className=" text-3xl" />
-                            </Button>
+                                <TrashPopover
+                                    onPress={deleteApiTemplate}
+                                    placement='bottom'
+                                >
+                                    {({ isTrashOpen }) => (
+                                        <Button
+                                            variant='bordered'
+                                            size='lg'
+                                            isIconOnly
+                                            className={isTrashOpen ? 'bg-danger' : ''}
+                                        >
+                                            <BiTrash className=" text-xl" />
+                                        </Button>
+                                    )}
+                                </TrashPopover>
 
-                        </div>
-                    }
-                    withButtons
-                >
+                                <Button
+                                    variant='bordered'
+                                    size='lg'
+                                    onClick={() => router.push(`/lists/${listData.id}/api/add`)}
+                                    isIconOnly
+                                >
+                                    <BiPlus className=" text-3xl" />
+                                </Button>
 
-                    <Button
-                        className="focus:outline-none"
-                        variant="solid"
-                        onClick={() => router.push('www.google.com')}
+                            </div>
+                        }
+                        withButtons
                     >
-                        {/* //devmode //put wiki's link */}
-                        <BiInfoCircle className="text-xl" /> Guide
-                    </Button>
 
-                    <SubmitButtonWithIndicators
-                        mutation={mutation}
-                        onClick={handleSubmit(onSubmit)}
-                        saveOnClick={handleSubmit(onSubmit)}
-                    />
+                        <Button
+                            className="focus:outline-none"
+                            variant="solid"
+                            onClick={() => router.push('www.google.com')}
+                        >
+                            {/* //devmode //put wiki's link */}
+                            <BiInfoCircle className="text-xl" /> Guide
+                        </Button>
 
-                </TitleBar>
+                        <SubmitButtonWithIndicators
+                            mutation={mutation}
+                            onClick={handleSubmit(onSubmit)}
+                            saveOnClick={handleSubmit(onSubmit)}
+                        />
 
-                <ApiFormLayout />
+                    </TitleBar>
 
-            </form >
+                    <ApiFormLayout />
 
-        </ItemApiTemplateContext.Provider >
+                </form >
+
+            </ItemApiTemplateContext.Provider >
+        </>
     )
 }
 

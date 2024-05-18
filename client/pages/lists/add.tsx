@@ -11,6 +11,7 @@ import handleAddLogosFieldsForm from "@/utils/helperFunctions/form/handleAddLogo
 import { mutateListCache } from "@/utils/query/listsQueries";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
+import Head from "next/head";
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { BiInfoCircle, BiPlus } from "react-icons/bi";
@@ -51,52 +52,57 @@ export default function AddListPage() {
     }
 
     return (
-        <form>
-            <TitleBar
-                starShowerBlack
-                title="Add a List"
-                startContent={<BiPlus className="text-[30px] mr-3 flex-none" />}
-                withButtons
-            >
-                <SubmitButtonWithIndicators
-                    mutation={mutation}
-                    onClick={handleSubmit(onSubmit)}
-                />
-            </TitleBar>
-
-            <ListFormContext.Provider value={{ control, setValue, getValues, errors }}>
-
-                <div className="grid grid-cols-4 gap-x-5 lg:grid-cols-3">
-                    <SingleImageUploader control={control} fieldName="cover_path" className="aspect-1" content="Cover" />
-                    <ListMainInfoForm />
-                </div >
-
+        <>
+        <Head>
+            <title>MediaList - Add List</title>
+        </Head>
+            <form>
                 <TitleBar
-                    title="Fields Templates"
-                    className="bg-accented p-5 my-5"
-                    icon={
-                        <IoGridOutline className="text-[30px] mr-3 flex-none" />
-                    }
+                    starShowerBlack
+                    title="Add a List"
+                    startContent={<BiPlus className="text-[30px] mr-3 flex-none" />}
+                    withButtons
                 >
-                    <Tooltip
-                        placement="left"
-                        color="foreground"
-                        content="You can access templates when creating an item (Optional)"
-                    >
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            className="shadow-none"
-                        >
-                            <BiInfoCircle className=" text-2xl" />
-                        </Button>
-                    </Tooltip>
+                    <SubmitButtonWithIndicators
+                        mutation={mutation}
+                        onClick={handleSubmit(onSubmit)}
+                    />
                 </TitleBar>
 
-                <ListFormLowerLayout />
+                <ListFormContext.Provider value={{ control, setValue, getValues, errors }}>
 
-            </ListFormContext.Provider>
-        </form>
+                    <div className="grid grid-cols-4 gap-x-5 lg:grid-cols-3">
+                        <SingleImageUploader control={control} fieldName="cover_path" className="aspect-1" content="Cover" />
+                        <ListMainInfoForm />
+                    </div >
+
+                    <TitleBar
+                        title="Fields Templates"
+                        className="bg-accented p-5 my-5"
+                        icon={
+                            <IoGridOutline className="text-[30px] mr-3 flex-none" />
+                        }
+                    >
+                        <Tooltip
+                            placement="left"
+                            color="foreground"
+                            content="You can access templates when creating an item (Optional)"
+                        >
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                variant="light"
+                                className="shadow-none"
+                            >
+                                <BiInfoCircle className=" text-2xl" />
+                            </Button>
+                        </Tooltip>
+                    </TitleBar>
+
+                    <ListFormLowerLayout />
+
+                </ListFormContext.Provider>
+            </form>
+        </>
     )
 }

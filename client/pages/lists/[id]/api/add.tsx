@@ -7,10 +7,10 @@ import LoadingLists from '@/components/pagesComponents/lists/listsloading';
 import type { listApiType, listApiWithSearchType, listData } from '@/types/list';
 import patchAPI from '@/utils/api/patchAPI';
 import sanitizeObject from '@/utils/helperFunctions/sanitizeObject';
-import { mutateListCache } from "@/utils/query/listsQueries";
-import { listFetchOptions } from '@/utils/query/listsQueries';
+import { listFetchOptions, mutateListCache } from "@/utils/query/listsQueries";
 import { Button } from "@nextui-org/react";
 import { useMutation, useQuery } from '@tanstack/react-query';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -20,7 +20,7 @@ import { validate as uuidValidate } from 'uuid';
 function AddAPIPage() {
     const router = useRouter();
     const listId = router.query.id as string
-    
+
     const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<listApiWithSearchType>();
     const { data: listData, isPending, isError } = useQuery(listFetchOptions(listId))
 
@@ -86,38 +86,44 @@ function AddAPIPage() {
     }
 
     return (
-        <ItemApiTemplateContext.Provider value={{ listData, searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, queryPattern }}>
-            <form>
-                <TitleBar
-                    starShowerBlack
-                    title="Add an API Template"
-                    icon={
-                        <BiPlus className="text-[30px] mr-3 flex-none" />
-                    }
-                    withButtons
-                >
-                    <Button
-                        className="focus:outline-none"
-                        variant="solid"
-                        onClick={() => router.push('www.google.com')}
+        <>
+            <Head>
+                <title>MediaList - {listData.title} Add API Template</title>
+            </Head>
+
+            <ItemApiTemplateContext.Provider value={{ listData, searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, queryPattern }}>
+                <form>
+                    <TitleBar
+                        starShowerBlack
+                        title="Add an API Template"
+                        icon={
+                            <BiPlus className="text-[30px] mr-3 flex-none" />
+                        }
+                        withButtons
                     >
-                        {/* //devmode //put wiki's link */}
-                        <BiInfoCircle className="text-xl" /> Guide
-                    </Button>
+                        <Button
+                            className="focus:outline-none"
+                            variant="solid"
+                            onClick={() => router.push('www.google.com')}
+                        >
+                            {/* //devmode //put wiki's link */}
+                            <BiInfoCircle className="text-xl" /> Guide
+                        </Button>
 
-                    <SubmitButtonWithIndicators
-                        mutation={mutation}
-                        onClick={handleSubmit(onSubmit)}
-                        saveOnClick={() => router.push(`/lists/${listId}/add`)}
-                        savedContent={<><BiCheckDouble className="text-xl" /> Saved, Go Add Items</>}
-                    />
-                </TitleBar>
+                        <SubmitButtonWithIndicators
+                            mutation={mutation}
+                            onClick={handleSubmit(onSubmit)}
+                            saveOnClick={() => router.push(`/lists/${listId}/add`)}
+                            savedContent={<><BiCheckDouble className="text-xl" /> Saved, Go Add Items</>}
+                        />
+                    </TitleBar>
 
-                <ApiFormLayout />
+                    <ApiFormLayout />
 
-            </form>
+                </form>
 
-        </ItemApiTemplateContext.Provider>
+            </ItemApiTemplateContext.Provider>
+        </>
     )
 }
 

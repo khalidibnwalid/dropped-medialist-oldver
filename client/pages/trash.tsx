@@ -10,6 +10,7 @@ import patchAPI from "@/utils/api/patchAPI"
 import { mutateItemCache, trashItemsKey } from "@/utils/query/itemsQueries"
 import { mutateListCache, trashListsKey } from "@/utils/query/listsQueries"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import Head from "next/head"
 
 export default function TrashPage() {
     // trashPage won't use cache, since it's not a frequently visited page
@@ -69,19 +70,25 @@ export default function TrashPage() {
     if (trashItems.isError || !trashItems.data) return <ErrorPage message="Failed to Fetch Trash" />
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-1 gap-x-5 px-2 py-5 ">
-            <TrashSide
-                clearTrashMt={deleteItems}
-                restoreTrashMt={restoreItems}
-                dataArray={trashItems.data}
-                item
-            />
-            <TrashSide
-                clearTrashMt={deleteLists}
-                restoreTrashMt={restoreLists}
-                dataArray={trashLists.data}
-            />
-        </div>
+        <>
+            <Head>
+                <title>MediaList - Trash</title>
+            </Head>
+
+            <div className="grid grid-cols-2 sm:grid-cols-1 gap-x-5 px-2 py-5 ">
+                <TrashSide
+                    clearTrashMt={deleteItems}
+                    restoreTrashMt={restoreItems}
+                    dataArray={trashItems.data}
+                    item
+                />
+                <TrashSide
+                    clearTrashMt={deleteLists}
+                    restoreTrashMt={restoreLists}
+                    dataArray={trashLists.data}
+                />
+            </div>
+        </>
     )
 }
 

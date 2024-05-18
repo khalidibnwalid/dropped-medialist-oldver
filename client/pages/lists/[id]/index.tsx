@@ -10,6 +10,7 @@ import { itemsFetchOptions } from "@/utils/query/itemsQueries";
 import { listFetchOptions } from "@/utils/query/listsQueries";
 import { tagsFetchOptions } from "@/utils/query/tagsQueries";
 import { useQuery } from "@tanstack/react-query";
+import Head from "next/head";
 import { useRouter } from 'next/router';
 import { BiCollection } from "react-icons/bi";
 import { validate as uuidValidate } from 'uuid';
@@ -30,22 +31,28 @@ function ListPage() {
 
   // only load after items data is available
   return (
-    <ListBodyProvider listData={list.data} allItems={items.data} tags={tags.data}>
-      <TitleBar
-        title={`${list.data.title} (${items.data?.length || 0})`}
-        className="p-5 py-4 my-5 mb-0"
-        icon={
-          <BiCollection className="text-3xl mr-3 flex-none p-0" />
-        }
-        starShowerBlack
-      >
-        <ListSearchBar />
-      </TitleBar>
-      <ListAdvancedSearch />
-      <ListNavButtons />
+    <>
+      <Head>
+        <title>MediaList - {list.data.title}</title>
+      </Head>
 
-      <ListDisplayedItems />
-    </ListBodyProvider>
+      <ListBodyProvider listData={list.data} allItems={items.data} tags={tags.data}>
+        <TitleBar
+          title={`${list.data.title} (${items.data?.length || 0})`}
+          className="p-5 py-4 my-5 mb-0"
+          icon={
+            <BiCollection className="text-3xl mr-3 flex-none p-0" />
+          }
+          starShowerBlack
+        >
+          <ListSearchBar />
+        </TitleBar>
+        <ListAdvancedSearch />
+        <ListNavButtons />
+
+        <ListDisplayedItems />
+      </ListBodyProvider>
+    </>
   )
 }
 

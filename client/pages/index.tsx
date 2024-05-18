@@ -1,8 +1,17 @@
+import Head from "next/head";
+
 function Home() {
   return (
-    <main className="">
-      <h1>HOME</h1>
-    </main>
+    <>
+      <Head>
+        <title>MediaList - HomePage</title>
+      </Head>
+
+      <main className="">
+
+        <h1>HOME</h1>
+      </main>
+    </>
   )
 }
 

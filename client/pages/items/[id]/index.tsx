@@ -8,6 +8,7 @@ import { imagesFetchOptions } from "@/utils/query/imagesQueries";
 import { itemFetchOptions } from "@/utils/query/itemsQueries";
 import { tagsFetchOptions } from "@/utils/query/tagsQueries";
 import { useQueries, useQuery } from "@tanstack/react-query";
+import Head from 'next/head';
 import { useRouter } from "next/router";
 import { createContext, useContext } from "react";
 import { validate as uuidValidate } from 'uuid';
@@ -60,13 +61,19 @@ function ItemPage() {
 
 
     return (
-        <div className="py-5 animate-fade-in" >
-            <itemViewContext.Provider value={{ tagsData, itemData: item.data, imagesData: images.data, relatedItems: relatedItemsData, coverPath }}>
-                {item.data.configurations?.layout == "1" && <ItemLayout1 />}
-                {item.data.configurations?.layout == "2" && <ItemLayout2 />}
-                {item.data.configurations?.layout == "3" && <ItemLayout3 />}
-            </itemViewContext.Provider>
-        </div>
+        <>
+            <Head>
+                <title>MediaList - {item.data.title}</title>
+            </Head>
+            
+            <div className="py-5 animate-fade-in" >
+                <itemViewContext.Provider value={{ tagsData, itemData: item.data, imagesData: images.data, relatedItems: relatedItemsData, coverPath }}>
+                    {item.data.configurations?.layout == "1" && <ItemLayout1 />}
+                    {item.data.configurations?.layout == "2" && <ItemLayout2 />}
+                    {item.data.configurations?.layout == "3" && <ItemLayout3 />}
+                </itemViewContext.Provider>
+            </div>
+        </>
     )
 }
 

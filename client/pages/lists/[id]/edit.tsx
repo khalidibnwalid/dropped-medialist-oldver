@@ -15,6 +15,7 @@ import handleEditLogosFieldsForm from "@/utils/helperFunctions/form/handleEditLo
 import { listFetchOptions, mutateListCache } from "@/utils/query/listsQueries";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import Head from "next/head";
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from "react";
 import { useForm } from 'react-hook-form';
@@ -77,68 +78,74 @@ function EditListPage() {
     }
 
     return isSuccess && (
-        <form key={keyRefresher}>
-            <ListFormContext.Provider value={{ control, setValue, getValues, errors, listData, resetField, fieldTemplates }}>
-                <TitleBar
-                    starShowerBlack
-                    title={`Edit ${listData.title}`}
-                    startContent={<BiSolidPencil className="text-[30px] mr-3 flex-none" />}
-                    withButtons
-                >
+        <>
+            <Head>
+                <title>MediaList - Edit {listData.title}</title>
+            </Head>
 
-                    <SubmitButtonWithIndicators
-                        mutation={mutation}
-                        onClick={handleSubmit(onSubmit)}
-                    />
-
-                    <Button
-                        onClick={() => router.push(`/lists/${listData.id}`)}
-                        className="focus:outline-none bg-accented"
+            <form key={keyRefresher}>
+                <ListFormContext.Provider value={{ control, setValue, getValues, errors, listData, resetField, fieldTemplates }}>
+                    <TitleBar
+                        starShowerBlack
+                        title={`Edit ${listData.title}`}
+                        startContent={<BiSolidPencil className="text-[30px] mr-3 flex-none" />}
+                        withButtons
                     >
-                        <BiX className="text-3xl" /> Cancel
-                    </Button>
 
-                </TitleBar>
+                        <SubmitButtonWithIndicators
+                            mutation={mutation}
+                            onClick={handleSubmit(onSubmit)}
+                        />
 
-                <div className="grid grid-cols-4 gap-x-5 lg:grid-cols-3 animate-fade-in">
-                    <SingleImageUploaderDefault
-                        control={control}
-                        fieldName="cover_path"
-                        resetField={resetField}
-                        setValue={setValue}
-                        content="Cover"
-                        imgSrc={listData.cover_path
-                            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${listData.id}/${listData.cover_path}`
-                            : undefined}
-                    />
-                    <ListMainInfoForm />
-                </div >
-
-                <TitleBar
-                    title="Fields Templates"
-                    className="bg-accented p-5 my-5"
-                    startContent={<IoGridOutline className="text-[30px] mr-3 flex-none" />}
-                >
-                    <Tooltip
-                        placement="left"
-                        color="foreground"
-                        content="Changing/Removing templates won't change/remove them inside any item. Items will remain untouched."
-                    >
                         <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            className="shadow-none"
+                            onClick={() => router.push(`/lists/${listData.id}`)}
+                            className="focus:outline-none bg-accented"
                         >
-                            <BiInfoCircle className=" text-2xl" />
+                            <BiX className="text-3xl" /> Cancel
                         </Button>
-                    </Tooltip>
-                </TitleBar>
 
-                <ListFormLowerLayout />
+                    </TitleBar>
 
-            </ListFormContext.Provider>
-        </form >
+                    <div className="grid grid-cols-4 gap-x-5 lg:grid-cols-3 animate-fade-in">
+                        <SingleImageUploaderDefault
+                            control={control}
+                            fieldName="cover_path"
+                            resetField={resetField}
+                            setValue={setValue}
+                            content="Cover"
+                            imgSrc={listData.cover_path
+                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${listData.id}/${listData.cover_path}`
+                                : undefined}
+                        />
+                        <ListMainInfoForm />
+                    </div >
+
+                    <TitleBar
+                        title="Fields Templates"
+                        className="bg-accented p-5 my-5"
+                        startContent={<IoGridOutline className="text-[30px] mr-3 flex-none" />}
+                    >
+                        <Tooltip
+                            placement="left"
+                            color="foreground"
+                            content="Changing/Removing templates won't change/remove them inside any item. Items will remain untouched."
+                        >
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                variant="light"
+                                className="shadow-none"
+                            >
+                                <BiInfoCircle className=" text-2xl" />
+                            </Button>
+                        </Tooltip>
+                    </TitleBar>
+
+                    <ListFormLowerLayout />
+
+                </ListFormContext.Provider>
+            </form >
+        </>
     )
 }
 

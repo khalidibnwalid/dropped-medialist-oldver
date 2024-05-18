@@ -5,8 +5,10 @@ import LoadingLists from '@/components/pagesComponents/lists/listsloading';
 import { allListsKey, listsFetchOptions } from '@/utils/query/listsQueries';
 import { Button, ButtonProps } from '@nextui-org/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import Head from "next/head";
 import { useRouter } from 'next/router';
 import { BiCollection, BiPlus, BiRevision } from "react-icons/bi";
+
 
 export default function AllLists() {
   const { isPending, data, isError } = useQuery(listsFetchOptions())
@@ -15,6 +17,10 @@ export default function AllLists() {
 
   return (
     <>
+      <Head>
+        <title>MediaList - Lists</title>
+      </Head>
+      
       <TitleBar
         starShowerBlack
         title="Lists"

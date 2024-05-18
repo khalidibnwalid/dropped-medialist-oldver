@@ -16,6 +16,7 @@ import { listFetchOptions } from "@/utils/query/listsQueries";
 import { tagsFetchOptions } from "@/utils/query/tagsQueries";
 import { Button, Divider } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import Head from "next/head";
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -95,69 +96,75 @@ function EditItemPage() {
     };
 
     return (
-        <ItemFormContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors, itemData: item.data, resetField }}>
-            <form className="grid grid-cols-3 py-5 gap-x-7 items-start" key={keyRefresher}>
+        <>
+            <Head>
+                <title>MediaList - Edit {item.data.title}</title>
+            </Head>
 
-                <div className="col-span-1 grid gap-y-2">
-                    <SingleImageUploaderDefault
-                        className='h-44'
-                        control={control}
-                        fieldName="poster_path"
-                        resetField={resetField}
-                        setValue={setValue}
-                        content="Item's Poster"
-                        imgSrc={item.data.poster_path
-                            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.poster_path}`
-                            : undefined}
-                    />
-                    <Divider className="my-2" />
+            <ItemFormContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors, itemData: item.data, resetField }}>
+                <form className="grid grid-cols-3 py-5 gap-x-7 items-start" key={keyRefresher}>
 
-                    <div className='flex gap-x-2'>
-                        <Button
-                            onClick={() => { router.push(`/items/${item.data.id}`) }}
-                            className="focus:outline-none h-14 w-14 bg-accented"
-                            type="button"
-                            isIconOnly
-                        >
-                            <BiX className="text-4xl" />
-                        </Button>
-
-                        <SubmitButtonWithIndicators
-                            className='mb-3 h-14 text-lg flex-grow'
-                            mutation={mutation}
-                            onClick={handleSubmit(onSubmit)}
-                            saveContent={<>
-                                <FaSave className="text-xl" />
-                                Save Item
-                            </>}
+                    <div className="col-span-1 grid gap-y-2">
+                        <SingleImageUploaderDefault
+                            className='h-44'
+                            control={control}
+                            fieldName="poster_path"
+                            resetField={resetField}
+                            setValue={setValue}
+                            content="Item's Poster"
+                            imgSrc={item.data.poster_path
+                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.poster_path}`
+                                : undefined}
                         />
+                        <Divider className="my-2" />
 
+                        <div className='flex gap-x-2'>
+                            <Button
+                                onClick={() => { router.push(`/items/${item.data.id}`) }}
+                                className="focus:outline-none h-14 w-14 bg-accented"
+                                type="button"
+                                isIconOnly
+                            >
+                                <BiX className="text-4xl" />
+                            </Button>
+
+                            <SubmitButtonWithIndicators
+                                className='mb-3 h-14 text-lg flex-grow'
+                                mutation={mutation}
+                                onClick={handleSubmit(onSubmit)}
+                                saveContent={<>
+                                    <FaSave className="text-xl" />
+                                    Save Item
+                                </>}
+                            />
+
+                        </div>
+
+                        <Divider className="my-2" />
+                        <ItemFormPosterColumn listItemsData={listItemsData} tagsData={tags.data} />
                     </div>
 
-                    <Divider className="my-2" />
-                    <ItemFormPosterColumn listItemsData={listItemsData} tagsData={tags.data} />
-                </div>
+                    <div className="col-span-2 grid gap-y-2">
+                        <SingleImageUploaderDefault
+                            className='h-44 aspect-none'
+                            control={control}
+                            fieldName="cover_path"
+                            resetField={resetField}
+                            setValue={setValue}
+                            content="Item's Cover"
+                            imgSrc={item.data.cover_path
+                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.cover_path}`
+                                : undefined}
+                        />
+                        <Divider className="my-2" />
+                        <ItemFormCoverColumn />
+                        <Divider className="my-2" />
+                        <ItemPageGallery imageArray={images.data} item={item.data} />
+                    </div>
 
-                <div className="col-span-2 grid gap-y-2">
-                    <SingleImageUploaderDefault
-                        className='h-44 aspect-none'
-                        control={control}
-                        fieldName="cover_path"
-                        resetField={resetField}
-                        setValue={setValue}
-                        content="Item's Cover"
-                        imgSrc={item.data.cover_path
-                            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.cover_path}`
-                            : undefined}
-                    />
-                    <Divider className="my-2" />
-                    <ItemFormCoverColumn />
-                    <Divider className="my-2" />
-                    <ItemPageGallery imageArray={images.data} item={item.data} />
-                </div>
-
-            </form>
-        </ItemFormContext.Provider>
+                </form>
+            </ItemFormContext.Provider>
+        </>
     )
 }
 
