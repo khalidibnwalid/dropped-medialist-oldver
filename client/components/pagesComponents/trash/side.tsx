@@ -130,6 +130,7 @@ export default TrashSide;
 function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolean }) {
     const router = useRouter()
     const { userData } = useContext(authContext)
+    const [imageIsLoaded, setImageIsLoaded] = useState(true);
 
     return (
         <Checkbox
@@ -150,16 +151,18 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
         >
             <div className="w-full flex gap-3 items-center">
 
-                {!item && data.cover_path || (data as itemData).poster_path ? <Image
-                    className="flex-none aspect-1 object-cover h-14"
-                    alt={data.title}
-                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item
-                        ? `${(data as itemData).list_id}/${(data as itemData).id}`
-                        : `${(data as listData).id}`}/${item
-                            ? (data as itemData).poster_path
-                            : data.cover_path}`}
-                /> :
-                    <Card
+                {(!item && data.cover_path || (data as itemData).poster_path) && imageIsLoaded
+                    ? <Image
+                        className="flex-none aspect-1 object-cover h-14"
+                        alt={data.title}
+                        src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item
+                            ? `${(data as itemData).list_id}/${(data as itemData).id}`
+                            : `${(data as listData).id}`}/${item
+                                ? (data as itemData).poster_path
+                                : data.cover_path}`}
+                        onError={() => setImageIsLoaded(false)}
+                    />
+                    : <Card
                         className=" flex-none uppercase font-light text-xl aspect-1 items-center justify-center bg-[#2f2f2f] h-14"
                         radius="lg"
                     >

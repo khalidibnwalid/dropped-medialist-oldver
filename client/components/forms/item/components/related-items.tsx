@@ -1,11 +1,12 @@
+import { authContext } from "@/components/pagesComponents/authProvider";
 import { itemData } from "@/types/item";
+import { userType } from "@/types/user";
 import { Autocomplete, AutocompleteItem, Button, Card, Chip, Image } from "@nextui-org/react";
 import type { Key } from "react";
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import { useFieldArray } from 'react-hook-form';
 import { BiPlus, BiX } from "react-icons/bi";
 import { ItemFormContext } from "../provider";
-import { authContext } from "@/components/pagesComponents/authProvider";
 
 function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
     const { userData } = useContext(authContext)
@@ -97,28 +98,7 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                         onSelectionChange={addItem}
                     >
                         {(item: itemData) =>
-                            <AutocompleteItem
-                                key={item.title}
-                                startContent={item.poster_path
-                                    ? <Image
-                                        className="flex-shrink-0 h-10 aspect-1 object-cover"
-                                        alt={item.title}
-                                        src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
-                                    />
-                                    : <Card
-                                        className="uppercase font-light text-xl 
-                                               aspect-1 h-10
-                                               items-center justify-center 
-                                              bg-[#2f2f2f]"
-
-                                        radius="lg"
-                                    >
-                                        {item.title[0]}
-                                    </Card>
-                                }
-                            >
-                                {item.title}
-                            </AutocompleteItem>
+                            <AutoCompleteRelatedItem item={item} userData={userData} />
                         }
                     </Autocomplete>
                     <Button onClick={addItem} className="flex-none hover:scale-105" isIconOnly>
@@ -156,6 +136,33 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
     )
 }
 
+
+function AutoCompleteRelatedItem({ item, userData }: { item: itemData, userData: userType }) {
+    return (
+        <AutocompleteItem
+            key={item.id}
+            startContent={item.poster_path
+                ? <Image
+                    className="flex-shrink-0 h-10 aspect-1 object-cover"
+                    alt={item.title}
+                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
+                />
+                : <Card
+                    className="uppercase font-light text-xl 
+                                               aspect-1 h-10
+                                               items-center justify-center 
+                                              bg-[#2f2f2f]"
+
+                    radius="lg"
+                >
+                    {item.title[0]}
+                </Card>
+            }
+        >
+            {item.title}
+        </AutocompleteItem>
+    )
+}
 
 export default ItemRelatedItemsForm;
 

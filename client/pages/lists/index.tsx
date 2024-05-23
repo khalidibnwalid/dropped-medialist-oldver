@@ -9,7 +9,6 @@ import Head from "next/head";
 import { useRouter } from 'next/router';
 import { BiCollection, BiPlus, BiRevision } from "react-icons/bi";
 
-
 export default function AllLists() {
   const { isPending, data, isError } = useQuery(listsFetchOptions())
   if (isError || !data) return <ErrorPage message="Failed to Fetch Lists" />
@@ -31,7 +30,7 @@ export default function AllLists() {
       </TitleBar>
 
       <main className="">
-        <ListCards dataArray={data} />
+        <ListCards lists={data} />
       </main>
     </>
   )

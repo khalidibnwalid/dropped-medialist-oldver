@@ -1,25 +1,25 @@
 import { TrashPopover } from "@/components/buttons/trashpop-button";
+import { authContext } from "@/components/pagesComponents/authProvider";
 import type { itemData, itemImageType } from "@/types/item";
 import deleteAPI from "@/utils/api/deleteAPI";
+import { mutateImagesCache } from "@/utils/query/imagesQueries";
 import { Button, Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
-import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { useContext, useState } from "react";
 import { BiTrashAlt } from "react-icons/bi";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { AddImageGalleryButton } from "./addImage-button";
-import { authContext } from "@/components/pagesComponents/authProvider";
-import { useContext } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { mutateImagesCache } from "@/utils/query/imagesQueries";
 
 function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], item: itemData }) {
     const { userData } = useContext(authContext)
+    const [imageIsLoaded, setImageIsLoaded] = useState(true);
 
     const deleteMutation = useMutation({
         mutationFn: (imageID: itemImageType['id']) => deleteAPI(`images/${imageID}`),
         onSuccess: (data) => mutateImagesCache(data, "delete")
     })
 
-    return (
+    return imageIsLoaded && (
         <ResponsiveMasonry
             className=" px-2"
             columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
@@ -59,11 +59,15 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                             </TrashPopover>
                         </CardHeader>
 
-                        <a href={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`} target="_blank">
+                        <a
+                            href={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`}
+                            target="_blank"
+                        >
                             <Image
                                 src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`}
                                 className="object-contain"
                                 alt={image.image_path as string}
+                                onError={() => setImageIsLoaded(false)}
                             />
                         </a>
 

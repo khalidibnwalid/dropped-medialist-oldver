@@ -8,6 +8,9 @@
   }
 }
 
+.cubic-bezier {
+  transition: opacity .6s cubic-bezier(0, -0.02, 0, 0.93), transform .6s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 /* bg svg */
 .bg-svg-starshower-black-thick {
@@ -65,7 +68,6 @@
 .bg-svg-spot {
   background-image: url(/svg/bg/spot-pattern.svg);
 }
-
 
 
 /*body {

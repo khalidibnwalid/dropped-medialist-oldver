@@ -1,10 +1,11 @@
+import ListCard from "@/components/cards/list-card";
+import TitleOverImageCard from "@/components/cards/title-overImage-card";
 import ItemBadges from "@/components/pagesComponents/items/[id]/itempage-badges";
-import ListCard from "@/components/cards/list-cards";
-import { Card, CardFooter, Chip, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Card, Chip, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useContext } from "react";
-import { listBodyContext } from "./provider";
 import { authContext } from "../../authProvider";
+import { listBodyContext } from "./provider";
 
 function ListDisplayedItems() {
     const { viewMode, displayedItems } = useContext(listBodyContext)
@@ -15,44 +16,21 @@ function ListDisplayedItems() {
         <>
             {viewMode === "cards" &&
                 <div className=" grid grid-cols-md-card gap-x-4 gap-y-4">
-                    {displayedItems.map((item) => (
-                        <Card
-                            isFooterBlurred
-                            radius="lg"
-                            className="group border-none duration-200 hover:scale-110 shadow-lg group aspect-[2/3] animate-fade-in"
+                    {displayedItems.map(item =>
+                        <TitleOverImageCard
                             key={item.title}
-                            isPressable onPress={() => router.push(`../items/${item.id}`)}
-                        >
-                            {item.poster_path
-                                ? <Image
-                                    alt={item.title}
-                                    className="object-cover aspect-[2/3]"
-                                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
-                                />
-                                : <Card className=" aspect-[2/3] h-full w-full p-2 bg-accented flex items-center justify-center capitalize text-xl" >
-                                    {item.title}
-                                </Card>
-                            }
-
-                            <CardFooter
-                                className="justify-center items-center
-                                                ml-1 z-10
-                                                bottom-1 py-1 absolute  
-                                               before:bg-white/10 border-white/5 border-1
-                                               before:rounded-xl rounded-large 
-                                               w-[calc(100%_-_8px)] 
-                                               shadow-small "
-                            >
-                                <p className="capitalize text-small TEXT text-foreground/80 line-clamp-1 group-hover:line-clamp-3 drop-shadow-lg">{item.title}</p>
-                            </CardFooter>
-                        </Card>
-                    ))}
+                            title={item.title}
+                            onPress={() => router.push(`../items/${item.id}`)}
+                            imageSrc={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
+                            className="border-none duration-200 hover:scale-110 cubic-bezier shadow-lg group aspect-[2/3] animate-fade-in"
+                        />
+                    )}
                 </div >
             }
 
             {viewMode === "cardslist" &&
                 <div className=" grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-4">
-                    {displayedItems.map((item) => (
+                    {displayedItems.map(item => (
                         <div key={item.title} >
                             <ListCard
                                 title={item.title}
@@ -80,7 +58,7 @@ function ListDisplayedItems() {
                     </TableHeader>
 
                     <TableBody>
-                        {displayedItems.map((item) =>
+                        {displayedItems.map(item =>
                             <TableRow
                                 key={item.title}
                                 className="hover:cursor-pointer hover:bg-default duration-300 animate-fade-in"

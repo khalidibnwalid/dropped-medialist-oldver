@@ -1,6 +1,6 @@
 'use client'
 
-import ListCard from "@/components/cards/list-cards";
+import ListCard from "@/components/cards/list-card";
 import { Accordion, AccordionItem, Tab, Tabs } from "@nextui-org/react";
 import { useContext, useState } from 'react';
 import { BiImages, BiSelectMultiple, BiSolidNote } from "react-icons/bi";
