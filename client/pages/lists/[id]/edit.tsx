@@ -114,7 +114,7 @@ function EditListPage() {
                             setValue={setValue}
                             content="Cover"
                             imgSrc={listData.cover_path
-                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${listData.id}/${listData.cover_path}`
+                                ? `${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${listData.id}/${listData.cover_path}`
                                 : undefined}
                         />
                         <ListMainInfoForm />

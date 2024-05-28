@@ -54,9 +54,9 @@ function ItemPage() {
     const relatedItemsData = relatedItems.map((item) => item.data).filter(Boolean) as itemData[]
 
     const coverPath = item.data.cover_path
-        ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.cover_path}`
+        ? `${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.data.list_id}/${item.data.id}/thumbnails/${item.data.cover_path}_size=300xH.webp`
         : item.data.poster_path
-            ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.poster_path}`
+            ? `${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.data.list_id}/${item.data.id}/thumbnails/${item.data.poster_path}_size=700xH.webp`
             : undefined
 
 
@@ -65,7 +65,7 @@ function ItemPage() {
             <Head>
                 <title>MediaList - {item.data.title}</title>
             </Head>
-            
+
             <div className="py-5 animate-fade-in" >
                 <itemViewContext.Provider value={{ tagsData, itemData: item.data, imagesData: images.data, relatedItems: relatedItemsData, coverPath }}>
                     {item.data.configurations?.layout == "1" && <ItemLayout1 />}

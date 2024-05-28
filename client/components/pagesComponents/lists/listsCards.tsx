@@ -34,7 +34,7 @@ function ListCard({ list, userData }: { list: listData, userData: userType }) {
             radius="lg"
             alt={list.title}
             className=" object-cover aspect-1 bg-accented shadow-lg"
-            src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${list.id}/${list.cover_path}`}
+            src={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${list.id}/thumbnails/${list.cover_path}_size=300xH.webp`}
             onError={() => setImageIsLoaded(false)}
           />
           : <Card

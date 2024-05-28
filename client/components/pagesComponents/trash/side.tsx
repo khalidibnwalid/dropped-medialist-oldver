@@ -155,11 +155,12 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
                     ? <Image
                         className="flex-none aspect-1 object-cover h-14"
                         alt={data.title}
-                        src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item
-                            ? `${(data as itemData).list_id}/${(data as itemData).id}`
-                            : `${(data as listData).id}`}/${item
-                                ? (data as itemData).poster_path
-                                : data.cover_path}`}
+                        src={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item
+                            ? `${(data as itemData).list_id}/${(data as itemData).id}/thumbnails`
+                            : `${(data as listData).id}/thumbnails`}
+                            /${item
+                                ? `${(data as itemData).poster_path}_size=700xH.webp`
+                                : `${data.cover_path}`}_size=300xH.webp`}
                         onError={() => setImageIsLoaded(false)}
                     />
                     : <Card

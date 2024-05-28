@@ -113,7 +113,7 @@ function EditItemPage() {
                             setValue={setValue}
                             content="Item's Poster"
                             imgSrc={item.data.poster_path
-                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.poster_path}`
+                                ? `${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.poster_path}`
                                 : undefined}
                         />
                         <Divider className="my-2" />
@@ -153,7 +153,7 @@ function EditItemPage() {
                             setValue={setValue}
                             content="Item's Cover"
                             imgSrc={item.data.cover_path
-                                ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.cover_path}`
+                                ? `${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.data.list_id}/${item.data.id}/${item.data.cover_path}`
                                 : undefined}
                         />
                         <Divider className="my-2" />

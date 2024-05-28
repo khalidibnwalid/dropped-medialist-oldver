@@ -21,7 +21,7 @@ function ListDisplayedItems() {
                             key={item.title}
                             title={item.title}
                             onPress={() => router.push(`../items/${item.id}`)}
-                            imageSrc={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
+                            imageSrc={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.list_id}/${item.id}/thumbnails/${item.poster_path}_size=700xH.webp`}
                             className="border-none duration-200 hover:scale-110 cubic-bezier shadow-lg group aspect-[2/3] animate-fade-in"
                         />
                     )}
@@ -35,7 +35,7 @@ function ListDisplayedItems() {
                             <ListCard
                                 title={item.title}
                                 discrip={item.description}
-                                image={item.poster_path ? `${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}` : undefined}
+                                image={item.poster_path ? `${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.list_id}/${item.id}/thumbnails/${item.poster_path}_size=700xH.webp` : undefined}
                                 link={`../items/${item.id}`}
                                 underTitle={item.badges && <ItemBadges badgesArray={item.badges} />}
                             />
@@ -69,7 +69,7 @@ function ListDisplayedItems() {
                                         ? <Image
                                             className="flex-shrink-0 max-h-10 aspect-1 object-cover"
                                             alt={item.title}
-                                            src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${item.poster_path}`}
+                                            src={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.list_id}/${item.id}/thumbnails/${item.poster_path}_size=700xH.webp`}
                                         />
                                         : <Card
                                             className="uppercase font-light text-xl 

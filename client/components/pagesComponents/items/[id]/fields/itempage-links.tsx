@@ -20,7 +20,7 @@ function ItemLinks({ className }: { className?: string }) {
                         <Button className=" capitalize font-bold text-opacity-80 w-full mb-3 shadow-lg hover:scale-[1.03]"
                             startContent={link.logo_path && imageIsLoaded ?
                                 <Image
-                                    src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${dir}/${link.logo_path}`}
+                                    src={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${dir}/thumbnails/${link.logo_path}_size=100xH.webp`}
                                     className="object-contain h-6"
                                     key={'link' + link.name}
                                     alt={`link-logo ${link.url}`}

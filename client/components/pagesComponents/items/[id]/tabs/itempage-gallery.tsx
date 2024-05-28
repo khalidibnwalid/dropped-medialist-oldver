@@ -60,11 +60,11 @@ function ItemPageGallery({ imageArray, item }: { imageArray: itemImageType[], it
                         </CardHeader>
 
                         <a
-                            href={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`}
+                            href={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`}
                             target="_blank"
                         >
                             <Image
-                                src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${item.list_id}/${item.id}/${image.image_path}`}
+                                src={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.list_id}/${item.id}/thumbnails/${image.image_path}.webp`}
                                 className="object-contain"
                                 alt={image.image_path as string}
                                 onError={() => setImageIsLoaded(false)}

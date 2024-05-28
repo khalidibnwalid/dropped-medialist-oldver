@@ -28,7 +28,7 @@ function ItemBadges({ badgesArray, item }: { badgesArray: itemBadgesType[], item
                 } else if (badge.logo_path) {
                     return (
                         <ImageChip
-                            src={`${process.env.PUBLIC_IMG_PATH}/users/${userData.id}/${dir}/${badge.logo_path}`}
+                            src={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${dir}/thumbnails/${badge.logo_path}_size=100xH.webp`}
                             key={`rating-${index}`}
                             value={badge.value}
                         />
