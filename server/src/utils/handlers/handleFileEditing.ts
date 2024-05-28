@@ -1,12 +1,16 @@
 import { File } from 'formidable';
-import deleteFile from './deleteFileFn';
+import { deleteFile, deleteFileWithCache } from './deleteFileFn';
 import handleFileSaving from './handleFileSaving';
+import { CacheConfig } from '../cacheConfigs';
+import { cachedImageName } from '../cacheConfigs';
 import { isDummyBlob } from '../helperFunction/isDummyBlob';
+import { join } from 'path';
 
 export default async function handleFileEditing(
     file: File | undefined /**files.file[0]*/,
     distPath: string,
     originalImagePath?: string,
+    cacheConfigs?: CacheConfig[],
     prefix?: string,
     isTesting?: boolean
 ) {
@@ -17,7 +21,9 @@ export default async function handleFileEditing(
 
     //if the image is not preserved, then it is a new image or image deletion, in both cases, it should delete the original image
     // if it doesn't have an originalImage, it shouldn't delete an unexisting file
-    if (originalImagePath && !isTesting) await deleteFile(distPath, originalImagePath)
+    if (originalImagePath && !isTesting)
+        await deleteFileWithCache(cacheConfigs, distPath, originalImagePath)
 
-    return await handleFileSaving(file, distPath, prefix, isTesting) // will return null if no file is provided
+    // handleFileSaving will return null if no file is provided
+    return await handleFileSaving(file, distPath, cacheConfigs, prefix, isTesting)
 } 

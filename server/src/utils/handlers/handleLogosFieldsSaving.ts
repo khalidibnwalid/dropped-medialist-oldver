@@ -1,6 +1,7 @@
 import { File } from "formidable";
-import handleFileSaving from "./handleFileSaving";
+import { logosCacheConfigs } from "../cacheConfigs";
 import { isDummyBlob } from "../helperFunction/isDummyBlob";
+import handleFileSaving from "./handleFileSaving";
 
 /** On POST Requests, 
  * use the default dummyBLob with the size of 5 to preserve the order of the sended files,
@@ -23,4 +24,4 @@ export const handleLogosFieldsSaving = async <T extends { logo_path?: string }>(
 ) as T[]
 
 const handleLogoCreating = async (file: File | undefined, dist: string, prefix?: string, isTesting?: boolean) =>
-    file && !isDummyBlob(file) ? await handleFileSaving(file, dist, prefix, isTesting) : null
+    file && !isDummyBlob(file) ? await handleFileSaving(file, dist, logosCacheConfigs, prefix, isTesting) : null

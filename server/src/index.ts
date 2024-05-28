@@ -34,13 +34,12 @@ export const lucia = new Lucia(adapter, {
 
 // initialize express js & its middlewares
 const app = express()
-app.use(express.static('public')); //for images public folder
+app.use('/images', express.static('public/users')); //for images public folder
 
 app.use(cors({
     origin: whitelist,
     credentials: true,
-}));
-
+}))
 
 app.use(verifyRequestOriginHeader)
 app.use(validateSession)

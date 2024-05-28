@@ -1,13 +1,14 @@
 import { File } from "formidable";
-import deleteFile from "./deleteFileFn";
-import handleFileSaving from "./handleFileSaving";
+import { logosCacheConfigs } from "../cacheConfigs";
 import { isDummyBlob } from "../helperFunction/isDummyBlob";
+import { deleteFileWithCache } from "./deleteFileFn";
+import handleFileSaving from "./handleFileSaving";
 
 /** On PUT / PATCH Requests,
  * the default dummyBLob will be mean that the field's logo is unchanged, so it will use the original path.
  * otherwise, it will upload a new logo, or delete the old one.
  * 
- * ### Request Structure:O
+ * ### Request Structure:
  * on PUT / PATCH, logosFields formFields WILL include the origial logo_path,
  *  while formFiles will contain instructions about what to do with them, (i.e preserve, delete, or upload a new one)
  * @param
@@ -36,7 +37,7 @@ export default async function handleEditLogosFields<T extends { logo_path?: stri
         const isUsedByAnItem = itemsLogoPaths?.some(i => i.logo_path === logoPath)
         const isUsedByTemplate = !itemsLogoPaths && logoPath.startsWith('template_')
         if (logoPath && !isUsedByAnItem && !isUsedByTemplate && !isTesting)
-            await deleteFile(dist, logoPath)
+            await deleteFileWithCache(logosCacheConfigs, dist, logoPath)
     })
 
     return await Promise.all(
@@ -54,7 +55,7 @@ export default async function handleEditLogosFields<T extends { logo_path?: stri
 
             logo_path = isPreserveImageBlob
                 ? originalLogoPath
-                : await handleFileSaving(formFiles[index], dist, prefix, isTesting)
+                : await handleFileSaving(formFiles[index], dist, logosCacheConfigs, prefix, isTesting)
 
             return { ...field, logo_path }
         })

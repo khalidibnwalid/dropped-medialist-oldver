@@ -1,5 +1,6 @@
 import { prisma } from '@/src/index';
 import { itemClientData } from '@/src/types/items';
+import { itemCoverCacheConfigs, itemPosterCacheConfigs } from '@/src/utils/cacheConfigs';
 import { formidableAllowImagesAndDummyBlobs } from '@/src/utils/formidableOptions';
 import handleFileSaving from '@/src/utils/handlers/handleFileSaving';
 import { handleLogosFieldsSaving } from '@/src/utils/handlers/handleLogosFieldsSaving';
@@ -48,8 +49,16 @@ export default async function postItemRoute(req: Request, res: Response) {
         const itemMediaRoot = userMediaRoot(user_id, list.id, itemData.id);
         await fs.promises.mkdir(itemMediaRoot);
 
-        itemData.cover_path = await handleFileSaving(files?.cover_path?.[0], itemMediaRoot)
-        itemData.poster_path = await handleFileSaving(files?.poster_path?.[0], itemMediaRoot)
+        itemData.cover_path = await handleFileSaving(
+            files?.cover_path?.[0],
+            itemMediaRoot,
+            itemCoverCacheConfigs
+        )
+        itemData.poster_path = await handleFileSaving(
+            files?.poster_path?.[0],
+            itemMediaRoot,
+            itemPosterCacheConfigs
+        )
 
         // logos fields (fields with images)
         const badges = JSON.parse(fields?.badges?.[0] ?? '[]') as itemClientData['badges']

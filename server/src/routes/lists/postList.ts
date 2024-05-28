@@ -1,5 +1,6 @@
 import { prisma } from '@/src/index';
 import { listClientData } from '@/src/types/lists';
+import { listCoverCacheConfigs } from '@/src/utils/cacheConfigs';
 import { formidableAllowImagesAndDummyBlobs } from '@/src/utils/formidableOptions';
 import handleFileSaving from '@/src/utils/handlers/handleFileSaving';
 import { handleLogosFieldsSaving } from '@/src/utils/handlers/handleLogosFieldsSaving';
@@ -32,7 +33,11 @@ export default async function postListRoute(req: Request, res: Response) {
         await fs.promises.mkdir(listMediaRoot);
 
         // images uploading
-        listData.cover_path = await handleFileSaving(files?.cover_path?.[0], listMediaRoot);
+        listData.cover_path = await handleFileSaving(
+            files?.cover_path?.[0],
+            listMediaRoot,
+            listCoverCacheConfigs
+        )
 
         // only add a listID prefix to list logos
         listData.templates.fieldTemplates.badges =
@@ -40,7 +45,7 @@ export default async function postListRoute(req: Request, res: Response) {
                 listData.templates.fieldTemplates?.badges,
                 files.badges,
                 listMediaRoot,
-                'template'
+                'template',
             )
 
         listData.templates.fieldTemplates.links =

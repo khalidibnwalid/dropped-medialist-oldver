@@ -1,5 +1,6 @@
 import { prisma } from "@/src/index";
 import { fieldTemplates, listClientData, templates } from "@/src/types/lists";
+import { listCoverCacheConfigs } from "@/src/utils/cacheConfigs";
 import { formidableAllowImagesAndDummyBlobs } from "@/src/utils/formidableOptions";
 import handleFileEditing from "@/src/utils/handlers/handleFileEditing";
 import handleEditLogosFields from "@/src/utils/handlers/handleLogosFieldsEditing";
@@ -45,6 +46,7 @@ export default async function putListRoute(req: Request, res: Response) {
             files?.cover_path?.[0],
             listMediaRoot,
             originalList?.cover_path,
+            listCoverCacheConfigs
         )
 
         //all the logos paths from the logos fields of the list's items, to check if they are used or not

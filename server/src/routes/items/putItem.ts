@@ -1,6 +1,7 @@
 import { prisma } from '@/src/index';
 import { itemClientData } from '@/src/types/items';
 import { listClientData } from '@/src/types/lists';
+import { itemCoverCacheConfigs, itemPosterCacheConfigs } from '@/src/utils/cacheConfigs';
 import { formidableAllowImagesAndDummyBlobs } from '@/src/utils/formidableOptions';
 import handleFileEditing from '@/src/utils/handlers/handleFileEditing';
 import handleEditLogosFields from '@/src/utils/handlers/handleLogosFieldsEditing';
@@ -54,12 +55,14 @@ export default async function putItemRoute(req: Request, res: Response) {
             files?.cover_path?.[0],
             itemMediaRoot,
             originalItem?.cover_path,
+            itemCoverCacheConfigs
         )
 
         itemData.poster_path = await handleFileEditing(
             files?.poster_path?.[0],
             itemMediaRoot,
             originalItem?.poster_path,
+            itemPosterCacheConfigs
         )
 
         // logos fields (fields with images)
@@ -99,7 +102,7 @@ export default async function putItemRoute(req: Request, res: Response) {
             where: { id, user_id },
             data: itemData as items & itemClientData,
         })
-        console.log("[Items] Inserted:", item.title)
+        console.log("[Items] Edited:", item.title)
         res.status(200).json(item);
     } catch (e) {
         console.log("[Items]", e)

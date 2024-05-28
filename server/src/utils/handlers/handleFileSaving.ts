@@ -1,13 +1,17 @@
 import { File } from 'formidable';
 import fs from 'fs';
+import { alphabet, generateRandomString } from "oslo/crypto";
 import path from 'path';
-import { generateRandomString, alphabet } from "oslo/crypto";
+import { webpTransformer } from '../webpTransformer';
+import { CacheConfig } from '../cacheConfigs';
+import { cachedImageName } from '../cacheConfigs';
 import { isDummyBlob } from '../helperFunction/isDummyBlob';
 
 export default async function handleFileSaving(
     file: File | undefined /**files.file[0]*/,
     distPath: string,
     /** prefix_filename.extension */
+    cacheConfigs?: CacheConfig[],
     prefix?: string,
     isTesting?: boolean
 ) {
@@ -27,7 +31,7 @@ export default async function handleFileSaving(
     if (isTesting) return fileName
 
     try {
-        // Copy the file to newPath's location
+        // Copy the file to newPath's location (for docker)
         await fs.promises.copyFile(oldPath, newPath);
 
         // Delete the original temp file
@@ -43,6 +47,23 @@ export default async function handleFileSaving(
         }
 
         throw e;
+    }
+
+    if (cacheConfigs) {
+        try {
+            const cacheFolder = path.join(distPath, 'thumbnails');
+            if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder);
+
+            cacheConfigs.forEach(async config => {
+                const imageName = cachedImageName(fileName, config);
+                const imagePath = path.join(cacheFolder, imageName);
+
+                await webpTransformer(config?.w, config?.h, newPath).toFile(imagePath);
+            })
+
+        } catch (error) {
+            console.error('Failed to create cache images', error);
+        }
     }
 
     return fileName;
