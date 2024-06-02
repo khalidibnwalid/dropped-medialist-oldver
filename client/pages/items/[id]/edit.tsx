@@ -2,10 +2,10 @@ import ErrorPage from "@/components/errorPage";
 import SingleImageUploaderDefault from '@/components/forms/_components/Images/single-imageUploader-defaultValue';
 import SubmitButtonWithIndicators from "@/components/forms/_components/SubmitWithIndicators";
 import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/item/layouts";
-import { ItemFormContext } from "@/components/forms/item/provider";
+import { ItemForm, ItemFormContext } from "@/components/forms/item/provider";
 import { authContext } from "@/components/pagesComponents/authProvider";
 import ItemPageGallery from "@/components/pagesComponents/items/[id]/tabs/itempage-gallery";
-import type { itemData } from '@/types/item';
+import type { itemData, itemTag } from '@/types/item';
 import putAPI from "@/utils/api/putAPI";
 import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
 import handleEditFileForm from "@/utils/helperFunctions/form/handleEditFileForm";
@@ -13,7 +13,7 @@ import handleEditLogosFieldsForm from "@/utils/helperFunctions/form/handleEditLo
 import { imagesFetchOptions } from "@/utils/query/imagesQueries";
 import { itemFetchOptions, itemsFetchOptions, mutateItemCache } from "@/utils/query/itemsQueries";
 import { listFetchOptions } from "@/utils/query/listsQueries";
-import { tagsFetchOptions } from "@/utils/query/tagsQueries";
+import { mutateTagCache, tagsFetchOptions } from "@/utils/query/tagsQueries";
 import { Button, Divider } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Head from "next/head";
@@ -28,7 +28,7 @@ function EditItemPage() {
     const router = useRouter();
     const itemId = router.query.id as string
 
-    const { handleSubmit, control, setValue, getValues, resetField, formState: { errors } } = useForm<itemData>();
+    const { handleSubmit, control, setValue, getValues, resetField, formState: { errors } } = useForm<ItemForm>();
     const [keyRefresher, setKeyRefresher] = useState(0)
 
     const { userData } = useContext(authContext)
@@ -48,9 +48,10 @@ function EditItemPage() {
 
     const mutation = useMutation({
         mutationFn: (data: FormData) => putAPI(`items/${itemId}`, data),
-        onSuccess: (data) => {
-            mutateItemCache(data, "edit")
-            router.push(`../../items/${data.id}`)
+        onSuccess: ({ newTags, ...itemData }: itemData & { newTags: itemTag[] }) => {
+            mutateItemCache(itemData, "edit")
+            router.push(`../../items/${itemData.id}`)
+            if (newTags) newTags.forEach((tag) => mutateTagCache(tag, "add"))
         },
     })
 
@@ -60,7 +61,10 @@ function EditItemPage() {
             setValue("links", item.data.links)
             setValue("main_fields", item.data.main_fields)
             setValue("extra_fields", item.data.extra_fields)
-            setValue("tags", item.data.tags)
+            const tags = item.data?.tags?.map((id) => ({ value: id }))
+            setValue("tags", tags || [])
+            const related = item.data?.related?.map((id) => ({ value: id }))
+            setValue("related", related || [])
             setValue("content_fields", item.data.content_fields)
             if (item.data?.poster_path) setValue(`poster_path`, item.data.poster_path)
             if (item.data?.cover_path) setValue(`cover_path`, item.data.cover_path)
@@ -74,14 +78,19 @@ function EditItemPage() {
     const listItemsData = listItems.data.filter((item) => item.id !== itemId) // for related items
     const fieldTemplates = list.data.templates?.fieldTemplates
 
-    async function onSubmit(rawData: itemData) {
-        type omitData = Omit<itemData, 'cover_path' | 'poster_path' | 'links' | 'badges'>;
+    async function onSubmit(rawData: ItemForm) {
+        type omitData = Omit<itemData, 'cover_path' | 'poster_path' | 'links' | 'badges' | 'tags' | 'related'>;
 
         // saperate the handling of submitted data
-        const { cover_path, poster_path, links: linksData, badges: badgesData, ...data } = rawData as itemData
+        const { cover_path, poster_path, links: linksData, badges: badgesData, tags, related, ...data } = rawData
 
         const formData = new FormData();
         appendObjKeysToFormData(formData, data as omitData)
+
+        const tagsArray = tags?.map((tag) => tag.value) || []
+        const relatedItemsArray = related?.map((item) => item.value) || []
+        formData.append('tags', JSON.stringify(tagsArray))
+        formData.append('related', JSON.stringify(relatedItemsArray))
 
         handleEditFileForm(cover_path, formData, 'cover_path')
         handleEditFileForm(poster_path, formData, 'poster_path')
@@ -101,7 +110,15 @@ function EditItemPage() {
                 <title>MediaList - Edit {item.data.title}</title>
             </Head>
 
-            <ItemFormContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors, itemData: item.data, resetField }}>
+            <ItemFormContext.Provider value={{
+                control,
+                fieldTemplates,
+                setValue,
+                getValues,
+                errors,
+                itemData: item.data,
+                resetField
+            }}>
                 <form className="grid grid-cols-3 py-5 gap-x-7 items-start" key={keyRefresher}>
 
                     <div className="col-span-1 grid gap-y-2">

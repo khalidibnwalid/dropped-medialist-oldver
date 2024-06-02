@@ -19,15 +19,13 @@ export interface itemData {
     description?: string;
     fav?: boolean;
     trash?: boolean;
-    /**array of Tags IDs*/
-    tags: string[]
+    tags: itemTag['id'][]
     progress_state?: itemProgressState;
     links?: itemlink[]
     content_fields?: itemField[]
     main_fields?: main_fields[]
     badges?: itemBadgesType[];
-    /**array of Items IDs*/
-    related?: string[]
+    related?: itemData['id'][]
     configurations: ItemConfiguration
     extra_fields?: { name: string, value?: string }[]
 }

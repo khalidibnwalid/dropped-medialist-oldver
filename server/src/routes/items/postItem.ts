@@ -85,7 +85,7 @@ export default async function postItemRoute(req: Request, res: Response) {
 
         const item = await prisma.items.create({ data: { ...itemData as items & itemClientData, user_id, list_id: list.id } })
         console.log("[Items] Inserted:", item.title)
-        res.status(200).json(item);
+        res.status(200).json({...item, newTags: unexistingTags});
     } catch (e) {
         console.log("[Items]", e)
         res.status(500).json({ message: 'Internal Server Error' })

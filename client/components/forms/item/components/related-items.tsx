@@ -1,63 +1,60 @@
 import { authContext } from "@/components/pagesComponents/authProvider";
 import { itemData } from "@/types/item";
-import { userType } from "@/types/user";
-import { Autocomplete, AutocompleteItem, Button, Card, Chip, Image } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Card, Chip, Image } from "@nextui-org/react";
 import type { Key } from "react";
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import { useFieldArray } from 'react-hook-form';
-import { BiPlus, BiX } from "react-icons/bi";
+import { BiX } from "react-icons/bi";
 import { ItemFormContext } from "../provider";
 
 function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
     const { userData } = useContext(authContext)
-    const { control, itemData, setValue } = useContext(ItemFormContext)
+    const { control, itemData } = useContext(ItemFormContext)
     const { append, remove } = useFieldArray({
         control,
         name: "related"
     });
 
     const [autoCompleteValue, setAutoCompleteValue] = useState(""); //autocomplete's current value
-    const [currentDisplayedItems, setCurrentDisplayedItems] = useState<string[]>([] as string[]);
+    const [currentDisplayedItems, setCurrentDisplayedItems] = useState<string[]>([]);
     const autocompleteRef = useRef<HTMLInputElement>(null)
 
     function name_to_id(name: Key | string) {
-        const item = dataSet.find((data) => (data.title == name));
+        const item = dataSet?.find((data) => (data.title == name));
         return item?.id || null;
-
     }
 
     function id_to_name(id: Key | string) {
-        const item = dataSet.find((data) => (data.id == id));
+        const item = dataSet?.find((data) => (data.id == id));
         return item?.title || null;
-
     }
 
     useEffect(() => {
-        itemData && setValue("related", itemData.related)
-        if (itemData?.related && itemData?.related?.length > 0) {
+        // itemData && setValue("related", itemData.related)
+        if (itemData?.related && itemData.related?.length > 0) {
+            console.log("recalled")
             const originalRelatedItems = itemData.related.map((id) => {
                 const name = id_to_name(id)
-                return name || undefined
-            }).filter(item => item != undefined)
+                return name || ''
+            }).filter(Boolean)
             setCurrentDisplayedItems(originalRelatedItems)
         }
     }, []);
 
     function addItem(key?: Key) {
-        let currentValue = key || autoCompleteValue
+        let currentValue = String(key || autoCompleteValue)
+        //to ignore if you want to re-add the same item
         if (currentDisplayedItems.some((value) => (value === currentValue))) {
-            autocompleteRef.current?.blur()
-            return //to ignore if you want to re-add the same item
-
-        } else if (dataSet.some((data: itemData) => (data.title === currentValue))) {
-            // if the tag exists
-            const newItemsArray = [...currentDisplayedItems, currentValue] //create a new array that includes the new values
-            append(name_to_id(currentValue))
-            setCurrentDisplayedItems(newItemsArray)
+            return autocompleteRef.current?.blur()
+        } else if (dataSet.some(data => (data.title === currentValue))) {
+            // if the item exists
+            const id = name_to_id(currentValue) || ""
+            if (!id) return
+            append({ value: id })
+            setCurrentDisplayedItems(oldArray => [...oldArray, currentValue])
             setAutoCompleteValue("")
             autocompleteRef.current?.blur()
         }
-
     }
 
     function removeItem(item: string) {
@@ -93,10 +90,10 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                         onKeyDown={onKeyEvent}
                         defaultItems={dataSet}
                         selectedKey={autoCompleteValue}
-                        onSelectionChange={addItem}
                     >
-                        {(item: itemData) =>
+                        {item =>
                             <AutocompleteItem
+                                onClick={() => addItem(item.title)}
                                 key={item.id}
                                 startContent={item.poster_path
                                     ? <Image
@@ -116,12 +113,9 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                             </AutocompleteItem>
                         }
                     </Autocomplete>
-                    <Button onClick={addItem} className="flex-none hover:scale-105" isIconOnly>
-                        <BiPlus className=" p-1 text-3xl" />
-                    </Button>
                 </div>
 
-                {(currentDisplayedItems.length != 0) &&
+                {(currentDisplayedItems.length !== 0) &&
                     <button
                         type="button"
                         className=" text-sm text-start flex items-center px-5 text-[#858484] animate-fade-in origin-top"
@@ -132,16 +126,14 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
                 }
 
                 <div>
-                    {currentDisplayedItems && currentDisplayedItems.map((item) => (
-                        <>
-                            <Chip
-                                className="m-1 animate-fade-in"
-                                key={'tagchip-' + item}
-                                onClose={() => removeItem(item)}
-                            >
-                                {item}
-                            </Chip>
-                        </>
+                    {currentDisplayedItems?.map((item) => (
+                        <Chip
+                            className="m-1 animate-fade-in"
+                            key={'tagchip-' + item}
+                            onClose={() => removeItem(item)}
+                        >
+                            {item}
+                        </Chip>
                     ))}
                 </div>
 

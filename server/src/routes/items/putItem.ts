@@ -103,7 +103,7 @@ export default async function putItemRoute(req: Request, res: Response) {
             data: itemData as items & itemClientData,
         })
         console.log("[Items] Edited:", item.title)
-        res.status(200).json(item);
+        res.status(200).json({ ...item, newTags: unexistingTags });
     } catch (e) {
         console.log("[Items]", e)
         res.status(500).json({ message: 'Internal Server Error' })

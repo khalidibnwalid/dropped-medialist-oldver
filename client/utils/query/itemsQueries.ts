@@ -23,10 +23,13 @@ export const itemFetchOptions = (itemId: string) => queryOptions<itemData>({
 export const mutateItemCache = (data: itemData, type: "edit" | "add" | "delete") => {
     const isDelete = type === "delete";
     const isAdd = type === "add";
+    const isEdit = type === "edit";
     const listItemsKey = ['items', data.list_id, { trash: false }];
 
     if (queryClient.getQueryData(listItemsKey)) // for the list page
         queryClient.setQueryData(listItemsKey, (oldData: itemData[]) => {
+            if (isEdit) return oldData.map((item) => item.id === data.id ? data : item)
+                
             const allItems = isAdd ? oldData
                 : oldData.filter((list) => list.id !== data.id); //remove the old list
             return isDelete

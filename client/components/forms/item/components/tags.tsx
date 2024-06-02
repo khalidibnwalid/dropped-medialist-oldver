@@ -36,13 +36,13 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
 
         if (tagExists) {
             // if the tag exists add it to the list
-            append(tagExists.id)
+            append({ value: tagExists.id })
             const newArray = [...usedTags, tagExists.id]
             setUsedTags(newArray)
         } else {
             // new tag that doesn't exist is stored in a special way so it can be handled alone
             // they are stored as a normal name, and since it is not a uuid, it doesn't pass the UUID validator sin 
-            append(input)
+            append({ value: input })
             const newArray = [...newTags, input]
             setNewTags(newArray)
             searchRef.current?.blur
@@ -70,7 +70,7 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
     }
 
     useEffect(() => {
-        const newArray = [...newTags, ...usedTags]
+        const newArray = [...newTags, ...usedTags].map(id => ({ value: id }))
         replace(newArray)
     }, [newTags, usedTags]);
 
@@ -87,9 +87,7 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
             <p className="text-zinc-500">Tags</p>
 
             <div className="grid grid-cols-1 gap-y-2">
-                <Popover
-                    onClose={() => setDisplayedTags(tagsData)}
-                >
+                <Popover onClose={() => setDisplayedTags(tagsData)}>
                     <PopoverTrigger>
                         <Button className="flex-none">Choose Tags <BiPurchaseTag /></Button>
                     </PopoverTrigger>

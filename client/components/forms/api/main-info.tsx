@@ -4,8 +4,10 @@ import { Controller } from 'react-hook-form';
 import { ItemApiTemplateContext } from "./provider";
 
 function ItemApiMainInfo() {
-    const { control, errors, listData } = useContext(ItemApiTemplateContext)
-    const usedNames = listData?.templates?.apiTemplates?.map(api => api.name) || []
+    const { control, errors, listData, currentApiTemplate } = useContext(ItemApiTemplateContext)
+    const usedNames = listData?.templates?.apiTemplates?.map(api =>
+        (api.name !== currentApiTemplate?.name) && api.name)
+        || []
 
     return (
         <>

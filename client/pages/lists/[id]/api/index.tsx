@@ -36,19 +36,18 @@ function EditAPIPage() {
         setCurrentApiTemplate(apiTemplate);
         setSelectedAutocompleteKey(apiTemplate.name)
         if ((apiTemplate as listApiWithSearchType).searchTitlePath) setSearchIsAllowed(true)
-        for (let key in apiTemplate) {
+        for (let key in apiTemplate)
             setValue((key as keyof listApiType), apiTemplate[key as keyof listApiType])
-        }
+
         reset && mutation.reset()
     }
 
     useEffect(() => {
         if (isSuccess && listData) {
-            if (listData.templates?.apiTemplates && listData.templates?.apiTemplates?.length > 0) {
+            if (listData.templates?.apiTemplates && listData.templates?.apiTemplates?.length > 0)
                 loadApiTemplate(listData.templates?.apiTemplates[0])
-            } else {
-                router.push(`/lists/${listData.id}/api/add`); // if no apitemplate exist redirect to add api page
-            }
+            //if no apitemplate exist redirect to add api page
+            else router.push(`/lists/${listData.id}/api/add`)
         }
     }, [isSuccess])
 
@@ -115,9 +114,8 @@ function EditAPIPage() {
 
         mutation.mutate({ templates })
 
-        if (currentApiTemplate.name !== apiTemplate.name) {
+        if (currentApiTemplate.name !== apiTemplate.name)
             loadApiTemplate(apiTemplate, false)
-        }
     }
 
     return (
@@ -126,7 +124,20 @@ function EditAPIPage() {
                 <title>MediaList - {listData.title} Edit API Templates</title>
             </Head>
 
-            <ItemApiTemplateContext.Provider value={{ listData, searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, currentApiTemplate, queryPattern }}>
+            <ItemApiTemplateContext.Provider value={{
+                listData,
+                searchIsAllowed,
+                setSearchIsAllowed,
+                control,
+                fieldTemplates,
+                setValue,
+                getValues,
+                errors,
+                pathRegex,
+                pattern,
+                currentApiTemplate,
+                queryPattern
+            }}>
                 <form key={currentApiTemplate.name}>
                     <TitleBar
                         starShowerBlack
@@ -142,10 +153,14 @@ function EditAPIPage() {
                                     className="max-w-xs flex-grow"
                                     selectedKey={SelectedAutocompleteKey}
                                     onSelectionChange={(e: any) => setSelectedAutocompleteKey(e)}
-                                    defaultItems={listData.templates?.apiTemplates}
+                                    defaultItems={listData.templates?.apiTemplates || []}
                                 >
                                     {(template) => (
-                                        <AutocompleteItem onClick={() => loadApiTemplate(template)} key={template.name} value={template.name}>
+                                        <AutocompleteItem
+                                            onClick={() => loadApiTemplate(template)}
+                                            key={template.name}
+                                            value={template.name}
+                                        >
                                             {template.name}
                                         </AutocompleteItem>
                                     )}
@@ -157,10 +172,10 @@ function EditAPIPage() {
                                 >
                                     {({ isTrashOpen }) => (
                                         <Button
+                                            className={isTrashOpen ? 'bg-danger' : ''}
                                             variant='bordered'
                                             size='lg'
                                             isIconOnly
-                                            className={isTrashOpen ? 'bg-danger' : ''}
                                         >
                                             <BiTrash className=" text-xl" />
                                         </Button>

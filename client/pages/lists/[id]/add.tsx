@@ -4,15 +4,15 @@ import SubmitButtonWithIndicators from '@/components/forms/_components/SubmitWit
 import ItemApiLoaderDropDown from '@/components/forms/item/api-loader/dropdown';
 import ItemApiLoaderProvider from '@/components/forms/item/api-loader/provider';
 import { ItemFormCoverColumn, ItemFormPosterColumn } from '@/components/forms/item/layouts';
-import { ItemFormContext } from "@/components/forms/item/provider";
-import type { itemData } from '@/types/item';
+import { ItemForm, ItemFormContext } from "@/components/forms/item/provider";
+import type { itemData, itemTag } from '@/types/item';
 import fetchImageFromURL from '@/utils/api/handlers/fetchImageFromURL';
 import postAPI from '@/utils/api/postAPI';
 import appendObjKeysToFormData from '@/utils/helperFunctions/form/appendObjKeysToFormData';
 import handleAddLogosFieldsForm from '@/utils/helperFunctions/form/handleAddLogosFieldsForm';
 import { itemsFetchOptions, mutateItemCache } from "@/utils/query/itemsQueries";
 import { listFetchOptions } from '@/utils/query/listsQueries';
-import { tagsFetchOptions } from '@/utils/query/tagsQueries';
+import { mutateTagCache, tagsFetchOptions } from '@/utils/query/tagsQueries';
 import { Button, Divider } from "@nextui-org/react";
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
@@ -34,7 +34,7 @@ function AddItemPage() {
     const router = useRouter();
     const listId = router.query.id as string
 
-    const { handleSubmit, control, setValue, getValues, formState: { errors }, resetField } = useForm<itemData>();
+    const { handleSubmit, control, setValue, getValues, formState: { errors } } = useForm<ItemForm>();
 
     const [apiData, setApiData] = useState({ key: 0 } as apiDataAddItemPage);
     const list = useQuery(listFetchOptions(listId))
@@ -46,9 +46,10 @@ function AddItemPage() {
 
     const mutation = useMutation({
         mutationFn: (data: FormData) => postAPI(`items/${listId}`, data),
-        onSuccess: (data) => {
-            mutateItemCache(data, "add")
-            router.push(`../../items/${data.id}`)
+        onSuccess: ({ newTags, ...itemData }: itemData & { newTags: itemTag[] }) => {
+            mutateItemCache(itemData, "add")
+            router.push(`../../items/${itemData.id}`)
+            if (newTags) newTags.forEach((tag) => mutateTagCache(tag, "add"))
         },
     })
 
@@ -57,14 +58,19 @@ function AddItemPage() {
 
     const fieldTemplates = list.data.templates?.fieldTemplates
 
-    async function onSubmit(rawData: itemData) {
-        type omitData = Omit<itemData, 'cover_path' | 'poster_path' | 'links' | 'badges'>;
+    async function onSubmit(rawData: ItemForm) {
+        type omitData = Omit<itemData, 'cover_path' | 'poster_path' | 'links' | 'badges' | 'tags' | 'related'>;
 
         // saperate the handling of submitted data
-        const { cover_path, poster_path, links: linksData, badges: badgesData, ...data } = rawData as itemData
+        const { cover_path, poster_path, links: linksData, badges: badgesData, tags, related, ...data } = rawData
 
         const formData = new FormData();
         appendObjKeysToFormData(formData, data as omitData)
+
+        const tagsArray = tags?.map((tag) => tag.value) || []
+        const relatedItemsArray = related?.map((item) => item.value) || []
+        formData.append('tags', JSON.stringify(tagsArray))
+        formData.append('related', JSON.stringify(relatedItemsArray))
 
         formData.append('cover_path', (cover_path as UploadedImage)?.[0]?.file
             || await fetchImageFromURL((cover_path as UploadedImage)?.[0]?.dataURL) || '')
@@ -86,7 +92,14 @@ function AddItemPage() {
                 <title>MediaList - {list.data.title} New Item</title>
             </Head>
 
-            <ItemFormContext.Provider value={{ control, fieldTemplates, setValue, getValues, errors, itemData: apiData.itemData }}>
+            <ItemFormContext.Provider value={{
+                control,
+                fieldTemplates,
+                setValue,
+                getValues,
+                errors,
+                itemData: apiData.itemData
+            }}>
                 <ItemApiLoaderProvider setApiData={setApiData} apiData={apiData} apiTemplates={list.data.templates?.apiTemplates} >
                     <form className="grid grid-cols-3 py-5 gap-x-7 items-start" key={apiData.key}>
 

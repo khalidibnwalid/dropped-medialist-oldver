@@ -91,7 +91,9 @@ export default function ItemApiLoaderProvider({
                 splitByOperator?.forEach((word: string) => {
                     values += (word.startsWith('"') || word.startsWith("'")) ? word.slice(1, -1) : processedPath(word);
                 })
-                result[templateKeyName] = values;
+                result[templateKeyName] = templateKeyName === 'logo_path'
+                    ? String(value)
+                    : values;
             } else {
                 // if it doesn't have an 'operator'
                 result[templateKeyName] = newData[value as keyof typeof newData]
