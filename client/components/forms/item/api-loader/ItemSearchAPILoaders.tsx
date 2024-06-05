@@ -3,6 +3,7 @@ import { queryFromObject } from "@/utils/helperFunctions/queryFromObject";
 import { Button, Input, Spinner } from "@nextui-org/react";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import { BiSearch } from "react-icons/bi";
 import { ItemApiLoaderContext } from "./provider";
 
 export const ItemSearchAPILoaders = ({
@@ -25,7 +26,7 @@ export const ItemSearchAPILoaders = ({
         let route = selectedRoutes.join('')
         let query = queryFromObject(restData)
 
-        // baseURL if it ends with '&' then it is already preparing for a query 
+        // baseURL if it ends with '&' then it is already preparing for a query
         const finalRouteAndQuery =
             route
             + (query ? (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query : '')
@@ -55,7 +56,8 @@ export const ItemSearchAPILoaders = ({
                     className=" shadow-lg flex-none"
                     onClick={handleSubmit(onSubmit)}
                 >
-                    Search
+                    <BiSearch className="text-large"/>
+                    
                 </Button>
             </div>
 
@@ -71,6 +73,12 @@ export const ItemSearchAPILoaders = ({
                         className="flex-grow"
                         variant="bordered"
                         size="sm"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleSubmit(onSubmit)();
+                            }
+                        }}
                         {...register(data.query || `emptyQuery[${emptyQueryIndex++}]`)}
                     />
                 </div>)

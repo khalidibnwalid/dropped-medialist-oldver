@@ -49,7 +49,7 @@ export default function TrashPage() {
     })
 
     const restoreItems = useMutation({
-        mutationFn: (IDs: itemIDS) => patchAPI('items/group', { id: IDs, trash: false }),
+        mutationFn: (IDs: itemIDS) => patchAPI('items/group/id', { id: IDs, trash: false }),
         onSuccess: (items: itemData[]) => {
             items.forEach((item) => mutateItemCache(item, 'add'))
             trashItems.refetch()
@@ -58,7 +58,7 @@ export default function TrashPage() {
     })
 
     const restoreLists = useMutation({
-        mutationFn: (IDs: listIDS) => patchAPI('lists/group', { id: IDs, trash: false }),
+        mutationFn: (IDs: listIDS) => patchAPI('lists/group/id', { id: IDs, trash: false }),
         onSuccess: (lists: listData[]) => {
             lists.forEach((list) => mutateListCache(list, 'add'))
             trashLists.refetch()

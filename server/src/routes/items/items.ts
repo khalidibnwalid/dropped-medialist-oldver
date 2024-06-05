@@ -78,22 +78,18 @@ itemsRouter.patch('/:id', async (req, res) => {
 })
 
 // ## PATCH, change the values for group of items
-itemsRouter.patch('/group', async (req, res) => {
-    const user_id = res.locals?.user?.id
-    if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
-
-    const data = req.body; //not safe need more restrictions
-    const { id, ...restData }: { id: items['id'][] | items['id'], changes: items } = data
-
-    if (typeof id === 'boolean' || (Array.isArray(id) && id.length === 0))
-        return res.status(400).json({ message: "Bad Request" });
-
-    const itemsIDs = typeof id === 'string' ? [id] : id;
-
-    if (itemsIDs.some(id => !uuidValidate(id)))
-        return res.status(404).json({ message: "Bad Item ID, Item Doesn't exist" });
-
+itemsRouter.patch('/group/id', async (req, res) => {
     try {
+        const user_id = res.locals?.user?.id
+        if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
+
+        const data = req.body; //not safe need more restrictions
+        const { id, ...restData }: { id: items['id'][] | items['id'], changes: items } = data
+        const itemsIDs = [].concat(id) as items['id'][];
+
+        if (itemsIDs.some(id => !uuidValidate(id)) || itemsIDs.length === 0)
+            return res.status(404).json({ message: "Bad Item ID, Item Doesn't exist" });
+
         await prisma.items.updateMany({
             data: { ...restData, user_id },
             where: { id: { in: itemsIDs }, user_id }

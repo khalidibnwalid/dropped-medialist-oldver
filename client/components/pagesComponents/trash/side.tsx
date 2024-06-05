@@ -132,6 +132,11 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
     const { userData } = useContext(authContext)
     const [imageIsLoaded, setImageIsLoaded] = useState(true);
 
+    const dir = `${process.env.PUBLIC_IMG_PATH}/images/${userData.id}`
+    const src = `${dir}/${item
+        ? `${(data as itemData).list_id}/${(data as itemData).id}/thumbnails/${(data as itemData).poster_path}_size=700xH.webp`
+        : `${(data as listData).id}/thumbnails/${data.cover_path}_size=300xH.webp`}`
+
     return (
         <Checkbox
             key={`card ${data.title}`}
@@ -155,12 +160,7 @@ function CardCheckBox({ data, item }: { data: listData | itemData, item?: boolea
                     ? <Image
                         className="flex-none aspect-1 object-cover h-14"
                         alt={data.title}
-                        src={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item
-                            ? `${(data as itemData).list_id}/${(data as itemData).id}/thumbnails`
-                            : `${(data as listData).id}/thumbnails`}
-                            /${item
-                                ? `${(data as itemData).poster_path}_size=700xH.webp`
-                                : `${data.cover_path}`}_size=300xH.webp`}
+                        src={src}
                         onError={() => setImageIsLoaded(false)}
                     />
                     : <Card

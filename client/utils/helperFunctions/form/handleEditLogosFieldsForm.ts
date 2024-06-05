@@ -11,7 +11,7 @@ export default function handleEditLogosFieldsForm<T extends { logo_path?: Upload
     return fieldsArray?.map(field => {
         const { logo_path } = field;
         handleEditFileForm(logo_path, formData, fieldName)
-
+        
         return field
     })
 }

@@ -1,6 +1,6 @@
 import { listApiType } from "@/types/list";
 import { queryFromObject } from "@/utils/helperFunctions/queryFromObject";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, InputProps } from "@nextui-org/react";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { ItemApiLoaderContext } from "./provider";
@@ -38,10 +38,24 @@ export const ItemDirectAPILoaders = ({
             onClose()
         } catch (e) {
             setIsLoading(false)
-            setError('Bad API Request')}
+            setError('Bad API Request')
+        }
     }
 
     let emptyQueryIndex = 0
+
+    const inputProps: InputProps = {
+        labelPlacement: "outside",
+        className: "flex-grow",
+        variant: "bordered",
+        size: "sm",
+        onKeyDown: (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSubmit(onSubmit)();
+            }
+        }
+    }
 
     return (
         <form className="space-y-2 animate-fade-in">
@@ -64,10 +78,7 @@ export const ItemDirectAPILoaders = ({
                     <p className="flex-none">  {template.name} :</p>
                     <Input
                         aria-label={'api Query Input ' + template.name}
-                        labelPlacement="outside"
-                        className="flex-grow"
-                        variant="bordered"
-                        size="sm"
+                        {...inputProps}
                         {...register(template.route)}
                     />
                 </div>
@@ -81,10 +92,7 @@ export const ItemDirectAPILoaders = ({
                     <p className="flex-none"> by {template.name} :</p>
                     <Input
                         aria-label={'api Query Input ' + template.name}
-                        labelPlacement="outside"
-                        className="flex-grow"
-                        variant="bordered"
-                        size="sm"
+                        {...inputProps}
                         {...register(template.query || `emptyQuery[${emptyQueryIndex++}]`)}
                     />
                 </div>
