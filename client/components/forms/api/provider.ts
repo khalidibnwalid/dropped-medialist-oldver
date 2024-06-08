@@ -14,8 +14,8 @@ interface context {
     pathRegex: RegExp
     pattern: { value: RegExp, message: string }
     queryPattern: { value: RegExp, message: string }
-    setSearchIsAllowed: Dispatch<SetStateAction<boolean>>
-    searchIsAllowed: boolean
+    setSearchIsDisabled: Dispatch<SetStateAction<true | undefined>>
+    searchIsDisabled: true | undefined
     currentApiTemplate?: listApiType
     listData: listData
 }

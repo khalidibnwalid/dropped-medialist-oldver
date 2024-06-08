@@ -14,7 +14,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import { BiInfoCircle, BiPlus, BiTrash } from 'react-icons/bi';
 import { TbApiApp } from 'react-icons/tb';
 import { validate as uuidValidate } from 'uuid';
@@ -35,9 +35,18 @@ function EditAPIPage() {
     function loadApiTemplate(apiTemplate: listApiType, reset = true) {
         setCurrentApiTemplate(apiTemplate);
         setSelectedAutocompleteKey(apiTemplate.name)
-        if ((apiTemplate as listApiWithSearchType).searchTitlePath) setSearchIsAllowed(true)
         for (let key in apiTemplate)
             setValue((key as keyof listApiType), apiTemplate[key as keyof listApiType])
+        if (!(apiTemplate as listApiWithSearchType)?.searchArrayPath) {
+            setSearchIsDisabled(true)
+            setValue('searchQueries', [])
+            setValue('searchResultToItem.path', '')
+            setValue('searchResultToItem.query', '')
+            setValue('searchTitlePath', '')
+            setValue('searchArrayPath', '')
+        } else {
+            setSearchIsDisabled(undefined)
+        }
 
         reset && mutation.reset()
     }
@@ -49,9 +58,9 @@ function EditAPIPage() {
             //if no apitemplate exist redirect to add api page
             else router.push(`/lists/${listData.id}/api/add`)
         }
-    }, [isSuccess])
+    }, [isSuccess, listData])
 
-    const [searchIsAllowed, setSearchIsAllowed] = useState(false)
+    const [searchIsDisabled, setSearchIsDisabled] = useState<true | undefined>(undefined)
     const [currentApiTemplate, setCurrentApiTemplate] = useState<listApiType>({} as listApiType)
     const [SelectedAutocompleteKey, setSelectedAutocompleteKey] = useState('')
 
@@ -98,7 +107,7 @@ function EditAPIPage() {
             ...restData
         }: listApiWithSearchType = rawData
 
-        if (searchIsAllowed) {
+        if (!searchIsDisabled) {
             apiTemplate['searchQueries'] = searchQueries;
             apiTemplate['searchResultToItem'] = searchResultToItem;
             apiTemplate['searchTitlePath'] = searchTitlePath;
@@ -126,8 +135,8 @@ function EditAPIPage() {
 
             <ItemApiTemplateContext.Provider value={{
                 listData,
-                searchIsAllowed,
-                setSearchIsAllowed,
+                searchIsDisabled,
+                setSearchIsDisabled,
                 control,
                 fieldTemplates,
                 setValue,

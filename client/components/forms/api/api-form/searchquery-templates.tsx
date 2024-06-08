@@ -9,7 +9,7 @@ import { BiPlus, BiX } from "react-icons/bi";
 import { ItemApiTemplateContext } from "../provider";
 
 function ItemApisearchQueries() {
-    const { control, errors, queryPattern, searchIsAllowed, currentApiTemplate } = useContext(ItemApiTemplateContext)
+    const { control, errors, queryPattern, searchIsDisabled, currentApiTemplate } = useContext(ItemApiTemplateContext)
 
     return (
         <div>
@@ -20,9 +20,9 @@ function ItemApisearchQueries() {
                 fieldName='searchQueries'
                 startContent={({ addField }) => (
                     <div className="flex items-center justify-between">
-                        <p className={searchIsAllowed ? "text-zinc-500" : "text-zinc-600"}>Search Queries (drag and drop)</p>
+                        <p className={!searchIsDisabled ? "text-zinc-500" : "text-zinc-600"}>Search Queries (drag and drop)</p>
                         <Button
-                            isDisabled={!searchIsAllowed}
+                            isDisabled={searchIsDisabled}
                             onPress={() => addField()}
                             className="hover:scale-105" isIconOnly
                         >
@@ -34,7 +34,7 @@ function ItemApisearchQueries() {
                 {({ data, index, removeField, fieldControl }) => (
                     <div className="sortableFieldContainer" key={'searchQueryTemplate-' + index} >
                         <Button
-                            isDisabled={!searchIsAllowed}
+                            isDisabled={searchIsDisabled}
                             onClick={() => removeField(index)}
                             variant="light"
                             isIconOnly
@@ -42,13 +42,13 @@ function ItemApisearchQueries() {
                             <BiX className=" text-3xl" />
                         </Button>
                         <Controller
-                            disabled={!searchIsAllowed}
+                            disabled={searchIsDisabled}
                             control={fieldControl}
                             name={`searchQueries[${index}].name`}
                             rules={{ required: true }}
                             render={({ field }) =>
                                 <Input
-                                    isDisabled={!searchIsAllowed}
+                                    isDisabled={searchIsDisabled}
                                     isRequired
                                     className=" flex-grow shadow-sm rounded-xl"
                                     variant="bordered"
@@ -62,13 +62,13 @@ function ItemApisearchQueries() {
                         <span className="md:scale-0">:</span>
 
                         <Controller
-                            disabled={!searchIsAllowed}
+                            disabled={searchIsDisabled}
                             control={fieldControl}
                             name={`searchQueries[${index}].query`}
                             rules={{ required: true, pattern: queryPattern }}
                             render={({ field }) =>
                                 <Input
-                                    isDisabled={!searchIsAllowed}
+                                    isDisabled={searchIsDisabled}
                                     isInvalid={errors.searchQueries?.[index]?.query && true}
                                     color={errors.searchQueries?.[index]?.query && "danger"}
                                     errorMessage={errors.searchQueries?.[index]?.query?.message}

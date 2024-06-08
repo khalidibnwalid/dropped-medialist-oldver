@@ -29,7 +29,7 @@ function AddAPIPage() {
         onSuccess: (data) => mutateListCache(data, "edit"),
     })
 
-    const [searchIsAllowed, setSearchIsAllowed] = useState(false)
+    const [searchIsDisabled, setSearchIsDisabled] = useState<true | undefined>(undefined)
 
     if (isPending) return <LoadingLists />
     if (isError) return <ErrorPage message="Failed to Fetch List Data" />
@@ -69,7 +69,7 @@ function AddAPIPage() {
             ...restData
         }: listApiWithSearchType = rawData
 
-        if (searchIsAllowed) {
+        if (!searchIsDisabled) {
             apiTemplate['searchQueries'] = searchQueries;
             apiTemplate['searchResultToItem'] = searchResultToItem;
             apiTemplate['searchTitlePath'] = searchTitlePath;
@@ -91,7 +91,20 @@ function AddAPIPage() {
                 <title>MediaList - {listData.title} Add API Template</title>
             </Head>
 
-            <ItemApiTemplateContext.Provider value={{ listData, searchIsAllowed, setSearchIsAllowed, control, fieldTemplates, setValue, getValues, errors, pathRegex, pattern, queryPattern }}>
+            <ItemApiTemplateContext.Provider value={{
+                listData,
+                searchIsDisabled,
+                setSearchIsDisabled,
+                control,
+                fieldTemplates,
+                setValue,
+                getValues,
+                errors,
+                pathRegex,
+                pattern,
+                queryPattern
+
+            }}>
                 <form>
                     <TitleBar
                         starShowerBlack
