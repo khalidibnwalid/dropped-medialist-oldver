@@ -5,6 +5,7 @@ import { ItemFormCoverColumn, ItemFormPosterColumn } from "@/components/forms/it
 import { ItemForm, ItemFormContext } from "@/components/forms/item/provider";
 import { authContext } from "@/components/pagesComponents/authProvider";
 import ItemPageGallery from "@/components/pagesComponents/items/[id]/tabs/itempage-gallery";
+import ItemPageLoading from "@/components/pagesComponents/items/itemPageLoading";
 import type { itemData, itemTag } from '@/types/item';
 import putAPI from "@/utils/api/putAPI";
 import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
@@ -72,7 +73,7 @@ function EditItemPage() {
         }
     }, [isSuccess])
 
-    if (isPending) return <h1>loading...</h1>
+    if (isPending) return <ItemPageLoading />
     if (isError) return <ErrorPage message="Failed to Fetch Item" />
 
     const listItemsData = listItems.data.filter((item) => item.id !== itemId) // for related items

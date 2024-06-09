@@ -1,7 +1,7 @@
 import TitleBar from '@/components/bars/titlebar';
 import ErrorPage from '@/components/errorPage';
 import ListCards from '@/components/pagesComponents/lists/listsCards';
-import LoadingLists from '@/components/pagesComponents/lists/listsloading';
+import ListsLoading from '@/components/pagesComponents/lists/listsLoading';
 import { allListsKey, listsFetchOptions } from '@/utils/query/listsQueries';
 import { Button, ButtonProps } from '@nextui-org/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,7 +12,7 @@ import { BiCollection, BiPlus, BiRevision } from "react-icons/bi";
 export default function AllLists() {
   const { isPending, data, isError } = useQuery(listsFetchOptions())
   if (isError || !data) return <ErrorPage message="Failed to Fetch Lists" />
-  if (isPending) return <LoadingLists />
+  if (isPending) return <ListsLoading />
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function AllLists() {
       </Head>
       
       <TitleBar
-        starShowerBlack
+        pointedBg
         title="Lists"
         startContent={<BiCollection className="text-[30px] mr-3 flex-none " />}
         withButtons

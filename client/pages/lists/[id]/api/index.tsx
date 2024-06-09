@@ -4,7 +4,7 @@ import ErrorPage from '@/components/errorPage';
 import SubmitButtonWithIndicators from '@/components/forms/_components/SubmitWithIndicators';
 import ApiFormLayout from '@/components/forms/api/general-layout';
 import { ItemApiTemplateContext } from '@/components/forms/api/provider';
-import LoadingLists from '@/components/pagesComponents/lists/listsloading';
+import ListsLoading from '@/components/pagesComponents/lists/listsLoading';
 import type { listApiType, listApiWithSearchType, listData } from '@/types/list';
 import patchAPI from '@/utils/api/patchAPI';
 import sanitizeObject from '@/utils/helperFunctions/sanitizeObject';
@@ -14,7 +14,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { BiInfoCircle, BiPlus, BiTrash } from 'react-icons/bi';
 import { TbApiApp } from 'react-icons/tb';
 import { validate as uuidValidate } from 'uuid';
@@ -64,7 +64,7 @@ function EditAPIPage() {
     const [currentApiTemplate, setCurrentApiTemplate] = useState<listApiType>({} as listApiType)
     const [SelectedAutocompleteKey, setSelectedAutocompleteKey] = useState('')
 
-    if (isPending) return <LoadingLists />
+    if (isPending) return <ListsLoading />
     if (isError) return <ErrorPage message="Failed to Fetch List Data" />
 
     /** Input Pattern bassed on apiDataValuesPicker() function of load_api provider */
@@ -149,7 +149,7 @@ function EditAPIPage() {
             }}>
                 <form key={currentApiTemplate.name}>
                     <TitleBar
-                        starShowerBlack
+                        pointedBg
                         title=""
                         startContent={
                             <div className='flex gap-x-2 items-center'>
@@ -208,7 +208,7 @@ function EditAPIPage() {
                         <Button
                             className="focus:outline-none"
                             variant="solid"
-                            onClick={() => router.push('www.google.com')}
+                            onClick={() => window.open('', "_blank")}
                         >
                             {/* //devmode //put wiki's link */}
                             <BiInfoCircle className="text-xl" /> Guide

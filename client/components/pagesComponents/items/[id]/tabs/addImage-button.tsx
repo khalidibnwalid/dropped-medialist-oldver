@@ -58,6 +58,7 @@ export const AddImageGalleryButton = ({ itemID }: { itemID: string }) => {
                         size="sm"
                         className=" text-2xl"
                         onPress={() => setEditMode(false)}
+                        onDragOver={() => setEditMode(true)}
                         isIconOnly
                     >
                         <BiX />
@@ -94,6 +95,7 @@ export const AddImageGalleryButton = ({ itemID }: { itemID: string }) => {
     ) : (
         <Button
             radius="lg"
+            onDragOver={() => setEditMode(true)}
             onPress={() => setEditMode(true)}
             className="border-none m-2 shadow-lg duration-200 rounded-2xl overflow-hidden animate-fade-in"
         >

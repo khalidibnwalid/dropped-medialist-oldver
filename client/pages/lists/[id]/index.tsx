@@ -5,7 +5,7 @@ import ListDisplayedItems from "@/components/pagesComponents/lists/[id]/displaye
 import ListNavButtons from "@/components/pagesComponents/lists/[id]/navButtons";
 import ListBodyProvider from "@/components/pagesComponents/lists/[id]/provider";
 import ListSearchBar from "@/components/pagesComponents/lists/[id]/searchBar";
-import LoadingLists from "@/components/pagesComponents/lists/listsloading";
+import ListsLoading from "@/components/pagesComponents/lists/listsLoading";
 import { itemsFetchOptions } from "@/utils/query/itemsQueries";
 import { listFetchOptions } from "@/utils/query/listsQueries";
 import { tagsFetchOptions } from "@/utils/query/tagsQueries";
@@ -26,7 +26,7 @@ function ListPage() {
   const isPending = (list.isPending || items.isPending || tags.isPending)
   const isError = (list.isError || items.isError || tags.isError)
 
-  if (isPending) return <LoadingLists />
+  if (isPending) return <ListsLoading />
   if (isError) return <ErrorPage message="Failed to Fetch Items" />
 
   // only load after items data is available
@@ -40,10 +40,8 @@ function ListPage() {
         <TitleBar
           title={`${list.data.title} (${items.data?.length || 0})`}
           className="p-5 py-4 my-5 mb-0"
-          icon={
-            <BiCollection className="text-3xl mr-3 flex-none p-0" />
-          }
-          starShowerBlack
+          startContent={<BiCollection className="text-3xl mr-3 flex-none p-0" />}
+          pointedBg
         >
           <ListSearchBar />
         </TitleBar>

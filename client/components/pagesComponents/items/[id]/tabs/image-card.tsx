@@ -138,7 +138,7 @@ export default function ImageCard({
                 className="object-contain hover:cursor-pointer"
                 alt={image?.title || image.image_path as string}
                 src={thumbnailSrc}
-                onClick={() => setIsOpen(b => !b)}
+                onClick={() => setIsOpen(true)}
                 onError={() => setImageIsLoaded(false)}
             />
             {/* </a> */}

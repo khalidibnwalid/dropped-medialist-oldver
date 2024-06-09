@@ -5,6 +5,7 @@ import ItemApiLoaderDropDown from '@/components/forms/item/api-loader/dropdown';
 import ItemApiLoaderProvider from '@/components/forms/item/api-loader/provider';
 import { ItemFormCoverColumn, ItemFormPosterColumn } from '@/components/forms/item/layouts';
 import { ItemForm, ItemFormContext } from "@/components/forms/item/provider";
+import ListsLoading from '@/components/pagesComponents/lists/listsLoading';
 import type { itemData, itemTag } from '@/types/item';
 import fetchImageFromURL from '@/utils/api/handlers/fetchImageFromURL';
 import postAPI from '@/utils/api/postAPI';
@@ -25,7 +26,7 @@ import { validate as uuidValidate } from 'uuid';
 
 export interface apiDataAddItemPage {
     itemData?: itemData
-    /** for Each time the api is updated it will increase a key 
+    /** for Each time the api is updated it will increase a key
      * it will be used as key to for the page to force it to rerender from scratch on rendering an api */
     key: number
 }
@@ -53,7 +54,7 @@ function AddItemPage() {
         },
     })
 
-    if (isPending) return <h1>loading...</h1>
+    if (isPending) return <ListsLoading />
     if (isError || !list.data || !items.data || !tags.data) return <ErrorPage message="Failed to Fetch Items" />
 
     const fieldTemplates = list.data.templates?.fieldTemplates

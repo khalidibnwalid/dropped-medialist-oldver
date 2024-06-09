@@ -1,6 +1,6 @@
 import TitleBar from "@/components/bars/titlebar"
 import ErrorPage from "@/components/errorPage"
-import LoadingLists from "@/components/pagesComponents/lists/listsloading"
+import ListsLoading from "@/components/pagesComponents/lists/listsLoading"
 import { AddTag } from "@/components/pagesComponents/lists/tags/addtag"
 import TagsPageProvider from "@/components/pagesComponents/lists/tags/provider"
 import TagsSearchBar from "@/components/pagesComponents/lists/tags/search-bar"
@@ -24,7 +24,7 @@ function ListPageTags() {
     const isError = list.isError || tags.isError
     const isSuccess = list.isSuccess && tags.isSuccess
 
-    if (isPending) return <LoadingLists />
+    if (isPending) return <ListsLoading />
     if (isError) return <ErrorPage message="Failed to Fetch Items" />
 
     return isSuccess && (
@@ -38,7 +38,7 @@ function ListPageTags() {
                     title={`${list.data.title} - Tags`}
                     className="p-5 py-4 my-5 mb-0"
                     startContent={<BiPurchaseTag className="text-3xl mr-3 flex-none" />}
-                    starShowerBlack
+                    pointedBg
                 >
                     <TagsSearchBar />
                 </TitleBar>

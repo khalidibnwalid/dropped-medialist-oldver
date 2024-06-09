@@ -53,12 +53,12 @@ export default function AddListPage() {
 
     return (
         <>
-        <Head>
-            <title>MediaList - Add List</title>
-        </Head>
+            <Head>
+                <title>MediaList - Add List</title>
+            </Head>
             <form>
                 <TitleBar
-                    starShowerBlack
+                    pointedBg
                     title="Add a List"
                     startContent={<BiPlus className="text-[30px] mr-3 flex-none" />}
                     withButtons
@@ -79,9 +79,7 @@ export default function AddListPage() {
                     <TitleBar
                         title="Fields Templates"
                         className="bg-accented p-5 my-5"
-                        icon={
-                            <IoGridOutline className="text-[30px] mr-3 flex-none" />
-                        }
+                        startContent={<IoGridOutline className="text-[30px] mr-3 flex-none" />}
                     >
                         <Tooltip
                             placement="left"

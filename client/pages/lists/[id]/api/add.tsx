@@ -3,7 +3,7 @@ import ErrorPage from '@/components/errorPage';
 import SubmitButtonWithIndicators from '@/components/forms/_components/SubmitWithIndicators';
 import ApiFormLayout from '@/components/forms/api/general-layout';
 import { ItemApiTemplateContext } from '@/components/forms/api/provider';
-import LoadingLists from '@/components/pagesComponents/lists/listsloading';
+import ListsLoading from '@/components/pagesComponents/lists/listsLoading';
 import type { listApiType, listApiWithSearchType, listData } from '@/types/list';
 import patchAPI from '@/utils/api/patchAPI';
 import sanitizeObject from '@/utils/helperFunctions/sanitizeObject';
@@ -31,7 +31,7 @@ function AddAPIPage() {
 
     const [searchIsDisabled, setSearchIsDisabled] = useState<true | undefined>(undefined)
 
-    if (isPending) return <LoadingLists />
+    if (isPending) return <ListsLoading />
     if (isError) return <ErrorPage message="Failed to Fetch List Data" />
 
     /** Input Pattern bassed on apiDataValuesPicker() function of load_api provider */
@@ -107,17 +107,15 @@ function AddAPIPage() {
             }}>
                 <form>
                     <TitleBar
-                        starShowerBlack
+                        pointedBg
                         title="Add an API Template"
-                        icon={
-                            <BiPlus className="text-[30px] mr-3 flex-none" />
-                        }
+                        startContent={<BiPlus className="text-[30px] mr-3 flex-none" />}
                         withButtons
                     >
                         <Button
                             className="focus:outline-none"
                             variant="solid"
-                            onClick={() => router.push('www.google.com')}
+                            onClick={() => window.open('', "_blank")}
                         >
                             {/* //devmode //put wiki's link */}
                             <BiInfoCircle className="text-xl" /> Guide

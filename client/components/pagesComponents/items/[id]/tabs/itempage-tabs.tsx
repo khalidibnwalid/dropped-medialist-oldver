@@ -30,7 +30,7 @@ function ItemPageTabs({ className }: { className?: string }) {
     return (
         <div className={`flex-grow ${className}`} >
 
-            <Tabs variant="light" size="md" selectedKey={selected} onSelectionChange={setSelected} >
+            <Tabs variant="light" size="md" selectedKey={selected} onSelectionChange={(e) => setSelected(e as string)} >
 
                 <Tab key="notes" title={
                     <div className="flex items-center space-x-2">
@@ -51,7 +51,7 @@ function ItemPageTabs({ className }: { className?: string }) {
                 </Tab>
 
                 <Tab key="gallery" title={
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2" onDragOver={() => setSelected("gallery")}>
                         <BiImages className=" text-xl" />
                         <span>Gallery</span>
                     </div>}>

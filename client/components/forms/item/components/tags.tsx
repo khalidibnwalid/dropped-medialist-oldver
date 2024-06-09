@@ -17,7 +17,6 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
     const [displayedTags, setDisplayedTags] = useState<itemTag[]>(tagsData) //displayed tags for search functionality
     const groupedDisplayedTags = tagsGroupsSorter(displayedTags) //grouping tags
 
-
     const { append, replace } = useFieldArray({ //field
         control,
         name: "tags"
@@ -51,10 +50,8 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
 
     function handleSearch() {
         const input = searchRef.current?.value.trim().toLowerCase() || null
-        if (!input) {
-            setDisplayedTags(tagsData) //return all results
-            return
-        }
+        if (!input) return setDisplayedTags(tagsData) //return all results
+
         const filtered = tagsData.filter(tag =>
             tag.name.toLowerCase().split(" ").some(word => word.startsWith(input)) // so you can search by typing the n-th word
         )
@@ -62,11 +59,8 @@ function ItemTagsForm({ tagsData = [] }: { tagsData: itemTag[] }) {
     }
 
     function onKeyEvent(event: KeyboardEvent<HTMLInputElement>) {
-        if (event.key === 'Enter') {
-            addTag()
-        } else {
-            handleSearch()
-        }
+        if (event.key === 'Enter') return addTag()
+        handleSearch()
     }
 
     useEffect(() => {

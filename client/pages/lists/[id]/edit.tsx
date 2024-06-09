@@ -6,7 +6,7 @@ import ListMainInfoForm from "@/components/forms/list/components/main-info";
 import { ListFormLowerLayout } from "@/components/forms/list/layouts";
 import { ListFormContext } from "@/components/forms/list/provider";
 import { authContext } from "@/components/pagesComponents/authProvider";
-import LoadingLists from "@/components/pagesComponents/lists/listsloading";
+import ListsLoading from "@/components/pagesComponents/lists/listsLoading";
 import { fieldTemplates, listData, templates } from "@/types/list";
 import putAPI from "@/utils/api/putAPI";
 import appendObjKeysToFormData from "@/utils/helperFunctions/form/appendObjKeysToFormData";
@@ -51,7 +51,7 @@ function EditListPage() {
         },
     })
 
-    if (isPending) return <LoadingLists />
+    if (isPending) return <ListsLoading />
     if (isError) return <ErrorPage message="Failed to Fetch List Data" />
 
     const fieldTemplates = listData.templates?.fieldTemplates
@@ -86,7 +86,7 @@ function EditListPage() {
             <form key={keyRefresher}>
                 <ListFormContext.Provider value={{ control, setValue, getValues, errors, listData, resetField, fieldTemplates }}>
                     <TitleBar
-                        starShowerBlack
+                        pointedBg
                         title={`Edit ${listData.title}`}
                         startContent={<BiSolidPencil className="text-[30px] mr-3 flex-none" />}
                         withButtons

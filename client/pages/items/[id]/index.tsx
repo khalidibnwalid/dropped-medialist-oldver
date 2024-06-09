@@ -3,6 +3,7 @@ import { authContext } from '@/components/pagesComponents/authProvider';
 import ItemLayout1 from "@/components/pagesComponents/items/[id]/layouts/layout1";
 import ItemLayout2 from "@/components/pagesComponents/items/[id]/layouts/layout2";
 import ItemLayout3 from "@/components/pagesComponents/items/[id]/layouts/layout3";
+import ItemPageLoading from '@/components/pagesComponents/items/itemPageLoading';
 import type { itemData, itemImageType, itemTag } from "@/types/item";
 import { imagesFetchOptions } from "@/utils/query/imagesQueries";
 import { itemFetchOptions } from "@/utils/query/itemsQueries";
@@ -18,7 +19,7 @@ interface context {
     itemData: itemData
     imagesData: itemImageType[]
     relatedItems: itemData[]
-    coverPath?: string; //COVER is the BACKGROUND IMAGE!!!!!!! NOT the POSTER 
+    coverPath?: string; //COVER is the BACKGROUND IMAGE!!!!!!! NOT the POSTER
 }
 
 export const itemViewContext = createContext({} as context);
@@ -43,7 +44,7 @@ function ItemPage() {
     const isPending = item.isPending || images.isPending || isPendingRelated || allTags.isPending
     const isError = isErrorRelated || item.isError || images.isError || allTags.isError
 
-    if (isPending) return <h1>loading...</h1>
+    if (isPending) return <ItemPageLoading />
     if (isError) return <ErrorPage message="Failed to Fetch Item" />
 
     // we import the database of tags then check if the id of the tag you have == the one in the database and ignore the rest.
@@ -67,7 +68,13 @@ function ItemPage() {
             </Head>
 
             <div className="py-5 animate-fade-in" >
-                <itemViewContext.Provider value={{ tagsData, itemData: item.data, imagesData: images.data, relatedItems: relatedItemsData, coverPath }}>
+                <itemViewContext.Provider value={{
+                    tagsData,
+                    itemData: item.data,
+                    imagesData: images.data,
+                    relatedItems: relatedItemsData,
+                    coverPath,
+                }}>
                     {item.data.configurations?.layout == "1" && <ItemLayout1 />}
                     {item.data.configurations?.layout == "2" && <ItemLayout2 />}
                     {item.data.configurations?.layout == "3" && <ItemLayout3 />}
