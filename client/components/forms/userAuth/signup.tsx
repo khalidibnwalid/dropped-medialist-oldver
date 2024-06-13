@@ -85,8 +85,8 @@ function SignupForm() {
             <SubmitButtonWithIndicators
                 mutation={mutation}
                 onClick={handleSubmit(onSubmit)}
-                saveContent="Login"
-                savedContent="Logged In"
+                saveContent="Sign Up"
+                savedContent="Signed Up!"
                 type="submit"
                 size="lg"
             />
