@@ -27,8 +27,7 @@ export const ItemSearchAPILoaders = ({
         let query = queryFromObject(restData)
 
         // baseURL if it ends with '&' then it is already preparing for a query
-        const finalRouteAndQuery =
-            route
+        const finalRouteAndQuery = route
             + (query ? (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query : '')
             + (emptyQuery ? '/' + decodeURIComponent(emptyQuery.join('')) : '');
 
@@ -45,7 +44,9 @@ export const ItemSearchAPILoaders = ({
     }
     let emptyQueryIndex = 0
 
-    return !isLoading ? (
+    if (isLoading) return <Spinner label="Searching..." />
+
+    return (
         <form className="space-y-2 animate-fade-in">
             <div className="flex items-center">
                 <p className="text-zinc-500 text-lg flex-grow">Search: </p>
@@ -56,8 +57,8 @@ export const ItemSearchAPILoaders = ({
                     className=" shadow-lg flex-none"
                     onClick={handleSubmit(onSubmit)}
                 >
-                    <BiSearch className="text-large"/>
-                    
+                    <BiSearch className="text-large" />
+
                 </Button>
             </div>
 
@@ -84,5 +85,5 @@ export const ItemSearchAPILoaders = ({
                 </div>)
             }
         </form>
-    ) : <Spinner label="Searching..." />
+    )
 }

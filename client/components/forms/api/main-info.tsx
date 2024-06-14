@@ -17,9 +17,8 @@ function ItemApiMainInfo() {
                 rules={{
                     required: true,
                     validate: (name) => {
-                        if (usedNames.includes(name)) {
+                        if (usedNames.includes(name))
                             return 'Name is already used, please choose another name';
-                        }
                         return true;
                     }
                 }}
@@ -41,9 +40,10 @@ function ItemApiMainInfo() {
                 name="baseURL"
                 rules={{
                     required: true,
+                    validate: (value) => value.endsWith('/') ? `Base URL should't end with "/"` : true,
                     pattern: {
                         value: /^(http|https):\/\/[^ "]+$/i,
-                        message: 'Please enter a valid URL',
+                        message: 'Please enter a valid URL that starts with http:// or https://',
                     }
                 }}
                 render={({ field }) =>

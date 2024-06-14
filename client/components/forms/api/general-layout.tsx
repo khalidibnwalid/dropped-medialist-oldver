@@ -16,7 +16,6 @@ function ApiFormLayout() {
                 <Divider className='my-2' />
                 <div className=' grid grid-cols-3 lg:grid-cols-1 gap-x-4 items-start'>
                     <div className='grid space-y-2'>
-                        <p className="text-zinc-500 text-xl">Direct</p>
                         <ItemApiRoutes />
                         <ItemApiQueries />
                     </div>

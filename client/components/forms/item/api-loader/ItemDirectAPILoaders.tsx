@@ -26,7 +26,7 @@ export const ItemDirectAPILoaders = ({
         let route = selectedRoutes.join('')
         let query = queryFromObject(restData)
 
-        // baseURL if it ends with '&' then it is already preparing for a query 
+        // baseURL if it ends with '&' then it is already preparing for a query
         const finalRouteAndQuery = route
             + (query ? (usedAPITemplate?.baseURL.endsWith('&') ? '' : '?') + query : '')
             + (emptyQuery ? '/' + decodeURIComponent(emptyQuery.join('')) : '');
@@ -70,19 +70,6 @@ export const ItemDirectAPILoaders = ({
                     Load Item With API
                 </Button>
             </div>
-            {usedAPITemplate?.routes?.map((template, index) =>
-                <div
-                    key={'apiQueryInput' + template.name}
-                    className="flex items-center gap-x-2 "
-                >
-                    <p className="flex-none">  {template.name} :</p>
-                    <Input
-                        aria-label={'api Query Input ' + template.name}
-                        {...inputProps}
-                        {...register(template.route)}
-                    />
-                </div>
-            )}
 
             {usedAPITemplate?.queries?.map((template) =>
                 <div

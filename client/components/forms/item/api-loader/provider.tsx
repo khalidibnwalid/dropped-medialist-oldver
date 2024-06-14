@@ -49,20 +49,20 @@ export default function ItemApiLoaderProvider({
      *  const dataFetchedFromApi = { Title: "test-title",  lang: { en: "English", ar: "Arabic" },  myArray: ["indexZero", "indexOne"] }
      *  apiDataValuesPicker( apiTemplate , dataFetchedFromApi )
      *  returns: {title: "test-title", language: "Arabic", tags: "indexOne", MyLang: "My Language is: Arabic !!"}
-     *  @function 
+     *  @function
      *  it will decode the paths and set them as value for the apiTemplate Object like this:
-     * 
+     *
      * Path: {language: "lang::ar"} => {language: lang.ar} => {language: "Arabic"}
-     * 
+     *
      * Array Index: {tags: "myArray>>1"} => {tags: myArray[1]} => { tags: "indexOne"}
-     * 
+     *
      * Constant: {MyLang: `"My Language is: " lang::ar ' !!'`} => {MyLang: "My Language is: " + lang.ar + ' !!'} => {MyLang: "My Language is: Arabic !!"}
      * */
     function apiDataValuesPicker(apiTemplate: object, newData: object) {
         const result: { [key: string]: any } = {};
         /**the operator I used:
-         *  single ('') and double ("") notation for constants, 
-         * "::" for object paths, 
+         *  single ('') and double ("") notation for constants,
+         * "::" for object paths,
          * ">>" for selecting an index of array*/
         const regex = /("([^"]*)"|'([^']*)')|[\w\d::>>]+/g
 

@@ -1,20 +1,18 @@
-import { listApiType, listApiWithSearchType } from "@/types/list";
-import { Button, Divider, Listbox, ListboxItem, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner } from "@nextui-org/react";
-import { Suspense, useContext, useEffect, useState } from "react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner } from "@nextui-org/react";
+import { useContext, useEffect, useState } from "react";
 import { BiErrorCircle } from "react-icons/bi";
-import { ItemDirectAPILoaders } from "./ItemDirectAPILoaders";
-import { ItemSearchAPILoaders } from "./ItemSearchAPILoaders";
+import ItemAPIModalPageOne from "./ItemAPIModalPageOne";
+import ItemAPIModalPageZero from "./ItemAPIModalPageZero";
 import { ItemApiLoaderContext } from "./provider";
 
 function ItemApiModal() {
-
-    const { isOpen, onOpenChange, usedAPITemplate, loadAPITemplate, searchResults, apiDataValuesPicker } = useContext(ItemApiLoaderContext);
+    const { isOpen, onOpenChange, usedAPITemplate } = useContext(ItemApiLoaderContext);
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
     const [pageNumber, setPageNumber] = useState<number>(0)
-    const [selectedRoutes, setSelectedRoutes] = useState(new Set([]));
+    const [selectedRoutes, setSelectedRoutes] = useState<Set<string>>(new Set([]));
     const selectedRoutesArray = Array.from(selectedRoutes)
 
     useEffect(() => {
@@ -22,16 +20,6 @@ function ItemApiModal() {
         setError(null)
         setSelectedRoutes(new Set([]))
     }, [usedAPITemplate])
-
-    function pickedTitle(result: object) {
-        const title = apiDataValuesPicker({ title: (usedAPITemplate as listApiWithSearchType).searchTitlePath }, result)
-        return title.title
-    }
-
-    function pickedResultToItemPath(result: object) {
-        const path = apiDataValuesPicker({ path: (usedAPITemplate as listApiWithSearchType).searchResultToItem.path }, result)
-        return path.path
-    }
 
     return (
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
@@ -43,105 +31,48 @@ function ItemApiModal() {
                             {pageNumber === 0 && !error && `API Search Queries: ${usedAPITemplate?.name}`}
                             {pageNumber === 1 && !error && `Search Results: ${usedAPITemplate?.name}`}
                         </ModalHeader>
+
                         {error ? <ErrorPage error={error} />
                             : (isLoading ? <Spinner className="py-5 animate-fade-in" label="Loading Data..." />
-                                : (<>
+                                : (
                                     <ModalBody className="animate-fade-in">
-                                        <>
-                                            {pageNumber === 0 &&
-                                                <>
-                                                    {(usedAPITemplate as listApiWithSearchType)?.routes?.length !== 0 && (
-                                                        <>
-                                                            <p className="text-sm text-zinc-500">Routes</p>
-                                                            <Listbox
-                                                                className="p-0"
-                                                                aria-label="routes"
-                                                                selectionMode="multiple"
-                                                                hideEmptyContent
-                                                                items={(usedAPITemplate as listApiWithSearchType).routes}
-                                                                selectedKeys={selectedRoutes}
-                                                                onSelectionChange={setSelectedRoutes}
-                                                            >
-                                                                {(data =>
-                                                                    <ListboxItem key={'/' + data.route} textValue={'/' + data.name}>
-                                                                        /{data.name}
-                                                                    </ListboxItem>
-                                                                )}
-                                                            </Listbox>
-                                                            <p className="text-sm text-zinc-500">{selectedRoutes}</p>
-                                                        </>
-                                                    )}
-                                                    <ItemDirectAPILoaders
-                                                        selectedRoutes={selectedRoutesArray}
-                                                        onClose={onClose}
-                                                        setIsLoading={setIsLoading}
-                                                        setError={setError}
-                                                    />
+                                        <ItemAPIModalPageZero
+                                            pageNumber={pageNumber}
+                                            setPageNumber={setPageNumber}
+                                            onClose={onClose}
+                                            selectedRoutesArray={selectedRoutesArray}
+                                            setIsLoading={setIsLoading}
+                                            setError={setError}
+                                            selectedRoutes={selectedRoutes}
+                                            setSelectedRoutes={setSelectedRoutes}
+                                        />
 
-                                                    {(usedAPITemplate as listApiWithSearchType)?.searchTitlePath &&
-                                                        <Divider orientation="horizontal" className="mt-2 animate-fade-in" />
-                                                    }
-                                                    <ItemSearchAPILoaders
-                                                        selectedRoutes={selectedRoutesArray}
-                                                        setPageNumber={setPageNumber}
-                                                        setError={setError}
-                                                    />
-                                                </>
-                                            }
-
-                                            {pageNumber === 1 &&
-                                                <div className="-mx-4 -my-2 animate-fade-in">
-                                                    <Suspense fallback={<Spinner label="Loading..." />}>
-                                                        <Listbox
-                                                            aria-label="Api Search Results"
-                                                            className="bg-accented rounded-lg overflow-y-auto"
-                                                            onAction={async (key) => {
-                                                                setIsLoading(true)
-                                                                await loadAPITemplate(
-                                                                    //should current
-                                                                    usedAPITemplate as listApiType,
-                                                                    (usedAPITemplate as listApiWithSearchType).searchResultToItem.query + key
-                                                                )
-                                                                setIsLoading(false)
-                                                                onClose()
-
-                                                            }}
-                                                        >
-                                                            {searchResults.search.map((result: object) => (
-                                                                // doesn't get nested paths 'attributes::title::en'
-                                                                <ListboxItem
-                                                                    color="primary"
-                                                                    key={pickedResultToItemPath(result)}
-                                                                    textValue={pickedTitle(result)}
-                                                                >
-                                                                    {pickedTitle(result)}
-                                                                </ListboxItem>
-                                                            ))}
-                                                        </Listbox>
-                                                    </Suspense>
-                                                </div>
-                                            }
-                                        </>
+                                        <ItemAPIModalPageOne
+                                            pageNumber={pageNumber}
+                                            onClose={onClose}
+                                            selectedRoutesArray={selectedRoutesArray}
+                                            setIsLoading={setIsLoading}
+                                        />
                                     </ModalBody>
-                                </>
-                                ))}
+                                ))
+                        }
+
                         <ModalFooter>
-                            {(pageNumber > 0 && !error) &&
-                                <Button
-                                    color="primary"
-                                    className=" shadow-lg"
-                                    onPress={() => setPageNumber(0)}
-                                >
-                                    Back
-                                </Button>
-                            }
-                            {(error) &&
+                            {(error) ?
                                 <Button
                                     color="primary"
                                     className=" shadow-lg"
                                     onPress={() => { setPageNumber(0); setError(null) }}
                                 >
                                     Try again
+                                </Button>
+                                : pageNumber > 0 &&
+                                <Button
+                                    color="primary"
+                                    className=" shadow-lg"
+                                    onPress={() => setPageNumber(0)}
+                                >
+                                    Back
                                 </Button>
                             }
                         </ModalFooter>

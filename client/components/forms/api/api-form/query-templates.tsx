@@ -1,5 +1,3 @@
-'use client'
-
 import SortableFields from "@/components/forms/_components/sortableFields";
 import { Button, Input } from "@nextui-org/react";
 import { useContext } from "react";
@@ -10,8 +8,6 @@ import { ItemApiTemplateContext } from "../provider";
 function ItemApiQueries() {
     const { control, errors, currentApiTemplate, queryPattern } = useContext(ItemApiTemplateContext)
 
-
-
     return (
         <div>
 
@@ -21,7 +17,7 @@ function ItemApiQueries() {
                 fieldName='queries'
                 startContent={({ addField }) => (
                     <div className="flex items-center justify-between">
-                        <p className="text-zinc-500">Queries (drag and drop)</p>
+                        <p className="text-zinc-500">Direct Search Queries (drag and drop)</p>
                         <Button
                             onPress={() => addField()}
                             className="hover:scale-105" isIconOnly
