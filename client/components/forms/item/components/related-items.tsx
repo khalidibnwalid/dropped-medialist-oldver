@@ -32,7 +32,6 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
     useEffect(() => {
         // itemData && setValue("related", itemData.related)
         if (itemData?.related && itemData.related?.length > 0) {
-            console.log("recalled")
             const originalRelatedItems = itemData.related.map((id) => {
                 const name = id_to_name(id)
                 return name || ''
@@ -62,7 +61,7 @@ function ItemRelatedItemsForm({ dataSet }: { dataSet: itemData[] }) {
         setCurrentDisplayedItems(newDisplayedItems)
         const index = currentDisplayedItems.indexOf(item)
         remove(index)
-        // 'id' in useFieldsArray and 'item' in currentItems both have the same index, 
+        // 'id' in useFieldsArray and 'item' in currentItems both have the same index,
         // so getting one of the is enaugh to delete the other.
     }
 

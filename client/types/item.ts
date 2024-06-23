@@ -44,6 +44,7 @@ export interface itemTag {
     name: string
     description?: string
     group_name?: string
+    badgeable?: boolean
 }
 
 interface ItemConfiguration {

@@ -75,7 +75,7 @@ function ItemPageTabs({ className }: { className?: string }) {
                                 image={`${process.env.PUBLIC_IMG_PATH}/images/${userData.id}/${item.list_id}/${item.id}/thumbnails/${item.poster_path}_size=700xH.webp`}
                                 discrip={item.description} link={`../items/${item.id}`}
                                 underTitle={<div className="flex gap-x-1">
-                                    {item.badges && <ItemBadges badgesArray={item.badges} />
+                                    {item.badges && <ItemBadges item={item} />
                                     }
                                 </div>}
 

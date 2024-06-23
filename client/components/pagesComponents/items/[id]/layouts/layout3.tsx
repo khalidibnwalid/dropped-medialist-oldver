@@ -50,7 +50,7 @@ export default function ItemLayout3() {
                             {itemData.progress_state &&
                                 <Chip className=" p-2 opacity-70" variant="solid" color={itemData.progress_state.color}>{itemData.progress_state.name}</Chip>
                             }
-                            {itemData.badges && <ItemBadges badgesArray={itemData.badges} />}
+                            <ItemBadges/>
                         </div>
 
                         <ItemDescription

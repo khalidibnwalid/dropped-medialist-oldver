@@ -49,8 +49,7 @@ function ItemPage() {
 
     // we import the database of tags then check if the id of the tag you have == the one in the database and ignore the rest.
     const tagsData: itemTag[] = item.isSuccess && allTags.data && item.data.tags
-        ? item.data.tags.map((id) => allTags?.data.find((tag) => tag.id == id && tag !== undefined)).filter(Boolean) as itemTag[]
-        : []
+        ? allTags.data.filter((tag) => item.data.tags.includes(tag.id)) : []
 
     const relatedItemsData = relatedItems.map((item) => item.data).filter(Boolean) as itemData[]
 

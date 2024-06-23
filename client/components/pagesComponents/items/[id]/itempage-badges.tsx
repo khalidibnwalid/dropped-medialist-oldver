@@ -1,21 +1,25 @@
 import ImageChip from "@/components/cards/image-chip";
 import { itemViewContext } from "@/pages/items/[id]";
-import type { itemBadgesType, itemData } from "@/types/item";
+import type { itemData } from "@/types/item";
 import { Chip } from "@nextui-org/react";
 import { useContext } from "react";
 import { FaStar } from "react-icons/fa";
 import { authContext } from "../../authProvider";
 
-function ItemBadges({ badgesArray, item }: { badgesArray: itemBadgesType[], item?: itemData }) {
+function ItemBadges({ item }: { item?: itemData }) {
     const { userData } = useContext(authContext)
-    const { itemData } = useContext(itemViewContext)
+    const { itemData, tagsData } = useContext(itemViewContext)
 
-    return (
+    const Item: itemData = itemData || item
+
+    const badgeableTags = tagsData?.filter((tag) => tag.badgeable)
+
+    return (Item.badges || tagsData) && (
         <div className="flex items-center gap-1">
-            {badgesArray.map((badge, index) => {
+            {Item.badges?.map((badge, index) => {
                 const dir = badge.logo_path?.startsWith('template_')
-                    ? `${itemData?.list_id || item?.list_id}`
-                    : `${itemData?.list_id || item?.list_id}/${itemData?.id || item?.id}`
+                    ? `${Item.list_id}`
+                    : `${Item.list_id}/${Item.id}`
                 if (badge.logo_path === 'star') {
                     return (
                         <Chip
@@ -42,8 +46,16 @@ function ItemBadges({ badgesArray, item }: { badgesArray: itemBadgesType[], item
                         </Chip>
                     )
                 }
-            })
+            })}
+
+            {badgeableTags?.map((tag, index) =>
+                <Chip
+                    className=" opacity-90" variant="flat" key={`rating-${index}`}>
+                    {tag.name}
+                    {<> </>}
+                </Chip>)
             }
+
         </div>
     )
 }

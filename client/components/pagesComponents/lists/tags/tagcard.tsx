@@ -2,22 +2,21 @@ import { TrashPopover } from "@/components/buttons/trashpop-button";
 import type { itemTag } from "@/types/item";
 import deleteAPI from "@/utils/api/deleteAPI";
 import patchAPI from "@/utils/api/patchAPI";
-import sanitizeObject from "@/utils/helperFunctions/sanitizeObject";
+import { GroupedTagType } from "@/utils/helperFunctions/tagsGroupsSorter";
 import { mutateTagCache } from "@/utils/query/tagsQueries";
-import { Autocomplete, AutocompleteItem, Button, Card, Input, Textarea } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button, Card, Checkbox, Input, Textarea } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { createSerializer, parseAsArrayOf, parseAsString } from "nuqs";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { BiSolidPencil, BiTrashAlt } from "react-icons/bi";
 import { FaEye } from "react-icons/fa";
-import { GroupedTagType } from "@/utils/helperFunctions/tagsGroupsSorter";
 
 export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: GroupedTagType[] }) => {
     const router = useRouter();
     const [editState, setEditState] = useState(false)
-    const { register, handleSubmit } = useForm<itemTag>()
+    const { register, handleSubmit, getValues, control } = useForm<itemTag>()
 
     const editMutation = useMutation({
         mutationFn: (data: itemTag) => patchAPI(`tags/${tag.id}`, data),
@@ -30,37 +29,36 @@ export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: Grouped
     })
 
     const onSubmit: SubmitHandler<itemTag> = (data) => {
-        sanitizeObject(data)
         editMutation.mutate(data)
         setEditState(false)
 
         tag.name = data.name
         tag.description = data.description
         tag.group_name = data?.group_name
+        tag.badgeable = data.badgeable
     }
-
 
     return (
         <div className="flex justify-start">
             <Card
                 className=" w-full
-                        p-2 pl-6 ml-10 
+                        p-2 pl-6 ml-10
                         flex flex-row items-center
-                        shadow-lg 
-                        rounded-2xl bg-accented 
-                        duration-150 
+                        shadow-lg
+                        rounded-2xl bg-accented
+                        duration-150
                         hover:bg-default animate-fade-in"
             >
 
-                {editState ?
-                    //Edit Tag
-                    <form
+                {editState
+                    // Edit Tag
+                    ? <form
                         onSubmit={handleSubmit(onSubmit)}
                         className="flex-grow grid grid-cols-1 gap-y-2 pr-4 animate-fade-in duration-200"
                     >
 
-                        <div className="flex items-center">
-                            <p className="text-sm flex-none mr-2">Name</p>
+                        <div className="flex items-center gap-x-2">
+                            <p className="text-sm flex-none">Name</p>
                             <Input
                                 variant="bordered"
                                 className="flex-grow"
@@ -73,7 +71,7 @@ export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: Grouped
                                 {...register("name", { required: true })}
                             />
 
-                            <p className="text-sm flex-none mx-2">Group</p>
+                            <p className="text-sm flex-none">Group</p>
 
                             <Autocomplete
                                 aria-label="select progress state"
@@ -98,27 +96,43 @@ export const TagCard = ({ tag, sortedTags }: { tag: itemTag, sortedTags: Grouped
 
                             <Button
                                 type="button"
-                                className="flex-none mx-1"
+                                className="flex-none"
                                 onClick={handleSubmit(onSubmit)}
                             >
                                 Save
                             </Button>
                         </div>
-                        <Textarea
-                            variant="bordered"
-                            size="sm"
-                            label="Description"
-                            labelPlacement="outside-left"
-                            maxRows={1}
-                            className="w-full"
-                            defaultValue={tag.description}
-                            {...register("description")}
-                        />
-                    </form>
 
-                    :
+                        <div className="flex items-center gap-x-2">
+                            <Textarea
+                                variant="bordered"
+                                size="sm"
+                                label="Description"
+                                labelPlacement="outside-left"
+                                maxRows={1}
+                                className="flex-grow"
+                                defaultValue={tag.description}
+                                {...register("description")}
+                            />
+                            <Controller
+                                name="badgeable"
+                                control={control}
+                                defaultValue={tag.badgeable}
+                                render={({ field }) => (
+                                    <Checkbox
+                                        className="flex-none"
+                                        defaultSelected={tag.badgeable}
+                                        onChange={field.onChange}
+                                    >
+                                        Badge
+                                    </Checkbox>
+                                )}
+                            />
+                        </div>
+
+                    </form>
                     // View Tag
-                    <div className="flex-grow text-start animate-fade-in">
+                    : <div className="flex-grow text-start animate-fade-in">
                         <p className="text-lg font-semibold">{tag.name}</p>
                         <p>{tag.description}</p>
                     </div>

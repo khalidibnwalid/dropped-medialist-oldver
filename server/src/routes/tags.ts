@@ -81,12 +81,12 @@ tagsRouter.patch('/:id', async (req, res) => {
     if (!user_id) return res.status(401).json({ message: 'Unauthorized' })
 
     const { id } = req.params;
-    const changes = req.body; //the json only contain what changed therfore it represents 'changes'
+    const changes = req.body;
 
     try {
         const tag = await prisma.items_tags.update({
             where: { id, user_id },
-            data: changes
+            data: { ...changes, user_id }
         })
         console.log('[Tags] Edited:', id)
         res.status(200).json(tag);

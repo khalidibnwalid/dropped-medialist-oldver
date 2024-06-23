@@ -76,7 +76,7 @@ export default function ItemLayout2() {
                             {itemData.progress_state &&
                                 <Chip className=" p-2 opacity-90" variant="flat" color={itemData.progress_state.color}>{itemData.progress_state.name}</Chip>
                             }
-                            {itemData.badges && <ItemBadges badgesArray={itemData.badges} />}
+                            <ItemBadges />
                         </div>
 
                         <ItemDescription description={itemData.description} />
