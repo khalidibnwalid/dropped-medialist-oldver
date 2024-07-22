@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const { userData } = useContext(authContext)
 
     const navButtons = [
-        { title: "Home", link: "/", icon: <BiHomeAlt2 key="nav-BiHomeAlt2" /> },
+        // { title: "Home", link: "/", icon: <BiHomeAlt2 key="nav-BiHomeAlt2" /> },
         { title: "Lists", link: "/lists", icon: <BiCollection key="nav-BiHomeAlt2" /> },
         // { title: "Search", link: "/Search", icon: <BiSearch key="nav-BiHomeAlt2" /> },
         // { title: "Settings", link: "/Settings", icon: <BiSliderAlt key="nav-BiHomeAlt2" /> },

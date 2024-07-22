@@ -10,7 +10,6 @@ export default function handleEditFileForm(
     const deleteImageBlob = dummyBlobFile(4)
 
     let fileToAppend;
-    console.log(file)
     // if the file is a string, it means the user didn't change the file and it still contains the path
     if (typeof file === "string")
         fileToAppend = preserveImageBlob

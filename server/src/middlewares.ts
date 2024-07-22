@@ -13,11 +13,15 @@ declare global {
     }
 }
 
+// basic CSRF
 export const verifyRequestOriginHeader = (req: Request, res: Response, next: NextFunction) => {
     if (process.env.NODE_ENV !== "production") return next() // skip origin check in development
 
     const originWhiteList = process.env.ORIGIN_WHITELIST?.split(",") || []
-    if (originWhiteList.length === 0) return res.status(500).send("ORIGIN_WHITELIST is undefined or empty. Please set it in your .env/docker-compose.yml file.")
+    if (originWhiteList.length === 0) {
+        console.log("[ERROR]: ORIGIN_WHITELIST is undefined or empty. Please set it in your .env/docker-compose.yml file.")
+        return res.status(500).json({ message: 'Internal Server Error' })
+    }
 
     if (req.method === "GET") return next()
 

@@ -11,7 +11,7 @@ datasource db {
 
 model lists {
   id             String       @id(map: "collections_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  title          String       @unique(map: "collections_title_key") @db.VarChar
+  title          String       @db.VarChar
   cover_path     String?      @db.VarChar
   pincode        String?      @db.VarChar
   templates      Json?
@@ -21,12 +21,14 @@ model lists {
   user_id        String       @db.Uuid
   items          items[]
   items_tags     items_tags[]
-  users          users        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lists_user_id_fk")
+  users          users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "lists_user_id_fk")
+
+  @@index([id, user_id], map: "index_lists")
 }
 
 model items {
   id             String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  list_id        String?        @db.Uuid
+  list_id        String         @db.Uuid
   title          String         @db.VarChar
   poster_path    String?        @db.VarChar
   cover_path     String?        @db.VarChar
@@ -44,32 +46,39 @@ model items {
   fav            Boolean        @default(false)
   trash          Boolean        @default(false)
   user_id        String         @db.Uuid
-  lists          lists?         @relation(fields: [list_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "items_collection_id_fkey")
-  users          users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "items_user_id_fk")
+  lists          lists          @relation(fields: [list_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "items_collection_id_fkey")
+  users          users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "items_user_id_fk")
   items_images   items_images[]
+
+  @@index([id, list_id, user_id], map: "index_items")
 }
 
 model items_images {
   id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   image_path   String    @db.VarChar
-  item_id      String?   @db.Uuid
+  item_id      String    @db.Uuid
   title        String?   @db.VarChar
   description  String?
   date_created DateTime? @default(now()) @db.Timestamp(6)
   user_id      String    @db.Uuid
-  users        users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "item_images_user_id_fkey")
-  items        items?    @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "item_images_user_id_fkey")
+  items        items     @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([id, item_id, user_id], map: "index_images")
 }
 
 model items_tags {
-  id          String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  list_id     String? @db.Uuid
-  name        String  @db.VarChar
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  list_id     String   @db.Uuid
+  name        String   @db.VarChar
   description String?
-  group_name  String? @db.VarChar
-  user_id     String  @db.Uuid
-  lists       lists?  @relation(fields: [list_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "items_tags_collection_id_fkey")
-  users       users   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "items_tags_user_id_fk")
+  group_name  String?  @db.VarChar
+  user_id     String   @db.Uuid
+  badgeable   Boolean? @default(false)
+  lists       lists    @relation(fields: [list_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "items_tags_collection_id_fkey")
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "items_tags_user_id_fk")
+
+  @@index([id, list_id, user_id], map: "index_tags")
 }
 
 model users {
@@ -85,6 +94,8 @@ model users {
   items_tags      items_tags[]
   lists           lists[]
   users_sessions  users_sessions[]
+
+  @@index([id, username, email, hashed_password], map: "index_user")
 }
 
 model users_sessions {

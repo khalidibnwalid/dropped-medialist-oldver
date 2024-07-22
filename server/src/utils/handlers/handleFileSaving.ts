@@ -2,10 +2,9 @@ import { File } from 'formidable';
 import fs from 'fs';
 import { alphabet, generateRandomString } from "oslo/crypto";
 import path from 'path';
-import { webpTransformer } from '../webpTransformer';
-import { CacheConfig } from '../cacheConfigs';
-import { cachedImageName } from '../cacheConfigs';
+import { CacheConfig, cachedImageName } from '../cacheConfigs';
 import { isDummyBlob } from '../helperFunction/isDummyBlob';
+import { webpTransformer } from '../webpTransformer';
 
 export default async function handleFileSaving(
     file: File | undefined /**files.file[0]*/,
@@ -54,12 +53,12 @@ export default async function handleFileSaving(
             const cacheFolder = path.join(distPath, 'thumbnails');
             if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder);
 
-            cacheConfigs.forEach(async config => {
+            await Promise.all(cacheConfigs.map(async config => {
                 const imageName = cachedImageName(fileName, config);
                 const imagePath = path.join(cacheFolder, imageName);
 
                 await webpTransformer(config?.w, config?.h, newPath).toFile(imagePath);
-            })
+            }));
 
         } catch (error) {
             console.error('Failed to create cache images', error);
@@ -67,4 +66,4 @@ export default async function handleFileSaving(
     }
 
     return fileName;
-} 
+}

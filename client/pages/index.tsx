@@ -1,18 +1,21 @@
 import Head from "next/head";
-
+import { useRouter } from "next/router";
 function Home() {
-  return (
-    <>
-      <Head>
-        <title>MediaList - HomePage</title>
-      </Head>
+  const router = useRouter()
+  router.push('/lists')
+  return <></>
+  // return (
+  //   <>
+  //     <Head>
+  //       <title>MediaList - HomePage</title>
+  //     </Head>
 
-      <main className="">
+  //     <main className="">
 
-        <h1>HOME</h1>
-      </main>
-    </>
-  )
+  //       <h1>HOME</h1>
+  //     </main>
+  //   </>
+  // )
 }
 
 export default Home;

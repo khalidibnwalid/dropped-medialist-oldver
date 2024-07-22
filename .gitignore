@@ -1,4 +1,6 @@
  volumes/**
 
+.vscode
+
 # for now
 plugins

@@ -1,10 +1,8 @@
 import { File } from 'formidable';
-import { deleteFile, deleteFileWithCache } from './deleteFileFn';
-import handleFileSaving from './handleFileSaving';
 import { CacheConfig } from '../cacheConfigs';
-import { cachedImageName } from '../cacheConfigs';
 import { isDummyBlob } from '../helperFunction/isDummyBlob';
-import { join } from 'path';
+import { deleteFileWithCache } from './deleteFileFn';
+import handleFileSaving from './handleFileSaving';
 
 export default async function handleFileEditing(
     file: File | undefined /**files.file[0]*/,

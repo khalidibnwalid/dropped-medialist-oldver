@@ -4,7 +4,7 @@ import imagesRouter from './routes/images';
 import itemsRouter from './routes/items/items';
 import tagsRouter from './routes/tags';
 import sessionsRoutes from './routes/sessions';
-import usersRouter from './routes/users/user';
+import usersRouter from './routes/users/users';
 
 const router = express.Router();
 

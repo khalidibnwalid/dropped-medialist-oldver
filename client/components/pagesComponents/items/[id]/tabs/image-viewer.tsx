@@ -24,7 +24,7 @@ export default function ImageViewer({
     return isOpen && createPortal(
         <div
             className="fixed top-0 w-full h-full flex items-center justify-center z-[999]
-                      bg-accented/50 backdrop-blur-md animate-fade-in hover:cursor-pointer"
+                      bg-accented/50 backdrop-blur-md animate-fade-in"
             onClick={() => setIsOpen(false)}
         >
             <Card
